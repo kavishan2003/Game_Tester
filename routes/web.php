@@ -9,3 +9,6 @@ Route::get('/', function () {
 });
 
 Route::get('/games', [GameController::class, 'getGames']);
+
+Route::post('/contact', [GameController::class, 'submit'])
+     ->name('contact.submit');

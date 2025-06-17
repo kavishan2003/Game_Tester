@@ -16,7 +16,7 @@ class GameController extends Controller
     {
 
 
-        //    // Verify Turnstile
+           // Verify Turnstile
         // $response = Http::asForm()->post('https://challenges.cloudflare.com/turnstile/v0/siteverify', [
         //     'secret' => config('services.turnstile.secret'),
         //     'response' => $this->turnstileToken,
