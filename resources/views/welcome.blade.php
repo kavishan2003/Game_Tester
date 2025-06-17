@@ -2,7 +2,23 @@
 
 @section('content')
     <div class="container mx-auto p-4 sm:p-6 lg:p-8 max-w-6xl">
+        @if (session('success'))
+            <div id="successAlert"
+                class="mb-4 p-3 rounded bg-green-100 text-green-800 border border-green-300 transition-opacity duration-500">
+                {{ session('success') }}
+            </div>
 
+            <script>
+                // Wait 8 seconds, then fade out the alert
+                setTimeout(() => {
+                    const alert = document.getElementById('successAlert');
+                    if (alert) {
+                        alert.style.opacity = '0';
+                        setTimeout(() => alert.remove(), 500); // wait for fade-out transition, then remove
+                    }
+                }, 8000); // 8000ms = 8s
+            </script>
+        @endif
         {{-- Header Section --}}
         <header class="flex flex-col items-center justify-center mb-12 mt-8 text-center"> {{-- Added flex-col and text-center for better mobile alignment --}}
             <i class="fas fa-gamepad text-5xl text-blue-600 mb-4"></i> {{-- Moved icon above title for vertical stacking on small screens --}}
@@ -76,17 +92,17 @@
                     <form id="paypalForm" action="/paypal" method="post">
                         @csrf
                         <div class="relative mb-4">
-                            <input type="email" placeholder="you@example.com" id="paypalEmail"
+                            <input type="email" placeholder="you@example.com" id="paypalEmail" name="email"
                                 class="w-full px-5 py-3 border border-gray-300 rounded-lg focus:ring-blue-500 focus:border-blue-500 outline-none transition-all duration-200 text-gray-700 text-lg"
                                 aria-label="Enter your PayPal Email">
                         </div>
 
-                        <button id="btn"
+                        <button id="btn" type="submit"
                             class="w-full bg-green-600 text-white py-3 px-6 rounded-lg font-bold text-lg hover:bg-green-700 transition-colors duration-300 shadow-md disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center">
                             <span>Save Email</span>
                         </button>
                     </form>
-                    <p id="para" class="text-green-600 text-sm mt-3 text-center hidden">Email saved successfully!</p>
+                    {{-- <p id="para" class="text-green-600 text-sm mt-3 text-center hidden">Email saved successfully!</p> --}}
                 </div>
             </div>
         </section>

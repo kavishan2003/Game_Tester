@@ -38,12 +38,24 @@
     }
 </script>
 <script>
+
+ let isFormSubmitted = false;
+
     document.addEventListener('DOMContentLoaded', () => {
         var email = document.getElementById('paypalEmail').value.trim();
         const openButtons = document.querySelectorAll('.openModalBtn');
         const closeButtons = document.querySelectorAll('.closeModalBtn');
         var para = document.getElementById('para');
-  
+        const paypalForm = document.getElementById('paypalForm');
+
+            paypalForm.addEventListener('submit', function(event) {
+            // Check if form already submitted
+            if (!isPaypalFormSubmitted) {
+               
+            }
+            let isFormSubmitted = true;
+
+            });
 
             /* ------- OPEN ------- */
             openButtons.forEach(button => {
@@ -53,18 +65,19 @@
                     const modal = document.getElementById(`jackpotModal-${index}`);
                     const modalContent = document.getElementById(`modalContent-${index}`);
 
-                    if (email) {   
+                    if ( !email) {   
                         alert('Please enter your PayPal email first ❗');
                         return;                       // stop here – don’t show the modal
                     }
+                   
 
-                    // valid email present ➜ show modal
-                    modal.classList.remove('hidden');
-                    setTimeout(() => {
-                        modalContent.classList.remove('scale-95', 'opacity-0');
-                        modalContent.classList.add('scale-100', 'opacity-100');
-                        document.body.classList.add('overflow-hidden');
-                    }, 50);
+                        modal.classList.remove('hidden');
+                        setTimeout(() => {
+                            modalContent.classList.remove('scale-95', 'opacity-0');
+                            modalContent.classList.add('scale-100', 'opacity-100');
+                            document.body.classList.add('overflow-hidden');
+                        }, 50);
+                    
                 });
             });
 
@@ -92,7 +105,7 @@
                     setTimeout(() => {
                         modal.classList.add('hidden');
                         document.body.classList.remove('overflow-hidden');
-                        
+
                     }, 300);
                 }
             });
@@ -107,10 +120,10 @@ document.getElementById('paypalForm').addEventListener('submit', function(event)
   
   if (!email) {
     alert('Please enter your PayPal email.');
-    event.preventDefault(); // Prevents form from submitting
+    event.preventDefault(); 
   }  else
   {
-    event.preventDefault();
+    // event.preventDefault();
     para.classList.remove('hidden');
   }
 });
