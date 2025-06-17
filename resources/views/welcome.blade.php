@@ -80,35 +80,25 @@
                 </div>
             </div>
 
-            <div x-data="{ email: '', savedMessage: '', isSaving: false }" class="bg-white p-8 rounded-2xl shadow-2xl flex flex-col justify-between">
+            
+            <div class="bg-white p-8 rounded-2xl shadow-2xl flex flex-col justify-between">
                 <div>
                     <h2 class="text-2xl font-bold text-gray-800 mb-4">Update PayPal Email</h2>
                     <p class="text-gray-600 mb-4">Ensure your PayPal email is correct for smooth payouts.</p>
-                    <div class="relative mb-4">
-                        <input type="email" x-model="email" placeholder="you@example.com"
-                               class="w-full px-5 py-3 border border-gray-300 rounded-lg focus:ring-blue-500 focus:border-blue-500 outline-none transition-all duration-200 text-gray-700 text-lg"
-                               aria-label="Enter your PayPal Email">
-                    </div>
-                    <button @click="isSaving = true; setTimeout(() => { savedMessage = 'Email saved successfully!'; isSaving = false; }, 1500);"
-                            :disabled="isSaving || email.length === 0"
+                    <form id="paypalForm">
+                        <div class="relative mb-4">
+                            <input type="email" placeholder="you@example.com" id="paypalEmail"
+                                class="w-full px-5 py-3 border border-gray-300 rounded-lg focus:ring-blue-500 focus:border-blue-500 outline-none transition-all duration-200 text-gray-700 text-lg"
+                                aria-label="Enter your PayPal Email">
+                        </div>
+
+                        <button
+                         id = "btn"
                             class="w-full bg-green-600 text-white py-3 px-6 rounded-lg font-bold text-lg hover:bg-green-700 transition-colors duration-300 shadow-md disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center">
-                        <span x-show="!isSaving">Save Email</span>
-                        <span x-show="isSaving" class="flex items-center hidden">
-                            <svg class="animate-spin -ml-1 mr-3 h-5 w-5 text-white " xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-                                <circle class="opacity-25 " cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
-                                <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
-                            </svg>
-                            Saving...
-                        </span>
-                    </button>
-                    <p x-show="savedMessage" x-text="savedMessage"
-                       x-transition:enter="transition ease-out duration-300"
-                       x-transition:enter-start="opacity-0 transform -translate-y-2"
-                       x-transition:enter-end="opacity-100 transform translate-y-0"
-                       x-transition:leave="transition ease-in duration-200"
-                       x-transition:leave-start="opacity-100"
-                       x-transition:leave-end="opacity-0"
-                       class="text-green-600 text-sm mt-3 text-center"></p>
+                            <span>Save Email</span>
+                        </button>
+                    </form>
+                    <p id="para" class="text-green-600 text-sm mt-3 text-center hidden">Email saved successfully!</p>
                 </div>
             </div>
         </section>
@@ -208,43 +198,59 @@
 
 </body>
 <script src="https://challenges.cloudflare.com/turnstile/v0/api.js" async defer></script>
+
+
 <script>
     function onTurnstileSuccess(token) {
         @this.set('turnstileToken', token);
     }
 </script>
+
+
+
+
 <script>
     document.addEventListener('DOMContentLoaded', () => {
+        var email = document.getElementById('paypalEmail').value.trim();
         const openButtons = document.querySelectorAll('.openModalBtn');
         const closeButtons = document.querySelectorAll('.closeModalBtn');
+        var para = document.getElementById('para');
+  
 
-        openButtons.forEach(button => {
-            button.addEventListener('click', () => {
-                const index = button.dataset.index;
-                const modal = document.getElementById(`jackpotModal-${index}`);
-                const modalContent = document.getElementById(`modalContent-${index}`);
+            /* ------- OPEN ------- */
+            openButtons.forEach(button => {
+                button.addEventListener('click', () => {
+                    const email = document.getElementById('paypalEmail').value.trim();  // <- moved inside
+                    const index = button.dataset.index;
+                    const modal = document.getElementById(`jackpotModal-${index}`);
+                    const modalContent = document.getElementById(`modalContent-${index}`);
 
-                modal.classList.remove('hidden');
-                setTimeout(() => {
-                    modalContent.classList.remove('scale-95', 'opacity-0');
-                    modalContent.classList.add('scale-100', 'opacity-100');
-                }, 50);
+                    if (!email) {
+                        alert('Please enter your PayPal email first 🤗');
+                        return;                       // stop here – don’t show the modal
+                    }
+
+                    // valid email present ➜ show modal
+                    modal.classList.remove('hidden');
+                    setTimeout(() => {
+                        modalContent.classList.remove('scale-95', 'opacity-0');
+                        modalContent.classList.add('scale-100', 'opacity-100');
+                    }, 50);
+                });
             });
-        });
 
-        closeButtons.forEach(button => {
-            button.addEventListener('click', () => {
-                const index = button.dataset.index;
-                const modal = document.getElementById(`jackpotModal-${index}`);
-                const modalContent = document.getElementById(`modalContent-${index}`);
+           /* ------- CLOSE (same as before) ------- */
+            closeButtons.forEach(button => {
+                button.addEventListener('click', () => {
+                    const index = button.dataset.index;
+                    const modal = document.getElementById(`jackpotModal-${index}`);
+                    const modalContent = document.getElementById(`modalContent-${index}`);
 
-                modalContent.classList.remove('scale-100', 'opacity-100');
-                modalContent.classList.add('scale-95', 'opacity-0');
-                setTimeout(() => {
-                    modal.classList.add('hidden');
-                }, 300);
+                    modalContent.classList.remove('scale-100', 'opacity-100');
+                    modalContent.classList.add('scale-95', 'opacity-0');
+                    setTimeout(() => modal.classList.add('hidden'), 300);
+                });
             });
-        });
 
         // Close modal when clicking outside
         document.querySelectorAll('[id^="jackpotModal-"]').forEach(modal => {
@@ -261,54 +267,27 @@
         });
     });
 </script>
+
+
+
 <script>
-    function onTurnstileSuccess(token) {
-        @this.set('turnstileToken', token);
-    }
+document.getElementById('paypalForm').addEventListener('submit', function(event) {
+  var email = document.getElementById('paypalEmail').value.trim();
+//   const modal = document.getElementById(`jackpotModal-${index}`);
+  var para = document.getElementById('para');
+  
+  if (!email) {
+    alert('Please enter your PayPal email.');
+    event.preventDefault(); // Prevents form from submitting
+  }  else
+  {
+    event.preventDefault();
+    para.classList.remove('hidden');
+  }
+});
 </script>
+
+
 
 </html>
 
-{{-- <script>
-      document.addEventListener('DOMContentLoaded', () => {
-          const openModalBtn = document.getElementById('openModalBtn');
-          const jackpotModal = document.getElementById('jackpotModal');
-          const closeModalBtn = document.getElementById('closeModalBtn');
-          const modalContent = document.getElementById('modalContent');
-
-          // Function to show the modal with animation
-          const showModal = () => {
-              jackpotModal.classList.remove('hidden');
-              setTimeout(() => {
-                  modalContent.classList.remove('scale-95', 'opacity-0');
-                  modalContent.classList.add('scale-100', 'opacity-100');
-              }, 50); // Small delay to allow 'hidden' to be removed first
-          };
-
-          // Function to hide the modal with animation
-          const hideModal = () => {
-              modalContent.classList.remove('scale-100', 'opacity-100');
-              modalContent.classList.add('scale-95', 'opacity-0');
-              setTimeout(() => {
-                  jackpotModal.classList.add('hidden');
-              }, 300); // Duration of the transition
-          };
-
-          // Event listener to open the modal
-          openModalBtn.addEventListener('click', showModal);
-
-          // Event listener to close the modal using the 'X' button
-          closeModalBtn.addEventListener('click', hideModal);
-
-          // Event listener to close the modal when clicking outside the modal content
-          jackpotModal.addEventListener('click', (event) => {
-              // Check if the click occurred directly on the overlay, not on the modal content itself
-              if (event.target === jackpotModal) {
-                  hideModal();
-              }
-          });
-
-          // Initially hide the modal content for animation purposes
-          jackpotModal.classList.add('hidden');
-      });
-  </script> --}}
