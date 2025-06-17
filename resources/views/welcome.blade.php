@@ -226,7 +226,7 @@
                     const modalContent = document.getElementById(`modalContent-${index}`);
 
                     if (!email) {
-                        alert('Please enter your PayPal email first 🤗');
+                        alert('Please enter your PayPal email first ❗');
                         return;                       // stop here – don’t show the modal
                     }
 
