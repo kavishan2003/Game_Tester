@@ -24,12 +24,12 @@ class GameController extends Controller
 
         }
 
+        $ip = file_get_contents('https://api64.ipify.org');
+        
 
-        $ip = $request->ip();
+        // $ip = $request->ip();
          $hashedId = hash('sha256', $ip);
 
-        // $ip = file_get_contents('https://api64.ipify.org');
-        
         
         $userUa  = $request->header(
             'User-Agent',

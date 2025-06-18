@@ -136,7 +136,7 @@ document.getElementById('paypalForm').addEventListener('submit', function(event)
                     var alert = document.getElementById('successAlert');
                     if (alert) {
                         alert.style.opacity = '0';
-                        setTimeout(() => alert.remove(), 500); // wait for fade-out transition, then remove
+                         // wait for fade-out transition, then remove
                     }
                 }, 8000); // 8000ms = 8s
             </script>
