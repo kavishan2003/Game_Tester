@@ -23,7 +23,12 @@ class PayEmailController extends Controller
 
         emails::create([
             'email' => $email,
+
         ]);
+
+        //add email to session
+        $request->session()->put('paypal_email', $email);
+        
 
         return back()->with('success', 'Email saved ✨');
     }

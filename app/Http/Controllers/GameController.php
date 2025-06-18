@@ -14,10 +14,23 @@ class GameController extends Controller
 
     public function getGames(Request $request)
     {
+        //get user email from session
+        $storedEmail = session('paypal_email');
+        $hashedId =  '';
+
+        if($storedEmail){
+
+             $hashedId = hash('sha256', $storedEmail);
+
+        }
+
+
         $ip = $request->ip();
+         $hashedId = hash('sha256', $ip);
+
         // $ip = file_get_contents('https://api64.ipify.org');
-        // dd($ip);
-        // dd($ip);
+        
+        
         $userUa  = $request->header(
             'User-Agent',
             'Mozilla/5.0 (Windows NT 10.0; Win64; x64)'
@@ -25,7 +38,7 @@ class GameController extends Controller
 
         $response = Http::withHeaders([
             'User-Agent' => $ip,
-            'X-User-Id' => '123',
+            'X-User-Id' => $hashedId,
             'X-Api-Token' => 'cacd309f-4f98-47bb-bec0-a631b9c139f8',
         ])->get('https://api.bitlabs.ai/v2/client/offers', [
             'client_ip'         => $ip,
