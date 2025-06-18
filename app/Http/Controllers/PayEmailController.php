@@ -7,15 +7,19 @@ use Illuminate\Http\Request;
 
 class PayEmailController extends Controller
 {
-    public function save(Request $request){
+    public function save(Request $request)
+    {
+
+        $validated = $request->validate([
+            'email' => 'required|email',
+        ]);
 
         $email = $request->input('email');
 
-        // dd($email);
+        if (emails::where('email', $email)->exists()) {
+            return back()->with('error', 'This email is already registered ❌');
+        }
 
-        $validated = $request->validate([
-            'email' => 'required|email|unique:emails,email',   // tweak table/column as needed
-        ]);
 
         emails::create([
             'email' => $email,

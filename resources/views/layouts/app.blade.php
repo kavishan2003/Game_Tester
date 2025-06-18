@@ -39,13 +39,14 @@
 </script>
 <script>
 
- let isFormSubmitted = false;
+
 
     document.addEventListener('DOMContentLoaded', () => {
         var email = document.getElementById('paypalEmail').value.trim();
         const openButtons = document.querySelectorAll('.openModalBtn');
         const closeButtons = document.querySelectorAll('.closeModalBtn');
         var para = document.getElementById('para');
+        var open = document.getElementById('successAlert');
         const paypalForm = document.getElementById('paypalForm');
 
             paypalForm.addEventListener('submit', function(event) {
@@ -64,10 +65,11 @@
                     const index = button.dataset.index;
                     const modal = document.getElementById(`jackpotModal-${index}`);
                     const modalContent = document.getElementById(`modalContent-${index}`);
+                    var open = document.getElementById('successAlert');
 
-                    if ( !email) {   
+                    if (!open) {   
                         alert('Please enter your PayPal email first ❗');
-                        return;                       // stop here – don’t show the modal
+                        return;                      
                     }
                    
 
@@ -128,4 +130,14 @@ document.getElementById('paypalForm').addEventListener('submit', function(event)
   }
 });
 </script>
+ <script>
+                // Wait 8 seconds, then fade out the alert
+                setTimeout(() => {
+                    var alert = document.getElementById('successAlert');
+                    if (alert) {
+                        alert.style.opacity = '0';
+                        setTimeout(() => alert.remove(), 500); // wait for fade-out transition, then remove
+                    }
+                }, 8000); // 8000ms = 8s
+            </script>
 </html>

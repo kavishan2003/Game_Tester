@@ -7,18 +7,16 @@
                 class="mb-4 p-3 rounded bg-green-100 text-green-800 border border-green-300 transition-opacity duration-500">
                 {{ session('success') }}
             </div>
-
-            <script>
-                // Wait 8 seconds, then fade out the alert
-                setTimeout(() => {
-                    const alert = document.getElementById('successAlert');
-                    if (alert) {
-                        alert.style.opacity = '0';
-                        setTimeout(() => alert.remove(), 500); // wait for fade-out transition, then remove
-                    }
-                }, 8000); // 8000ms = 8s
-            </script>
         @endif
+        
+        @if (session('error'))
+            <div id="errorAlert"
+                class="mb-4 p-3 rounded bg-red-100 text-grey-800 border border-red-300 transition-opacity duration-500">
+                {{ session('error') }}
+            </div>
+        @endif
+        
+
         {{-- Header Section --}}
         <header class="flex flex-col items-center justify-center mb-12 mt-8 text-center"> {{-- Added flex-col and text-center for better mobile alignment --}}
             <i class="fas fa-gamepad text-5xl text-blue-600 mb-4"></i> {{-- Moved icon above title for vertical stacking on small screens --}}

@@ -14,8 +14,8 @@ class GameController extends Controller
 
     public function getGames(Request $request)
     {
-        // $ip = $request->ip();
-        $ip = file_get_contents('https://api64.ipify.org');
+        $ip = $request->ip();
+        // $ip = file_get_contents('https://api64.ipify.org');
         // dd($ip);
         // dd($ip);
         $userUa  = $request->header(
