@@ -96,11 +96,14 @@
                                 name="email" value="{{ Session::get('email') }}  "
                                 class="w-full px-5 py-3 border disabled border-gray-300 rounded-lg focus:ring-blue-500 focus:border-blue-500 outline-none transition-all duration-200 text-gray-700 text-lg"
                                 aria-label="Enter your PayPal Email">
+                             @error('email')
+                                 <span class="text-red-600">{{$message}}</span>
+                             @enderror   
                         </div>
 
                         <p style="display: {{ $show }};" class="text-gray-600 mb-4">Current email :
-                            {{ Session::get('email') }} </p>
-                        <button id="btn" wire:click.prevent ="SaveTodb"
+                            {{ $email }} </p>
+                        <button {{ $saveButtonDisabled }} id="btn" wire:click.prevent ="SaveTodb"
                             class="w-full bg-green-600 text-white py-3 px-6 rounded-lg font-bold text-lg hover:bg-green-700 transition-colors duration-300 shadow-md disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center">
                             <span>Save Email</span>
                         </button>

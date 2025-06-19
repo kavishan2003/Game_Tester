@@ -21,18 +21,19 @@ class GameTester extends Component
     public $email;
     public $mailLock = "block";
     public $show = "none";
-    
+    public $saveButtonDisabled = "";
+
 
 
     public function SaveTodb()
     {
 
-       $this->validate([
+        $this->validate([
             'email' => 'required|email',
         ]);
 
         // session()->flash('success', 'Email is valid!');
-        
+
         $email = $this->email;
 
         emails::create([
@@ -44,11 +45,15 @@ class GameTester extends Component
             'email' => $email,
         ]);
 
-        $this->email = "";
-        request()->session()->flash('success','Email valid and User logged');
-        $this->dispatch('mailLock');
-         $this->mailLock = "none";
-         $this->show = "block";
+       
+
+        request()->session()->flash('success', 'Email valid and User logged');
+
+        $this->saveButtonDisabled = "disabled";
+
+        // $this->dispatch('mailLock');
+        $this->mailLock = "none";
+        $this->show = "block";
         //  $this->dispatch('unlock');
     }
 
@@ -157,11 +162,20 @@ class GameTester extends Component
     }
 
 
-    public function openModel($index){
+    public function openModel($index)
+    {
 
         dd($index);
     }
-    public function mount(): void {}
+    public function mount(): void
+    {
+        if (Session::get('email')) {
+            $this->saveButtonDisabled = "disabled";
+            $this->email = Session::get('email');
+            $this->show = "block";
+            $this->mailLock = "none";
+        }
+    }
 
 
     public function capture() {}
