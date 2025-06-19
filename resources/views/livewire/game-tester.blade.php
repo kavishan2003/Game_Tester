@@ -144,9 +144,12 @@
                         {{-- Made image fully responsive and added rounded-lg --}}
 
                         {{-- title --}}
-                        <h3 class="text-xl sm:text-2xl font-bold text-gray-900 mb-2"> {{-- Adjusted text size for smaller screens --}}
-                            {{ $game['title'] }}
-                        </h3>
+                        <div class="h-16">
+
+                            <h3 class="text-xl sm:text-2xl font-bold text-gray-900 mb-2"> {{-- Adjusted text size for smaller screens --}}
+                                {{ $game['title'] }}
+                            </h3>
+                        </div>
 
                         {{-- price --}}
                         <p class="text-lg text-gray-600 mb-4">
@@ -185,7 +188,7 @@
                             </div>
 
                             {{-- Modal Body --}}
-                            <div class="modal-body-scrollable  p-4 max-h-[80vh] overflow-y-auto"> {{-- Added max-h for scroll on smaller modals, overflow-y-auto --}}
+                            <div class="modal-body-scrollable  p-4 max-h-[85vh] overflow-y-auto"> {{-- Added max-h for scroll on smaller modals, overflow-y-auto --}}
                                 <div class="mb-4 rounded-lg flex justify-center overflow-hidden shadow-lg">
                                     {{-- Centered image --}}
                                     <img src="{{ $game['thumbnail'] }}" alt="Game Preview"
