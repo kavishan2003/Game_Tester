@@ -1,6 +1,4 @@
-@extends('layouts.app')
-
-@section('content')
+<div>
     <div class="container mx-auto p-4 sm:p-6 lg:p-8 max-w-6xl">
         @if (session('success'))
             <div id="successAlert"
@@ -91,16 +89,16 @@
 
                     <h2 class="text-2xl font-bold text-gray-800 mb-4">Update PayPal Email</h2>
                     <p class="text-gray-600 mb-4">Ensure your PayPal email is correct for smooth payouts.</p>
-                    <form id="paypalForm" action="/paypal" method="post">
-                        @csrf
+                    <form action="" id="paypalForm">
+
                         <div class="relative mb-4">
-                            <input type="email" placeholder="you@example.com" id="paypalEmail" name="email"
-                                value="{{ Session::get('email') }}  "
+                            <input wire:model="email" type="email" placeholder="you@example.com" id="paypalEmail"
+                                name="email" value="{{ Session::get('email') }}  "
                                 class="w-full px-5 py-3 border border-gray-300 rounded-lg focus:ring-blue-500 focus:border-blue-500 outline-none transition-all duration-200 text-gray-700 text-lg"
                                 aria-label="Enter your PayPal Email">
                         </div>
 
-                        <button id="btn" type="submit"
+                        <button id="btn" wire:click.prevent ="SaveTodb"
                             class="w-full bg-green-600 text-white py-3 px-6 rounded-lg font-bold text-lg hover:bg-green-700 transition-colors duration-300 shadow-md disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center">
                             <span>Save Email</span>
                         </button>
@@ -112,32 +110,30 @@
 
         {{-- Available Games Section --}}
         <section>
-            <h2 class="text-3xl flex items-center justify-center font-bold text-gray-900 mb-8 text-center">Available Games
+            <h2 class="text-3xl flex items-center justify-center font-bold text-gray-900 mb-8 text-center">Available
+                Games
                 to Test</h2>
-            <div class="text-gray-500 text-center rounded-xl p-5 " id="capture">
-                <meta name="csrf-token" content="{{ csrf_token() }}">
-                <div id="captcha" class="mb-4">
-                    {{-- Cloudflare Turnstile widget --}}
-                    <div class="cf-turnstile" data-sitekey="{{ config('services.turnstile.key') }}"
-                        data-callback="onTurnstileSuccess">
+            <div style="display: {{ $is_turnstile }};">
+                <input type="hidden" id="cf-turnstile-response" wire:model.defer="turnstileToken">
+                <div class="text-gray-500 text-center rounded-xl p-5 " id="capture">
+                    <div wire:ignore x-data x-init="window.onTurnstileSuccess = (token) => $wire.set('turnstileToken', token)">
+                        <div class=" text-gray-500 text-center  rounded-xl p-5 cf-turnstile flex items-center justify-center"
+                            data-sitekey="{{ config('services.turnstile.key') }}" data-theme="{{ $theme ?? 'light' }}"
+                            data-callback="onTurnstileSuccess" data-size="normal">
+                            {{-- <p class="text-sm">Please complete the captcha</p> --}}
+                        </div>
+                        {{-- <button
+                            class="bg-blue-600 text-white py-3 rounded-lg hover:bg-blue-700 transition-colors duration-300 shadow-md"
+                            wire:click="capture">Get games</button> --}}
                     </div>
                 </div>
-
-                <div id="gameList" class="hidden">
-                    {{-- Your game list here --}}
-                    <h2 class="text-xl font-semibold mb-2">🎮 Available Games</h2>
-                    <ul class="space-y-2">
-                        <li class="p-3 bg-green-100 rounded shadow">Game 1</li>
-                        <li class="p-3 bg-green-100 rounded shadow">Game 2</li>
-                    </ul>
-                </div>
-
             </div>
 
             {{-- class="text-gray-500 text-center rounded-xl p-5 cf-turnstile flex items-center justify-center" --}}
 
-         
-            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 hidden"> {{-- Stays as 1 column on mobile, adapts to 2 or 3 --}}
+
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 " id="GameList">
+                {{-- Stays as 1 column on mobile, adapts to 2 or 3 --}}
                 @foreach ($games as $index => $game)
                     <div
                         class="bg-white p-6 rounded-2xl shadow-xl flex flex-col items-center text-center
@@ -159,16 +155,16 @@
                                 {{ $game['price'] }}
                             </span>
                         </p>
-
+                        {{-- id="openModalBtn-{{ $index }}" --}}
                         {{-- play button with unique ID --}}
-                        <button id="openModalBtn-{{ $index }}"
+                        <button
                             class="openModalBtn w-full bg-blue-600 text-white py-3 rounded-lg font-bold text-lg
                             hover:bg-blue-700 transition-colors duration-300 shadow-md"
-                            data-index="{{ $index }}">
+                             wire:click.prevent=openModel($index)>
                             Play Now
                         </button>
                     </div>
-
+{{-- data-index="{{ $index }}" --}}
                     {{-- Modal Overlay (unique per item) --}}
                     <div id="jackpotModal-{{ $index }}"
                         class="fixed inset-0 bg-black/60 flex items-center justify-center p-4 hidden z-50">
@@ -240,8 +236,103 @@
                 @endforeach
             </div>
         </section>
-
-
-
     </div>
-@endsection
+</div>
+
+<script>
+    document.addEventListener('DOMContentLoaded', () => {
+        var email = document.getElementById('paypalEmail').value.trim();
+        const openButtons = document.querySelectorAll('.openModalBtn');
+        const closeButtons = document.querySelectorAll('.closeModalBtn');
+        var para = document.getElementById('para');
+        var open = document.getElementById('successAlert');
+        const paypalForm = document.getElementById('paypalForm');
+
+        paypalForm.addEventListener('submit', function(event) {
+
+
+        });
+
+        /* ------- OPEN ------- */
+        openButtons.forEach(button => {
+            button.addEventListener('click', () => {
+                const email = document.getElementById('paypalEmail').value
+                    .trim(); // <- moved inside
+                const index = button.dataset.index;
+                const modal = document.getElementById(`jackpotModal-${index}`);
+                const modalContent = document.getElementById(`modalContent-${index}`);
+                var open = document.getElementById('successAlert');
+
+                if (!email) {
+                    alert('Please enter your PayPal email first ❗');
+                    return;
+                }
+
+
+                modal.classList.remove('hidden');
+                setTimeout(() => {
+                    modalContent.classList.remove('scale-95', 'opacity-0');
+                    modalContent.classList.add('scale-100', 'opacity-100');
+                    document.body.classList.add('overflow-hidden');
+                }, 50);
+
+            });
+        });
+
+        /* ------- CLOSE (same as before) ------- */
+        closeButtons.forEach(button => {
+            button.addEventListener('click', () => {
+                const index = button.dataset.index;
+                const modal = document.getElementById(`jackpotModal-${index}`);
+                const modalContent = document.getElementById(`modalContent-${index}`);
+                document.body.classList.remove('overflow-hidden');
+
+                modalContent.classList.remove('scale-100', 'opacity-100');
+                modalContent.classList.add('scale-95', 'opacity-0');
+                setTimeout(() => modal.classList.add('hidden'), 300);
+            });
+        });
+
+        // Close modal when clicking outside
+        document.querySelectorAll('[id^="jackpotModal-"]').forEach(modal => {
+            modal.addEventListener('click', event => {
+                const content = modal.querySelector('[id^="modalContent-"]');
+                if (event.target === modal) {
+                    content.classList.remove('scale-100', 'opacity-100');
+                    content.classList.add('scale-95', 'opacity-0');
+                    setTimeout(() => {
+                        modal.classList.add('hidden');
+                        document.body.classList.remove('overflow-hidden');
+
+                    }, 300);
+                }
+            });
+        });
+    });
+</script>
+
+<script>
+    document.getElementById('paypalForm').addEventListener('submit', function(event) {
+        var email = document.getElementById('paypalEmail').value.trim();
+        //   const modal = document.getElementById(`jackpotModal-${index}`);
+        var para = document.getElementById('para');
+
+        if (!email) {
+            alert('Please enter your PayPal email.');
+            event.preventDefault();
+        } else {
+            // event.preventDefault();
+            para.classList.remove('hidden');
+        }
+    });
+</script>
+<script>
+    // Wait 8 seconds, then fade out the alert
+    setTimeout(() => {
+        var alert = document.getElementById('successAlert');
+        if (alert) {
+            alert.style.opacity = '0';
+            // wait for fade-out transition, then remove
+        }
+    }, 8000); // 8000ms = 8s
+</script>

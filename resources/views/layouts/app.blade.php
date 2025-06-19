@@ -24,120 +24,98 @@
             </style>
  
         @endif
+       
     </head>
   <body class="bg-gradient-to-br from-blue-50 to-indigo-100 min-h-screen text-gray-800 antialiased font-sans">
 
-    @yield('content')
+    @livewire('game-tester')
+    {{-- @yield('content') --}}
 
   </body>
 
 <script src="https://challenges.cloudflare.com/turnstile/v0/api.js" async defer></script>
-<script>
+{{-- <script>
     function onTurnstileSuccess(token) {
-        @this.set('turnstileToken', token);
+        // Push the token into Livewire component
+        Livewire.find(document.querySelector('[wire\\:model="turnstileToken"]').closest('[wire\\:id]').getAttribute('wire:id'))
+            .set('turnstileToken', token);
     }
-</script>
-<script>
+</script> --}}
 
 
 
-    document.addEventListener('DOMContentLoaded', () => {
-        var email = document.getElementById('paypalEmail').value.trim();
-        const openButtons = document.querySelectorAll('.openModalBtn');
-        const closeButtons = document.querySelectorAll('.closeModalBtn');
-        var para = document.getElementById('para');
-        var open = document.getElementById('successAlert');
-        const paypalForm = document.getElementById('paypalForm');
 
-            paypalForm.addEventListener('submit', function(event) {
-            // Check if form already submitted
-            if (!isPaypalFormSubmitted) {
-               
+
+{{-- <script>
+    let turnstileToken = null;
+
+    function onTurnstileSuccess(token) {
+        turnstileToken = token;
+        alert('called');
+        // send token to backend
+        fetch("{{ route('contact.send') }}", {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content
+            },
+            body: JSON.stringify({ token: turnstileToken })
+        })
+        .then(res => res.json())
+        .then(data => {
+            if (data.result.success) {
+                document.getElementById('captcha').classList.add('hidden');
+                document.getElementById('gameList').classList.remove('hidden');
+            } else {
+                alert('Verification failed ❌');
+                turnstile.reset(); 
             }
-            let isFormSubmitted = true;
-
-            });
-
-            /* ------- OPEN ------- */
-            openButtons.forEach(button => {
-                button.addEventListener('click', () => {
-                    const email = document.getElementById('paypalEmail').value.trim();  // <- moved inside
-                    const index = button.dataset.index;
-                    const modal = document.getElementById(`jackpotModal-${index}`);
-                    const modalContent = document.getElementById(`modalContent-${index}`);
-                    var open = document.getElementById('successAlert');
-
-                    if (!open) {   
-                        alert('Please enter your PayPal email first ❗');
-                        return;                      
-                    }
-                   
-
-                        modal.classList.remove('hidden');
-                        setTimeout(() => {
-                            modalContent.classList.remove('scale-95', 'opacity-0');
-                            modalContent.classList.add('scale-100', 'opacity-100');
-                            document.body.classList.add('overflow-hidden');
-                        }, 50);
-                    
-                });
-            });
-
-           /* ------- CLOSE (same as before) ------- */
-            closeButtons.forEach(button => {
-                button.addEventListener('click', () => {
-                    const index = button.dataset.index;
-                    const modal = document.getElementById(`jackpotModal-${index}`);
-                    const modalContent = document.getElementById(`modalContent-${index}`);
-                    document.body.classList.remove('overflow-hidden');
-
-                    modalContent.classList.remove('scale-100', 'opacity-100');
-                    modalContent.classList.add('scale-95', 'opacity-0');
-                    setTimeout(() => modal.classList.add('hidden'), 300);
-                });
-            });
-
-        // Close modal when clicking outside
-        document.querySelectorAll('[id^="jackpotModal-"]').forEach(modal => {
-            modal.addEventListener('click', event => {
-                const content = modal.querySelector('[id^="modalContent-"]');
-                if (event.target === modal) {
-                    content.classList.remove('scale-100', 'opacity-100');
-                    content.classList.add('scale-95', 'opacity-0');
-                    setTimeout(() => {
-                        modal.classList.add('hidden');
-                        document.body.classList.remove('overflow-hidden');
-
-                    }, 300);
-                }
-            });
+        })
+        .catch(err => {
+            console.error(err);
+            alert('Server error');
         });
-    });
-</script>
-<script>
-document.getElementById('paypalForm').addEventListener('submit', function(event) {
-  var email = document.getElementById('paypalEmail').value.trim();
-//   const modal = document.getElementById(`jackpotModal-${index}`);
-  var para = document.getElementById('para');
-  
-  if (!email) {
-    alert('Please enter your PayPal email.');
-    event.preventDefault(); 
-  }  else
-  {
-    // event.preventDefault();
-    para.classList.remove('hidden');
-  }
+    }
+</script> --}}
+{{-- <script>
+
+    const games = @json($games);
+
+    console.log('Games from PHP 👉', games);
+
+    // now do whatever …
+    renderGameList(games);
+</script> --}}
+{{-- <script>
+document.getElementById('refreshBtn').addEventListener('click', async () => {
+    try {
+        const res = await fetch("{{ route('contact.send') }}", {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-CSRF-TOKEN': document
+                    .querySelector('meta[name="csrf-token"]').content
+            },
+            body: JSON.stringify({ /* any payload */ })
+        });
+
+        const data = await res.json();         //  <- controller's return
+        console.log(data);                     //  inspect if needed
+
+        // Replace <ul> with fresh list items
+        const list = document.getElementById('gamesList');
+        list.innerHTML = '';                   // wipe old
+        data.games.forEach(g =>
+            list.insertAdjacentHTML('beforeend',
+                `<li class="p-3 bg-gray-100 rounded">${g.name}</li>`)
+        );
+
+    } catch (err) {
+        console.error(err);
+        alert('Server error');
+    }
 });
-</script>
- <script>
-                // Wait 8 seconds, then fade out the alert
-                setTimeout(() => {
-                    var alert = document.getElementById('successAlert');
-                    if (alert) {
-                        alert.style.opacity = '0';
-                         // wait for fade-out transition, then remove
-                    }
-                }, 8000); // 8000ms = 8s
-            </script>
+</script> --}}
+
+
 </html>
