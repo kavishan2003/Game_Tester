@@ -244,7 +244,7 @@
 
         const openButtons = document.querySelectorAll('.openModalBtn');
         const closeButtons = document.querySelectorAll('.closeModalBtn');
-
+        console.log(openButtons);
         /* ------- OPEN ------- */
         openButtons.forEach(button => {
             button.addEventListener('click', () => {
