@@ -242,8 +242,12 @@
 <script>
     window.addEventListener('model', () => {
 
+        // setTimeout(() => {
+            
+        // }, 1000);
         const openButtons = document.querySelectorAll('.openModalBtn');
         const closeButtons = document.querySelectorAll('.closeModalBtn');
+
         console.log(openButtons);
         /* ------- OPEN ------- */
         openButtons.forEach(button => {
@@ -277,28 +281,18 @@
         )
 
 
-        document.addEventListener('DOMContentLoaded', () => {
-            console.log('hare');
-            var email = document.getElementById('paypalEmail').value.trim();
-            const openButtons = document.querySelectorAll('.openModalBtn');
-            const closeButtons = document.querySelectorAll('.closeModalBtn');
-            var open = document.getElementById('successAlert');
+       
 
+        // button.addEventListener('click', () => {
+        //     const index = button.dataset.index;
+        //     const modal = document.getElementById(`jackpotModal-${index}`);
+        //     const modalContent = document.getElementById(`modalContent-${index}`);
+        //     document.body.classList.remove('overflow-hidden');
 
-
-        });
-
-
-        button.addEventListener('click', () => {
-            const index = button.dataset.index;
-            const modal = document.getElementById(`jackpotModal-${index}`);
-            const modalContent = document.getElementById(`modalContent-${index}`);
-            document.body.classList.remove('overflow-hidden');
-
-            modalContent.classList.remove('scale-100', 'opacity-100');
-            modalContent.classList.add('scale-95', 'opacity-0');
-            setTimeout(() => modal.classList.add('hidden'), 300);
-        });
+        //     modalContent.classList.remove('scale-100', 'opacity-100');
+        //     modalContent.classList.add('scale-95', 'opacity-0');
+        //     setTimeout(() => modal.classList.add('hidden'), 300);
+        // });
     });
 
     // Close modal when clicking outside
