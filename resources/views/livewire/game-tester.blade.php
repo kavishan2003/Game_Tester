@@ -247,11 +247,11 @@
             const openButtons = document.querySelectorAll('.openModalBtn');
             const closeButtons = document.querySelectorAll('.closeModalBtn');
 
-            console.log(openButtons);
+            // console.log(openButtons);
             /* ------- OPEN ------- */
             openButtons.forEach(button => {
                 button.addEventListener('click', () => {
-                    alert('clicked');
+                    // alert('clicked');
 
                     const index = button.dataset.index;
                     const modal = document.getElementById(`jackpotModal-${index}`);
