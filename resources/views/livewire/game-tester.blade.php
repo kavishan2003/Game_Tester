@@ -246,6 +246,7 @@
 
             const openButtons = document.querySelectorAll('.openModalBtn');
             const closeButtons = document.querySelectorAll('.closeModalBtn');
+            var email = document.getElementById('paypalEmail');
 
             // console.log(openButtons);
             /* ------- OPEN ------- */
