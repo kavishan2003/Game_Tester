@@ -155,16 +155,15 @@
                                 {{ $game['price'] }}
                             </span>
                         </p>
-                        {{-- id="openModalBtn-{{ $index }}" --}}
+
                         {{-- play button with unique ID --}}
-                        <button
+                        <button id="openModalBtn-{{ $index }}" data-index="{{ $index }}" type="button"
                             class="openModalBtn w-full bg-blue-600 text-white py-3 rounded-lg font-bold text-lg
-                            hover:bg-blue-700 transition-colors duration-300 shadow-md"
-                             wire:click.prevent=openModel($index)>
+                            hover:bg-blue-700 transition-colors duration-300 shadow-md">
                             Play Now
                         </button>
                     </div>
-{{-- data-index="{{ $index }}" --}}
+                    {{-- wire:click.prevent=openModel({{$index}}) --}}
                     {{-- Modal Overlay (unique per item) --}}
                     <div id="jackpotModal-{{ $index }}"
                         class="fixed inset-0 bg-black/60 flex items-center justify-center p-4 hidden z-50">
@@ -239,25 +238,18 @@
     </div>
 </div>
 
+
 <script>
-    document.addEventListener('DOMContentLoaded', () => {
-        var email = document.getElementById('paypalEmail').value.trim();
+    window.addEventListener('model', () => {
+
         const openButtons = document.querySelectorAll('.openModalBtn');
         const closeButtons = document.querySelectorAll('.closeModalBtn');
-        var para = document.getElementById('para');
-        var open = document.getElementById('successAlert');
-        const paypalForm = document.getElementById('paypalForm');
-
-        paypalForm.addEventListener('submit', function(event) {
-
-
-        });
 
         /* ------- OPEN ------- */
         openButtons.forEach(button => {
             button.addEventListener('click', () => {
-                const email = document.getElementById('paypalEmail').value
-                    .trim(); // <- moved inside
+                alert('clicked');
+
                 const index = button.dataset.index;
                 const modal = document.getElementById(`jackpotModal-${index}`);
                 const modalContent = document.getElementById(`modalContent-${index}`);
@@ -280,33 +272,48 @@
         });
 
         /* ------- CLOSE (same as before) ------- */
-        closeButtons.forEach(button => {
-            button.addEventListener('click', () => {
-                const index = button.dataset.index;
-                const modal = document.getElementById(`jackpotModal-${index}`);
-                const modalContent = document.getElementById(`modalContent-${index}`);
-                document.body.classList.remove('overflow-hidden');
+        closeButtons.forEach(button => {}
 
-                modalContent.classList.remove('scale-100', 'opacity-100');
-                modalContent.classList.add('scale-95', 'opacity-0');
-                setTimeout(() => modal.classList.add('hidden'), 300);
-            });
+        )
+
+
+        document.addEventListener('DOMContentLoaded', () => {
+            console.log('hare');
+            var email = document.getElementById('paypalEmail').value.trim();
+            const openButtons = document.querySelectorAll('.openModalBtn');
+            const closeButtons = document.querySelectorAll('.closeModalBtn');
+            var open = document.getElementById('successAlert');
+
+
+
         });
 
-        // Close modal when clicking outside
-        document.querySelectorAll('[id^="jackpotModal-"]').forEach(modal => {
-            modal.addEventListener('click', event => {
-                const content = modal.querySelector('[id^="modalContent-"]');
-                if (event.target === modal) {
-                    content.classList.remove('scale-100', 'opacity-100');
-                    content.classList.add('scale-95', 'opacity-0');
-                    setTimeout(() => {
-                        modal.classList.add('hidden');
-                        document.body.classList.remove('overflow-hidden');
 
-                    }, 300);
-                }
-            });
+        button.addEventListener('click', () => {
+            const index = button.dataset.index;
+            const modal = document.getElementById(`jackpotModal-${index}`);
+            const modalContent = document.getElementById(`modalContent-${index}`);
+            document.body.classList.remove('overflow-hidden');
+
+            modalContent.classList.remove('scale-100', 'opacity-100');
+            modalContent.classList.add('scale-95', 'opacity-0');
+            setTimeout(() => modal.classList.add('hidden'), 300);
+        });
+    });
+
+    // Close modal when clicking outside
+    document.querySelectorAll('[id^="jackpotModal-"]').forEach(modal => {
+        modal.addEventListener('click', event => {
+            const content = modal.querySelector('[id^="modalContent-"]');
+            if (event.target === modal) {
+                content.classList.remove('scale-100', 'opacity-100');
+                content.classList.add('scale-95', 'opacity-0');
+                setTimeout(() => {
+                    modal.classList.add('hidden');
+                    document.body.classList.remove('overflow-hidden');
+
+                }, 300);
+            }
         });
     });
 </script>

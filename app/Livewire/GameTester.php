@@ -51,6 +51,7 @@ class GameTester extends Component
             $this->turnstileToken // this will be created from the cloudflare widget.
         );
 
+        // $response['seccess'];
         // dd($response);
 
         if (!$response['success']) {
@@ -66,10 +67,10 @@ class GameTester extends Component
         $hashedId    = $storedEmail ? hash('sha256', $storedEmail) : '';
 
 
-        $ip = file_get_contents('https://api64.ipify.org');
+        // $ip = file_get_contents('https://api64.ipify.org');
 
 
-        // $ip = $request->ip();                      
+        $ip = $request->ip();                      
         $hashedId = hash('sha256', $ip);
 
 
@@ -141,6 +142,7 @@ class GameTester extends Component
             }
         )->all();
         $this->is_turnstile = "none";
+        $this->dispatch('model');
     }
 
 
