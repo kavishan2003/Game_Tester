@@ -96,12 +96,12 @@
                                 name="email" value="{{ Session::get('email') }}  "
                                 class="w-full px-5 py-3 border disabled border-gray-300 rounded-lg focus:ring-blue-500 focus:border-blue-500 outline-none transition-all duration-200 text-gray-700 text-lg"
                                 aria-label="Enter your PayPal Email">
-                             @error('email')
-                                 <span class="text-red-600">{{$message}}</span>
-                             @enderror   
+                            @error('email')
+                                <span class="text-red-600">{{ $message }}</span>
+                            @enderror
                         </div>
 
-                        <p style="display: {{ $show }};" class="text-gray-600 mb-4">Current email :
+                        <p id="openModel" style="display: {{ $show }};" class="text-gray-600 mb-4">Current email :
                             {{ $email }} </p>
                         <button {{ $saveButtonDisabled }} id="btn" wire:click.prevent ="SaveTodb"
                             class="w-full bg-green-600 text-white py-3 px-6 rounded-lg font-bold text-lg hover:bg-green-700 transition-colors duration-300 shadow-md disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center">
@@ -193,7 +193,8 @@
                             </div>
 
                             {{-- Modal Body --}}
-                            <div class="modal-body-scrollable  p-4 max-h-[85vh] overflow-y-auto"> {{-- Added max-h for scroll on smaller modals, overflow-y-auto --}}
+                            <div class="modal-body-scrollable  p-4 max-h-[85vh] overflow-y-auto">
+                                {{-- Added max-h for scroll on smaller modals, overflow-y-auto --}}
                                 <div class="mb-4 rounded-lg flex justify-center overflow-hidden shadow-lg">
                                     {{-- Centered image --}}
                                     <img src="{{ $game['thumbnail'] }}" alt="Game Preview"
@@ -248,6 +249,29 @@
 
 
 <script>
+    // // normal
+    // const openButtons = document.querySelectorAll('.openModalBtn');
+    // const closeButtons = document.querySelectorAll('.closeModalBtn');
+    // var email = document.getElementById('paypalEmail');
+
+    // /* ------- OPEN ------- */
+    // openButtons.forEach(button => {
+    //     button.addEventListener('click', () => {
+    //         // alert('clicked');
+    //         const email = document.getElementById('paypalEmail').value.trim();
+    //         const index = button.dataset.index;
+    //         const modal = document.getElementById(`jackpotModal-${index}`);
+    //         const modalContent = document.getElementById(
+    //             `modalContent-${index}`);
+            
+
+    //             alert('Please enter your PayPal email first ❗');
+           
+
+    //     });
+    // });
+
+
     window.addEventListener('mailLock', () => {
         // alert('tirm')
         const box = document.getElementById('btn');
@@ -264,8 +288,7 @@
             const openButtons = document.querySelectorAll('.openModalBtn');
             const closeButtons = document.querySelectorAll('.closeModalBtn');
             var email = document.getElementById('paypalEmail');
-
-            // console.log(openButtons);
+            // console.log({{ $email }});
             /* ------- OPEN ------- */
             openButtons.forEach(button => {
                 button.addEventListener('click', () => {
@@ -276,9 +299,10 @@
                     const modalContent = document.getElementById(
                         `modalContent-${index}`);
                     var open = document.getElementById('successAlert');
+                    var openModel = document.getElementById('openModel');
 
 
-                    if (!open) {
+                    if (!(openModel.style.display == "block")) {
                         alert('Please enter your PayPal email first ❗');
                         return;
                     }

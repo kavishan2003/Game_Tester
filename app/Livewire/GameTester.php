@@ -45,7 +45,7 @@ class GameTester extends Component
             'email' => $email,
         ]);
 
-       
+
 
         request()->session()->flash('success', 'Email valid and User logged');
 
@@ -55,6 +55,7 @@ class GameTester extends Component
         $this->mailLock = "none";
         $this->show = "block";
         //  $this->dispatch('unlock');
+
     }
 
 
@@ -83,10 +84,10 @@ class GameTester extends Component
         $hashedId    = $storedEmail ? hash('sha256', $storedEmail) : '';
 
 
-        // $ip = file_get_contents('https://api64.ipify.org');
+        $ip = file_get_contents('https://api64.ipify.org');
 
 
-        $ip = $request->ip();                      
+        // $ip = $request->ip();                      
         $hashedId = hash('sha256', $ip);
 
 
