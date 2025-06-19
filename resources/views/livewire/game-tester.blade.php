@@ -242,57 +242,60 @@
 <script>
     window.addEventListener('model', () => {
 
-        // setTimeout(() => {
-            
-        // }, 1000);
-        const openButtons = document.querySelectorAll('.openModalBtn');
-        const closeButtons = document.querySelectorAll('.closeModalBtn');
+        setTimeout(() => {
 
-        console.log(openButtons);
-        /* ------- OPEN ------- */
-        openButtons.forEach(button => {
-            button.addEventListener('click', () => {
-                alert('clicked');
+            const openButtons = document.querySelectorAll('.openModalBtn');
+            const closeButtons = document.querySelectorAll('.closeModalBtn');
 
-                const index = button.dataset.index;
-                const modal = document.getElementById(`jackpotModal-${index}`);
-                const modalContent = document.getElementById(`modalContent-${index}`);
-                var open = document.getElementById('successAlert');
+            console.log(openButtons);
+            /* ------- OPEN ------- */
+            openButtons.forEach(button => {
+                button.addEventListener('click', () => {
+                    alert('clicked');
 
-                if (!email) {
-                    alert('Please enter your PayPal email first ❗');
-                    return;
-                }
+                    const index = button.dataset.index;
+                    const modal = document.getElementById(`jackpotModal-${index}`);
+                    const modalContent = document.getElementById(
+                        `modalContent-${index}`);
+                    var open = document.getElementById('successAlert');
+
+                    if (!email) {
+                        alert('Please enter your PayPal email first ❗');
+                        return;
+                    }
 
 
-                modal.classList.remove('hidden');
-                setTimeout(() => {
-                    modalContent.classList.remove('scale-95', 'opacity-0');
-                    modalContent.classList.add('scale-100', 'opacity-100');
-                    document.body.classList.add('overflow-hidden');
-                }, 50);
+                    modal.classList.remove('hidden');
+                    setTimeout(() => {
+                        modalContent.classList.remove('scale-95', 'opacity-0');
+                        modalContent.classList.add('scale-100', 'opacity-100');
+                        document.body.classList.add('overflow-hidden');
+                    }, 50);
 
+                });
             });
-        });
 
-        /* ------- CLOSE (same as before) ------- */
-        closeButtons.forEach(button => {}
+            /* ------- CLOSE (same as before) ------- */
+            closeButtons.forEach(button => {
 
-        )
+                    button.addEventListener('click', () => {
+                        const index = button.dataset.index;
+                        const modal = document.getElementById(`jackpotModal-${index}`);
+                        const modalContent = document.getElementById(
+                            `modalContent-${index}`);
+                        document.body.classList.remove('overflow-hidden');
+
+                        modalContent.classList.remove('scale-100', 'opacity-100');
+                        modalContent.classList.add('scale-95', 'opacity-0');
+                        setTimeout(() => modal.classList.add('hidden'), 300);
+                    });
+                }
+            )
+        }, 1000);
 
 
-       
 
-        // button.addEventListener('click', () => {
-        //     const index = button.dataset.index;
-        //     const modal = document.getElementById(`jackpotModal-${index}`);
-        //     const modalContent = document.getElementById(`modalContent-${index}`);
-        //     document.body.classList.remove('overflow-hidden');
 
-        //     modalContent.classList.remove('scale-100', 'opacity-100');
-        //     modalContent.classList.add('scale-95', 'opacity-0');
-        //     setTimeout(() => modal.classList.add('hidden'), 300);
-        // });
     });
 
     // Close modal when clicking outside
