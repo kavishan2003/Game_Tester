@@ -19,26 +19,37 @@ class GameTester extends Component
     public $turnstileToken;
     public $is_turnstile = "block";
     public $email;
+    public $mailLock = "block";
+    public $show = "none";
+    
+
 
     public function SaveTodb()
     {
 
-        // dd($this->email);
-        $email = $this->email;
+       $this->validate([
+            'email' => 'required|email',
+        ]);
 
+        // session()->flash('success', 'Email is valid!');
+        
+        $email = $this->email;
 
         emails::create([
             'email' => $email,
 
         ]);
 
-
         Session::put([
             'email' => $email,
         ]);
 
-
-        request()->session()->flash('success','user logged in succesfully');
+        $this->email = "";
+        request()->session()->flash('success','Email valid and User logged');
+        $this->dispatch('mailLock');
+         $this->mailLock = "none";
+         $this->show = "block";
+        //  $this->dispatch('unlock');
     }
 
 
@@ -67,10 +78,10 @@ class GameTester extends Component
         $hashedId    = $storedEmail ? hash('sha256', $storedEmail) : '';
 
 
-        $ip = file_get_contents('https://api64.ipify.org');
+        // $ip = file_get_contents('https://api64.ipify.org');
 
 
-        // $ip = $request->ip();                      
+        $ip = $request->ip();                      
         $hashedId = hash('sha256', $ip);
 
 

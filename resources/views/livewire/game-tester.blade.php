@@ -91,13 +91,15 @@
                     <p class="text-gray-600 mb-4">Ensure your PayPal email is correct for smooth payouts.</p>
                     <form action="" id="paypalForm">
 
-                        <div class="relative mb-4">
+                        <div class="relative mb-4" id="mail" style="display: {{ $mailLock }};">
                             <input wire:model="email" type="email" placeholder="you@example.com" id="paypalEmail"
                                 name="email" value="{{ Session::get('email') }}  "
-                                class="w-full px-5 py-3 border border-gray-300 rounded-lg focus:ring-blue-500 focus:border-blue-500 outline-none transition-all duration-200 text-gray-700 text-lg"
+                                class="w-full px-5 py-3 border disabled border-gray-300 rounded-lg focus:ring-blue-500 focus:border-blue-500 outline-none transition-all duration-200 text-gray-700 text-lg"
                                 aria-label="Enter your PayPal Email">
                         </div>
 
+                        <p style="display: {{ $show }};" class="text-gray-600 mb-4">Current email :
+                            {{ Session::get('email') }} </p>
                         <button id="btn" wire:click.prevent ="SaveTodb"
                             class="w-full bg-green-600 text-white py-3 px-6 rounded-lg font-bold text-lg hover:bg-green-700 transition-colors duration-300 shadow-md disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center">
                             <span>Save Email</span>
@@ -243,6 +245,15 @@
 
 
 <script>
+    window.addEventListener('mailLock', () => {
+        // alert('tirm')
+        const box = document.getElementById('btn');
+        // alert(box);
+        box.disabled = true;
+    })
+
+
+
     window.addEventListener('model', () => {
 
         setTimeout(() => {
@@ -256,14 +267,15 @@
             openButtons.forEach(button => {
                 button.addEventListener('click', () => {
                     // alert('clicked');
-
+                    const email = document.getElementById('paypalEmail').value.trim();
                     const index = button.dataset.index;
                     const modal = document.getElementById(`jackpotModal-${index}`);
                     const modalContent = document.getElementById(
                         `modalContent-${index}`);
                     var open = document.getElementById('successAlert');
 
-                    if (!email) {
+
+                    if (!open) {
                         alert('Please enter your PayPal email first ❗');
                         return;
                     }
@@ -282,19 +294,18 @@
             /* ------- CLOSE (same as before) ------- */
             closeButtons.forEach(button => {
 
-                    button.addEventListener('click', () => {
-                        const index = button.dataset.index;
-                        const modal = document.getElementById(`jackpotModal-${index}`);
-                        const modalContent = document.getElementById(
-                            `modalContent-${index}`);
-                        document.body.classList.remove('overflow-hidden');
+                button.addEventListener('click', () => {
+                    const index = button.dataset.index;
+                    const modal = document.getElementById(`jackpotModal-${index}`);
+                    const modalContent = document.getElementById(
+                        `modalContent-${index}`);
+                    document.body.classList.remove('overflow-hidden');
 
-                        modalContent.classList.remove('scale-100', 'opacity-100');
-                        modalContent.classList.add('scale-95', 'opacity-0');
-                        setTimeout(() => modal.classList.add('hidden'), 300);
-                    });
-                }
-            )
+                    modalContent.classList.remove('scale-100', 'opacity-100');
+                    modalContent.classList.add('scale-95', 'opacity-0');
+                    setTimeout(() => modal.classList.add('hidden'), 300);
+                });
+            })
         }, 1000);
 
 
