@@ -3,27 +3,101 @@
 namespace App\Livewire;
 
 
+use Carbon\Carbon;
 use App\Models\emails;
+use App\Models\Gamers;
 use Livewire\Component;
+use PHPSTORM_META\type;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Str;
 use Illuminate\Http\Request;
+use SweetAlert2\Laravel\Swal;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Session;
+use Jantinnerezo\LivewireAlert\Enums\Position;
 use Coderflex\LaravelTurnstile\Facades\LaravelTurnstile;
 
+// use Coderflex\LaravelTurnstile\Facades\LaravelTurnstileMETA\type;
 
 class GameTester extends Component
 {
     public array $games = [];
     public $turnstileToken;
-    public $is_turnstile = "block";
+    public $isTurnstile = "block";
     public $email;
     public $mailLock = "block";
     public $show = "none";
     public $saveButtonDisabled = "";
+    public $UserBalance = "0.00";
+    public $paypalUpdateCard = "none";
+    public $paypalnewCard = "block";
+    public $Uemail;
+    public $updatedInputF = "";
+    public $updatedBtn = "";
 
 
+
+    public function UpEmail()
+    {
+
+
+        $this->validate([
+            'Uemail' => 'required|email',
+        ]);
+
+        // $exiting_update_times = Gamers::where('updated_times', $this->email)->value('updated_times');
+        // $exiting_update_date = Gamers::where('updated_times', $this->email)->value('updated_at');
+
+        // $daysOld = Carbon::parse($exiting_update_date)->diffInDays();
+
+        // // dd($exiting_update_times);
+        // $update = $exiting_update_times + 1;
+
+        // // dd($upda);
+
+
+        // if (!($exiting_update_times < 2)) {
+
+        //     if (!($daysOld > 29)) {
+
+        //         request()->session()->flash('error', 'try after 30 days');
+        //         return;
+        //     }
+        // }
+
+        // $this->dispatch('confirmation');
+
+
+        $user_name = Session::get('Uname');
+
+        $updated_count = Gamers::where('Uname', $user_name)->count();
+
+        if ($updated_count > 3) {
+
+            request()->session()->flash('error', 'You can update your Email 3 times only');
+            return;
+        }
+
+
+
+        Gamers::where('email', $this->email)
+            ->create([
+                'email' => $this->Uemail,
+                'Uname' => $user_name,
+            ]);
+
+        // $who = Gamers::where('updated_times', $this->Uemail)->value('updated_times');
+        // dd($who);
+        Session::put([
+            'email' => $this->Uemail,
+        ]);
+
+
+        request()->session()->flash('success', 'Email updated successfully');
+        $this->updatedInputF = "disabled";
+        $this->updatedBtn = "disabled";
+        $this->Uemail = "";
+    }
 
     public function SaveTodb()
     {
@@ -32,29 +106,35 @@ class GameTester extends Component
             'email' => 'required|email',
         ]);
 
-        // session()->flash('success', 'Email is valid!');
-
         $email = $this->email;
 
-        emails::create([
-            'email' => $email,
+        $localPart = strstr($this->email, '@', true);
 
+        Gamers::create([
+            'email' => $email,
+            'Uname' => $localPart,
         ]);
 
         Session::put([
             'email' => $email,
+            'Uname' => $localPart,
         ]);
 
+        $user = Gamers::where('email', $email)->first();
+        $user->deposit(5); //bonus
 
+        $this->UserBalance = number_format($user->balanceInt/100, 2, '.', '');
 
-        request()->session()->flash('success', 'Email valid and User logged');
+        $this->dispatch(
+            'alert',
+            type: 'success',
+            title: 'Email saved & 0.5 bucks added',
+            position: 'center',
+        );
 
-        $this->saveButtonDisabled = "disabled";
+        $this->updatedInputF = "disabled";
+        $this->updatedBtn = "disabled";
 
-        // $this->dispatch('mailLock');
-        $this->mailLock = "none";
-        $this->show = "block";
-        //  $this->dispatch('unlock');
 
     }
 
@@ -87,7 +167,7 @@ class GameTester extends Component
         // $ip = file_get_contents('https://api64.ipify.org');
 
 
-        $ip = $request->ip();                      
+        $ip = $request->ip();
         $hashedId = hash('sha256', $ip);
 
 
@@ -158,7 +238,7 @@ class GameTester extends Component
                 ];
             }
         )->all();
-        $this->is_turnstile = "none";
+        $this->isTurnstile = "none";
         $this->dispatch('model');
     }
 
@@ -171,10 +251,17 @@ class GameTester extends Component
     public function mount(): void
     {
         if (Session::get('email')) {
-            $this->saveButtonDisabled = "disabled";
+            // $this->saveButtonDisabled = "disabled";
             $this->email = Session::get('email');
-            $this->show = "block";
-            $this->mailLock = "none";
+            // $this->show = "block";
+            // $this->mailLock = "none";
+            $exEmail = Session::get('email');
+            $user = Gamers::where('email', $exEmail)->first();
+
+            $this->UserBalance = number_format($user->balanceInt/100  ?? "0.00", 2, '.', '');
+
+            $this->paypalUpdateCard = "block";
+            $this->paypalnewCard = "none";
         }
     }
 

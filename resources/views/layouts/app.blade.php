@@ -15,6 +15,8 @@
         <link rel="stylesheet" href="{{ asset('css/welcome.css') }}">
         
         <!-- Styles / Scripts -->
+        <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+        
         @if (file_exists(public_path('build/manifest.json')) || file_exists(public_path('hot')))
             @vite(['resources/css/app.css', 'resources/js/app.js'])
         @else
@@ -30,7 +32,7 @@
 
     @livewire('game-tester')
     {{-- @yield('content') --}}
-
+    
   </body>
 
 <script src="https://challenges.cloudflare.com/turnstile/v0/api.js" async defer></script>

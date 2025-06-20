@@ -2,7 +2,10 @@
 
 namespace App\Providers;
 
+use Filament\Support\Assets\Js;
+use Illuminate\Support\Facades\Vite;
 use Illuminate\Support\ServiceProvider;
+use Filament\Support\Facades\FilamentAsset;
 
 class AppServiceProvider extends ServiceProvider
 {

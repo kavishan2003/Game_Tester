@@ -62,10 +62,11 @@
                 class="bg-gradient-to-r from-blue-600 to-indigo-700 text-white p-8 rounded-2xl shadow-2xl flex flex-col justify-between">
                 <div>
                     <h2 class="text-xl font-semibold mb-2 opacity-90">Your Current Wallet</h2>
-                    <p class="text-5xl sm:text-6xl font-extrabold mb-6 drop-shadow-lg">$0.00</p> {{-- Adjusted text size for smaller screens --}}
+                    <p class="text-5xl sm:text-6xl font-extrabold mb-6 drop-shadow-lg">$ {{ $UserBalance }} </p>
+                    {{-- Adjusted text size for smaller screens --}}
                 </div>
                 <div class="flex flex-col sm:flex-row space-y-3 sm:space-y-0 sm:space-x-3"> {{-- Buttons stack on mobile, row on sm screens and up --}}
-                    <button @click="activeTab = 'history'"
+                    <button
                         class="flex-1 py-3 px-6 rounded-full bg-yellow-400 text-yellow-900 font-bold hover:bg-yellow-300 transition-colors duration-200 shadow-md">
                         History
                     </button>
@@ -73,203 +74,282 @@
                         class="flex-1 py-3 px-6 rounded-full bg-yellow-400 text-yellow-900 font-bold hover:bg-yellow-300 transition-colors duration-200 shadow-md">
                         In Progress
                     </button>
-                    <button @click="alert('Withdrawal initiated! (Simulation)')"
+                    <button
                         class="flex-1 py-3 px-6 rounded-full bg-yellow-400 text-yellow-900 font-bold hover:bg-yellow-300 transition-colors duration-200 shadow-md">
                         Withdraw
                     </button>
                 </div>
             </div>
 
-            {{-- Update PayPal Email Card --}}
-            <div class="bg-white p-8 rounded-2xl shadow-2xl flex flex-col justify-between">
-                <div>
-                    @if (isset($result))
-                        <p>wade goda</p>
-                    @endif
+            {{-- Enter PayPal Email Card --}}
+            <div class="bg-white p-8 rounded-2xl shadow-2xl flex flex-col justify-between"
+                style="display: {{ $paypalnewCard }};">
 
-                    <h2 class="text-2xl font-bold text-gray-800 mb-4">Update PayPal Email</h2>
-                    <p class="text-gray-600 mb-4">Ensure your PayPal email is correct for smooth payouts.</p>
+                <h2 class="text-2xl font-bold text-gray-800 mb-4 ">Log with PayPal Email</h2>
+                <p class="text-gray-600 mb-4">Ensure your PayPal email is correct for smooth payouts.</p>
+                <form action="" id="paypalForm">
+
+                    <div class="relative mb-4" id="mail" style="display: {{ $mailLock }};">
+                        <input wire:model="email" type="email" placeholder="you@example.com" id="paypalEmail"
+                            name="email" value="{{ Session::get('email') }}  "
+                            class="w-full px-5 py-3 border disabled border-gray-300 rounded-lg focus:ring-blue-500 focus:border-blue-500 outline-none transition-all duration-200 text-gray-700 text-lg"
+                            aria-label="Enter your PayPal Email">
+                        @error('email')
+                            <span class="text-red-600">{{ $message }}</span>
+                        @enderror
+                    </div>
+                    <button {{ $saveButtonDisabled }} id="btn" wire:click.prevent ="SaveTodb"
+                        class="w-full bg-green-600 text-white py-3 px-6 rounded-lg font-bold text-lg hover:bg-green-700 transition-colors duration-300 shadow-md disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center">
+                        <span>Save Email</span>
+                    </button>
+                    <p class="text-gray-600 text-sm-center mb-4">If you don't have a paypal <a class="text-blue-600"
+                            href="https://www.paypal.com/us/webapps/mpp/account-selection" target="_blank">Click
+                            here</a> </p>
+                </form>
+
+            </div>
+
+            {{-- update PayPal Email Card --}}
+            <div class="bg-white p-8 rounded-2xl shadow-2xl flex flex-col justify-between"
+                style="display: {{ $paypalUpdateCard }} ;">
+                <div>
+                    <h2 class="text-2xl font-bold text-gray-800 mb-4">Update your PayPal Email</h2>
+
+                    <p id="quote1" class="text-gray-600 mb-4">Ensure your PayPal email is
+                        correct for smooth payouts.</p>
+                    <p id="quote2" class="text-red-600 mb-4 hidden ">You can only update your Paypal
+                        Email only after 30 days again </p>
                     <form action="" id="paypalForm">
 
-                        <div class="relative mb-4" id="mail" style="display: {{ $mailLock }};">
-                            <input wire:model="email" type="email" placeholder="you@example.com" id="paypalEmail"
-                                name="email" value="{{ Session::get('email') }}  "
-                                class="w-full px-5 py-3 border disabled border-gray-300 rounded-lg focus:ring-blue-500 focus:border-blue-500 outline-none transition-all duration-200 text-gray-700 text-lg"
+                        <div class="relative mb-4 " id="mail">
+                            <input wire:model="Uemail" type="email" placeholder="you@example.com" {{ $updatedInputF }}
+                                id="paypalEmail1" name="Uemail"
+                                class="w-full px-5 py-3 border border-gray-300 rounded-lg focus:ring-blue-500 focus:border-blue-500 outline-none transition-all duration-200 text-gray-700 text-lg"
                                 aria-label="Enter your PayPal Email">
-                            @error('email')
+                            @error('Uemail')
                                 <span class="text-red-600">{{ $message }}</span>
                             @enderror
                         </div>
-
-                        <p id="openModel" style="display: {{ $show }};" class="text-gray-600 mb-4">Current email :
+                        
+                        <p id="openModel" class="text-gray-600 mb-4">Current email :
                             {{ $email }} </p>
-                        <button {{ $saveButtonDisabled }} id="btn" wire:click.prevent ="SaveTodb"
-                            class="w-full bg-green-600 text-white py-3 px-6 rounded-lg font-bold text-lg hover:bg-green-700 transition-colors duration-300 shadow-md disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center">
-                            <span>Save Email</span>
+                        <button id="btn" onclick="confirmation()" type="button"
+                            class="w-full bg-green-600 text-white py-3 px-6 rounded-lg font-bold text-lg hover:bg-green-700 transition-colors duration-300 shadow-md disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center"
+                            {{ $updatedBtn }}>
+                            <span>Update Email</span>
                         </button>
+                        <button id="confirm_btn" wire:click.prevent ="UpEmail" class="hidden" type="button"></button>
+
                     </form>
-                    {{-- <p id="para" class="text-green-600 text-sm mt-3 text-center hidden">Email saved successfully!</p> --}}
+
                 </div>
             </div>
-        </section>
+    </div>
 
-        {{-- Available Games Section --}}
-        <section>
-            <h2 class="text-3xl flex items-center justify-center font-bold text-gray-900 mb-8 text-center">Available
-                Games
-                to Test</h2>
-            <div style="display: {{ $is_turnstile }};">
-                <input type="hidden" id="cf-turnstile-response" wire:model.defer="turnstileToken">
-                <div class="text-gray-500 text-center rounded-xl p-5 " id="capture">
-                    <div wire:ignore x-data x-init="window.onTurnstileSuccess = (token) => $wire.set('turnstileToken', token)">
-                        <div class=" text-gray-500 text-center  rounded-xl p-5 cf-turnstile flex items-center justify-center"
-                            data-sitekey="{{ config('services.turnstile.key') }}" data-theme="{{ $theme ?? 'light' }}"
-                            data-callback="onTurnstileSuccess" data-size="normal">
-                            {{-- <p class="text-sm">Please complete the captcha</p> --}}
-                        </div>
-                        {{-- <button
+
+    </section>
+
+    {{-- Available Games Section --}}
+    <section>
+        <h2 class="text-3xl flex items-center justify-center font-bold text-gray-900 mb-8 text-center">Available
+            Games
+            to Test</h2>
+        <div style="display: {{ $isTurnstile }};">
+            <input type="hidden" id="cf-turnstile-response" wire:model.defer="turnstileToken">
+            <div class="text-gray-500 text-center rounded-xl p-5 " id="capture">
+                <div wire:ignore x-data x-init="window.onTurnstileSuccess = (token) => $wire.set('turnstileToken', token)">
+                    <div class=" text-gray-500 text-center  rounded-xl p-5 cf-turnstile flex items-center justify-center"
+                        data-sitekey="{{ config('services.turnstile.key') }}" data-theme="{{ $theme ?? 'light' }}"
+                        data-callback="onTurnstileSuccess" data-size="normal">
+                        {{-- <p class="text-sm">Please complete the captcha</p> --}}
+                    </div>
+                    {{-- <button
                             class="bg-blue-600 text-white py-3 rounded-lg hover:bg-blue-700 transition-colors duration-300 shadow-md"
                             wire:click="capture">Get games</button> --}}
-                    </div>
                 </div>
             </div>
+        </div>
 
-            {{-- class="text-gray-500 text-center rounded-xl p-5 cf-turnstile flex items-center justify-center" --}}
+        {{-- class="text-gray-500 text-center rounded-xl p-5 cf-turnstile flex items-center justify-center" --}}
 
 
-            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 " id="GameList">
-                {{-- Stays as 1 column on mobile, adapts to 2 or 3 --}}
-                @foreach ($games as $index => $game)
-                    <div
-                        class="bg-white p-6 rounded-2xl shadow-xl flex flex-col items-center text-center
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 " id="GameList">
+            {{-- Stays as 1 column on mobile, adapts to 2 or 3 --}}
+            @foreach ($games as $index => $game)
+                <div
+                    class="bg-white p-6 rounded-2xl shadow-xl flex flex-col items-center text-center
                         transition duration-300 hover:scale-[1.03] hover:shadow-2xl">
-                        {{-- thumbnail --}}
-                        <img src="{{ $game['thumbnail'] }}" alt="{{ $game['title'] }}"
-                            class="w-full max-w-xs h-auto object-cover mb-4 border-4 border-red-500 shadow-lg rounded-lg">
-                        {{-- Made image fully responsive and added rounded-lg --}}
+                    {{-- thumbnail --}}
+                    <img src="{{ $game['thumbnail'] }}" alt="{{ $game['title'] }}"
+                        class="w-full max-w-xs h-auto object-cover mb-4 border-4 border-red-500 shadow-lg rounded-lg">
+                    {{-- Made image fully responsive and added rounded-lg --}}
 
-                        {{-- title --}}
-                        <div class="h-16">
+                    {{-- title --}}
+                    <div class="h-16">
 
-                            <h3 class="text-xl sm:text-2xl font-bold text-gray-900 mb-2"> {{-- Adjusted text size for smaller screens --}}
-                                {{ $game['title'] }}
-                            </h3>
+                        <h3 class="text-xl sm:text-2xl font-bold text-gray-900 mb-2"> {{-- Adjusted text size for smaller screens --}}
+                            {{ $game['title'] }}
+                        </h3>
+                    </div>
+
+                    {{-- price --}}
+                    <p class="text-lg text-gray-600 mb-4">
+                        Earn:
+                        <span class="text-green-600 font-extrabold text-xl sm:text-2xl"> {{-- Adjusted text size for smaller screens --}}
+                            {{ $game['price'] }}
+                        </span>
+                    </p>
+
+                    {{-- play button with unique ID --}}
+                    <button id="openModalBtn-{{ $index }}" data-index="{{ $index }}" type="button"
+                        class="openModalBtn w-full bg-blue-600 text-white py-3 rounded-lg font-bold text-lg
+                            hover:bg-blue-700 transition-colors duration-300 shadow-md">
+                        Play Now
+                    </button>
+                </div>
+                {{-- wire:click.prevent=openModel({{$index}}) --}}
+                {{-- Modal Overlay (unique per item) --}}
+                <div id="jackpotModal-{{ $index }}"
+                    class="fixed inset-0 bg-black/60 flex items-center justify-center p-4 hidden z-50">
+                    <div class="relative bg-white rounded-xl shadow-2xl w-full max-w-md mx-auto overflow-hidden transform transition-all duration-300 scale-95 opacity-0"
+                        id="modalContent-{{ $index }}">
+                        {{-- Modal Header --}}
+                        <div
+                            class="flex justify-between items-center bg-gradient-to-r from-green-700 to-green-600 text-white px-6 py-4 rounded-t-xl shadow-md">
+                            <h2 class="text-xl-center sm:text-2xl  font-bold">{{ $game['title'] }}</h2>
+                            {{-- Adjusted text size for smaller screens --}}
+                            <button
+                                class="closeModalBtn text-white hover:text-gray-200 focus:outline-none transition-transform duration-200 transform hover:scale-110"
+                                data-index="{{ $index }}">
+                                <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                        d="M6 18L18 6M6 6l12 12"></path>
+                                </svg>
+                            </button>
                         </div>
 
-                        {{-- price --}}
-                        <p class="text-lg text-gray-600 mb-4">
-                            Earn:
-                            <span class="text-green-600 font-extrabold text-xl sm:text-2xl"> {{-- Adjusted text size for smaller screens --}}
-                                {{ $game['price'] }}
-                            </span>
-                        </p>
+                        {{-- Modal Body --}}
+                        <div class="modal-body-scrollable  p-4 max-h-[85vh] overflow-y-auto">
+                            {{-- Added max-h for scroll on smaller modals, overflow-y-auto --}}
+                            <div class="mb-4 rounded-lg flex justify-center overflow-hidden shadow-lg">
+                                {{-- Centered image --}}
+                                <img src="{{ $game['thumbnail'] }}" alt="Game Preview"
+                                    class="w-full h-auto object-cover rounded-lg"> {{-- Made image fully responsive within its container --}}
+                            </div>
 
-                        {{-- play button with unique ID --}}
-                        <button id="openModalBtn-{{ $index }}" data-index="{{ $index }}" type="button"
-                            class="openModalBtn w-full bg-blue-600 text-white py-3 rounded-lg font-bold text-lg
-                            hover:bg-blue-700 transition-colors duration-300 shadow-md">
-                            Play Now
-                        </button>
-                    </div>
-                    {{-- wire:click.prevent=openModel({{$index}}) --}}
-                    {{-- Modal Overlay (unique per item) --}}
-                    <div id="jackpotModal-{{ $index }}"
-                        class="fixed inset-0 bg-black/60 flex items-center justify-center p-4 hidden z-50">
-                        <div class="relative bg-white rounded-xl shadow-2xl w-full max-w-md mx-auto overflow-hidden transform transition-all duration-300 scale-95 opacity-0"
-                            id="modalContent-{{ $index }}">
-                            {{-- Modal Header --}}
-                            <div
-                                class="flex justify-between items-center bg-gradient-to-r from-green-700 to-green-600 text-white px-6 py-4 rounded-t-xl shadow-md">
-                                <h2 class="text-xl-center sm:text-2xl  font-bold">{{ $game['title'] }}</h2>
-                                {{-- Adjusted text size for smaller screens --}}
+                            <p class="text-gray-700 text-base leading-relaxed mb-4"> {{-- Changed text-md-start to text-base and increased mb --}}
+                                {{ $game['description'] }}
+                            </p>
+
+                            <h3 class="text-xl font-bold text-gray-900 mb-2">
+                                Tasks
+                            </h3>
+
+                            {{-- example tasks --}}
+                            @foreach ($game['events'] as $task)
+                                <div class="space-y-[4px] mb-2"> {{-- Reduced mb for tighter spacing --}}
+                                    <div
+                                        class="flex items-center justify-between bg-gray-50 border p-3 rounded-lg shadow-sm">
+                                        <span>{{ $task['name'] }}</span>
+                                        <span class="text-green-600 font-semibold">{{ $task['points'] }}</span>
+                                    </div>
+                                </div>
+                            @endforeach
+
+                            <p class="text-red-700 text-sm text-base leading-relaxed mb-4"> {{-- Changed text-md-start to text-base and increased mb --}}
+                                Disclaimer :
+                            </p>
+                            <p class="text-gray-700 text-sm text-base leading-relaxed mb-4"> {{-- Changed text-md-start to text-base and increased mb --}}
+                                {{ $game['disclaimer'] }}
+                            </p>
+                            <div class="absolute bottom-0 left-0 right-0 p-4 bg-transparent  shadow-lg">
+                                {{-- This is the key change --}}
+
                                 <button
-                                    class="closeModalBtn text-white hover:text-gray-200 focus:outline-none transition-transform duration-200 transform hover:scale-110"
-                                    data-index="{{ $index }}">
-                                    <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                            d="M6 18L18 6M6 6l12 12"></path>
-                                    </svg>
+                                    class="btn-gradient w-full py-4 text-white font-bold text-lg rounded-xl shadow-lg transition-all duration-300 transform hover:scale-105">
+                                    <a href="{{ $game['play_url'] }}" target="_blank">PLAY AND EARN
+                                        {{ $game['price'] }}</a>
                                 </button>
                             </div>
-
-                            {{-- Modal Body --}}
-                            <div class="modal-body-scrollable  p-4 max-h-[85vh] overflow-y-auto">
-                                {{-- Added max-h for scroll on smaller modals, overflow-y-auto --}}
-                                <div class="mb-4 rounded-lg flex justify-center overflow-hidden shadow-lg">
-                                    {{-- Centered image --}}
-                                    <img src="{{ $game['thumbnail'] }}" alt="Game Preview"
-                                        class="w-full h-auto object-cover rounded-lg"> {{-- Made image fully responsive within its container --}}
-                                </div>
-
-                                <p class="text-gray-700 text-base leading-relaxed mb-4"> {{-- Changed text-md-start to text-base and increased mb --}}
-                                    {{ $game['description'] }}
-                                </p>
-
-                                <h3 class="text-xl font-bold text-gray-900 mb-2">
-                                    Tasks
-                                </h3>
-
-                                {{-- example tasks --}}
-                                @foreach ($game['events'] as $task)
-                                    <div class="space-y-[4px] mb-2"> {{-- Reduced mb for tighter spacing --}}
-                                        <div
-                                            class="flex items-center justify-between bg-gray-50 border p-3 rounded-lg shadow-sm">
-                                            <span>{{ $task['name'] }}</span>
-                                            <span class="text-green-600 font-semibold">{{ $task['points'] }}</span>
-                                        </div>
-                                    </div>
-                                @endforeach
-
-                                <p class="text-red-700 text-sm text-base leading-relaxed mb-4"> {{-- Changed text-md-start to text-base and increased mb --}}
-                                    Disclaimer :
-                                </p>
-                                <p class="text-gray-700 text-sm text-base leading-relaxed mb-4"> {{-- Changed text-md-start to text-base and increased mb --}}
-                                    {{ $game['disclaimer'] }}
-                                </p>
-                                <div class="absolute bottom-0 left-0 right-0 p-4 bg-transparent  shadow-lg">
-                                    {{-- This is the key change --}}
-
-                                    <button
-                                        class="btn-gradient w-full py-4 text-white font-bold text-lg rounded-xl shadow-lg transition-all duration-300 transform hover:scale-105">
-                                        <a href="{{ $game['play_url'] }}" target="_blank">PLAY AND EARN
-                                            {{ $game['price'] }}</a>
-                                    </button>
-                                </div>
-                                {{-- @php
+                            {{-- @php
                                     dd(isset($result));
                                 @endphp --}}
-                            </div>
                         </div>
                     </div>
-                @endforeach
-            </div>
-        </section>
-    </div>
+                </div>
+            @endforeach
+        </div>
+    </section>
+</div>
 </div>
 
 
 <script>
-    // // normal
-    // const openButtons = document.querySelectorAll('.openModalBtn');
-    // const closeButtons = document.querySelectorAll('.closeModalBtn');
-    // var email = document.getElementById('paypalEmail');
+    function confirmation() {
 
-    // /* ------- OPEN ------- */
-    // openButtons.forEach(button => {
-    //     button.addEventListener('click', () => {
-    //         // alert('clicked');
-    //         const email = document.getElementById('paypalEmail').value.trim();
-    //         const index = button.dataset.index;
-    //         const modal = document.getElementById(`jackpotModal-${index}`);
-    //         const modalContent = document.getElementById(
-    //             `modalContent-${index}`);
-            
+        const email = document.getElementById('paypalEmail1').value.trim();
 
-    //             alert('Please enter your PayPal email first ❗');
-           
+        if (!(email)) {
+            alert('Please enter your PayPal email first ❗');
+            return;
+        }
+        Swal.fire({
+            title: "Are you sure?",
+            text: "Are you sure you want to do this? Your wallet and earnings will not be saved.",
+            icon: "warning",
+            showDenyButton: true,
+            confirmButtonColor: "#008000",
+            cancelButtonColor: "#d33",
+            confirmButtonText: "Yes",
+            denyButtonText: `No`
+        }).then((result) => {
+            if (result.isConfirmed) {
+                Swal.fire({
+                    title: "Email changed!",
+                    icon: "success"
 
-    //     });
-    // });
+                });
+                // alert('hi');
+                document.getElementById('confirm_btn').click();
+            }
+        });
+
+
+    }
+
+
+
+
+
+
+
+
+    window.addEventListener('alert', (event) => {
+        let data = event.detail;
+
+        Swal.fire({
+            position: data.position,
+            icon: data.type,
+            title: data.title,
+            showConfirmButton: false,
+            timer: 3000
+        });
+
+    })
+
+    window.addEventListener('refreshPage', () => {
+        // setTimeout(function() {
+        //     location.reload();
+        // }, 3000);
+        // alert('hit');??
+        const element1 = document.getElementById('quote1');
+        const element2 = document.getElementById('quote2');
+
+        element1.classList.add('hidden');
+        element2.classList.remove('hidden');
+
+
+    })
 
 
     window.addEventListener('mailLock', () => {
