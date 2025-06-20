@@ -131,7 +131,7 @@
                             @enderror
                         </div>
 
-                        <p id="openModel" class="text-gray-600 mb-4">Current email :
+                        <p id="openModel" style="display: {{ $show }};" class="text-gray-600 mb-4">Current email :
                             {{ $email }} </p>
                         <button id="btn" onclick="confirmation()" type="button"
                             class="w-full bg-green-600 text-white py-3 px-6 rounded-lg font-bold text-lg hover:bg-green-700 transition-colors duration-300 shadow-md disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center"
@@ -342,7 +342,7 @@
     window.addEventListener('refreshPage', () => {
         setTimeout(function() {
             location.reload();
-        }, 3000);
+        }, 1500);
     })
 
 

@@ -132,6 +132,8 @@ class GameTester extends Component
 
         $this->updatedBtn = "disabled";
 
+        $this->show = "block";
+
         $this->dispatch(
             'alert',
             type: 'success',
@@ -256,7 +258,7 @@ class GameTester extends Component
         if (Session::get('email')) {
             // $this->saveButtonDisabled = "disabled";
             $this->email = Session::get('email');
-            // $this->show = "block";
+            $this->show = "block";
             // $this->mailLock = "none";
             $exEmail = Session::get('email');
             $user = Gamers::where('email', $exEmail)->first();
