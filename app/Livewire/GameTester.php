@@ -74,7 +74,9 @@ class GameTester extends Component
 
         if ($updated_count > 3) {
 
-            request()->session()->flash('error', 'You can update your Email 3 times only');
+            $this->dispatch('limit');
+            $this->updatedInputF = "disabled";
+            $this->updatedBtn = "disabled";
             return;
         }
 
@@ -97,6 +99,7 @@ class GameTester extends Component
         $this->updatedInputF = "disabled";
         $this->updatedBtn = "disabled";
         $this->Uemail = "";
+        $this->dispatch('refreshPage');
     }
 
     public function SaveTodb()
@@ -123,7 +126,11 @@ class GameTester extends Component
         $user = Gamers::where('email', $email)->first();
         $user->deposit(5); //bonus
 
-        $this->UserBalance = number_format($user->balanceInt/100, 2, '.', '');
+        $this->UserBalance = number_format($user->balanceInt / 100, 2, '.', '');
+
+        $this->updatedInputF = "disabled";
+
+        $this->updatedBtn = "disabled";
 
         $this->dispatch(
             'alert',
@@ -131,11 +138,7 @@ class GameTester extends Component
             title: 'Email saved & 0.5 bucks added',
             position: 'center',
         );
-
-        $this->updatedInputF = "disabled";
-        $this->updatedBtn = "disabled";
-
-
+        $this->dispatch('refreshPage');
     }
 
 
@@ -255,10 +258,10 @@ class GameTester extends Component
             $this->email = Session::get('email');
             // $this->show = "block";
             // $this->mailLock = "none";
-            $exEmail = Session::get('email');
+            $exEmail = Session::get('Uname');
             $user = Gamers::where('email', $exEmail)->first();
 
-            $this->UserBalance = number_format($user->balanceInt/100  ?? "0.00", 2, '.', '');
+            $this->UserBalance = number_format($user->balanceInt   ?? "0.00", 2, '.', '')/ 100;
 
             $this->paypalUpdateCard = "block";
             $this->paypalnewCard = "none";

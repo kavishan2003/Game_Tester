@@ -91,14 +91,14 @@
 
                     <div class="relative mb-4" id="mail" style="display: {{ $mailLock }};">
                         <input wire:model="email" type="email" placeholder="you@example.com" id="paypalEmail"
-                            name="email" value="{{ Session::get('email') }}  "
+                            {{ $updatedInputF }} name="email" value="{{ Session::get('email') }}  "
                             class="w-full px-5 py-3 border disabled border-gray-300 rounded-lg focus:ring-blue-500 focus:border-blue-500 outline-none transition-all duration-200 text-gray-700 text-lg"
                             aria-label="Enter your PayPal Email">
                         @error('email')
                             <span class="text-red-600">{{ $message }}</span>
                         @enderror
                     </div>
-                    <button {{ $saveButtonDisabled }} id="btn" wire:click.prevent ="SaveTodb"
+                    <button {{ $saveButtonDisabled }} id="btn" wire:click.prevent ="SaveTodb" {{ $updatedBtn }}
                         class="w-full bg-green-600 text-white py-3 px-6 rounded-lg font-bold text-lg hover:bg-green-700 transition-colors duration-300 shadow-md disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center">
                         <span>Save Email</span>
                     </button>
@@ -122,15 +122,15 @@
                     <form action="" id="paypalForm">
 
                         <div class="relative mb-4 " id="mail">
-                            <input wire:model="Uemail" type="email" placeholder="you@example.com" {{ $updatedInputF }}
-                                id="paypalEmail1" name="Uemail"
+                            <input wire:model="Uemail" type="email" placeholder="you@example.com"
+                                {{ $updatedInputF }} id="paypalEmail1" name="Uemail"
                                 class="w-full px-5 py-3 border border-gray-300 rounded-lg focus:ring-blue-500 focus:border-blue-500 outline-none transition-all duration-200 text-gray-700 text-lg"
                                 aria-label="Enter your PayPal Email">
                             @error('Uemail')
                                 <span class="text-red-600">{{ $message }}</span>
                             @enderror
                         </div>
-                        
+
                         <p id="openModel" class="text-gray-600 mb-4">Current email :
                             {{ $email }} </p>
                         <button id="btn" onclick="confirmation()" type="button"
@@ -317,13 +317,15 @@
 
     }
 
+    window.addEventListener('limit', () => {
 
-
-
-
-
-
-
+        Swal.fire({
+            icon: "error",
+            title: "Oops...",
+            text: "Can't update PayPal Email over 3 times",
+            footer: '<a href="#">Why do I have this issue?</a>'
+        });
+    })
     window.addEventListener('alert', (event) => {
         let data = event.detail;
 
@@ -338,17 +340,9 @@
     })
 
     window.addEventListener('refreshPage', () => {
-        // setTimeout(function() {
-        //     location.reload();
-        // }, 3000);
-        // alert('hit');??
-        const element1 = document.getElementById('quote1');
-        const element2 = document.getElementById('quote2');
-
-        element1.classList.add('hidden');
-        element2.classList.remove('hidden');
-
-
+        setTimeout(function() {
+            location.reload();
+        }, 3000);
     })
 
 
