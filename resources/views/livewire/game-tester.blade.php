@@ -120,10 +120,9 @@
                     <p id="quote2" class="text-red-600 mb-4 hidden ">You can only update your Paypal
                         Email only after 30 days again </p>
                     <form action="" id="paypalForm">
-
                         <div class="relative mb-4 " id="mail">
-                            <input wire:model="Uemail" type="email" placeholder="you@example.com" value="{{ Session::get('email') }}"
-                                {{ $updatedInputF }} id="paypalEmail1" name="Uemail"
+                            <input type="email" placeholder="you@example.com" value="{{ Session::get('email') }}"
+                                {{ $updatedInputF }} id="paypalEmail1" name="Uemail"wire:model="Uemail"
                                 class="w-full px-5 py-3 border border-gray-300 rounded-lg focus:ring-blue-500 focus:border-blue-500 outline-none transition-all duration-200 text-gray-700 text-lg"
                                 aria-label="Enter your PayPal Email">
                             @error('Uemail')
@@ -179,10 +178,12 @@
                     class="bg-white p-6 rounded-2xl shadow-xl flex flex-col items-center text-center
                         transition duration-300 hover:scale-[1.03] hover:shadow-2xl">
                     {{-- thumbnail --}}
-                    <img src="{{ $game['thumbnail'] }}" alt="{{ $game['title'] }}"
-                        class="w-full max-w-xs h-auto object-cover mb-4 border-4 border-red-500 shadow-lg rounded-lg">
+                    <img id="openModalBtn-{{ $index }}" {{-- UNIQUE id --}}
+                        data-index="{{ $index }}" {{-- tells JS which modal --}} src="{{ $game['thumbnail'] }}"
+                        class="openModalBtn cursor-pointer w-full max-w-xs h-auto object-cover mb-4 border-4 border-red-500 shadow-lg rounded-lg"
+                        alt="Open jackpot {{ $index }}" />
                     {{-- Made image fully responsive and added rounded-lg --}}
-
+                    {{-- class="" --}}
                     {{-- title --}}
                     <div class="h-16">
 
@@ -240,6 +241,12 @@
                                 {{ $game['description'] }}
                             </p>
 
+                            <p class="text-red-700 text-sm text-base leading-relaxed mb-1"> {{-- Changed text-md-start to text-base and increased mb --}}
+                                Requirements :
+                            </p>
+                            <p class="text-gray-700 text-sm text-base leading-relaxed mb-4"> {{-- Changed text-md-start to text-base and increased mb --}}
+                                {{ $game['requirements'] }}
+                            </p>
                             <h3 class="text-xl font-bold text-gray-900 mb-2">
                                 Tasks
                             </h3>
@@ -350,7 +357,7 @@
     })
 
 
-
+    //when button clicked
     window.addEventListener('model', () => {
 
         setTimeout(() => {
@@ -368,7 +375,7 @@
                     const modal = document.getElementById(`jackpotModal-${index}`);
                     const modalContent = document.getElementById(
                         `modalContent-${index}`);
-                    var open = document.getElementById('successAlert');
+                    // var open = document.getElementById('successAlert');
                     var openModel = document.getElementById('openModel');
 
 

@@ -148,10 +148,10 @@ class GameTester extends Component
         $hashedId    = $storedEmail ? hash('sha256', $storedEmail) : '';
 
 
-        // $ip = file_get_contents('https://api64.ipify.org');
+        $ip = file_get_contents('https://api64.ipify.org');
 
 
-        $ip = $request->ip();
+        // $ip = $request->ip();
         $hashedId = hash('sha256', $ip);
 
 
@@ -184,7 +184,7 @@ class GameTester extends Component
         $offers = data_get($response->json(), 'data.offers', []);   // safer than $array['data']
 
         $offers = array_slice($offers, 0, 30);
-
+        // dd($offers);
         $this->games = collect($offers)->map(
             function ($offer) {
 
@@ -218,6 +218,7 @@ class GameTester extends Component
                     'price'       => $price,
                     'play_url'    => $offer['click_url']   ?? '#',
                     'disclaimer'  => $offer['disclaimer']  ?? '',
+                    'requirements' =>$offer['requirements'] ?? '',
                     'events'      => $events,
                 ];
             }
