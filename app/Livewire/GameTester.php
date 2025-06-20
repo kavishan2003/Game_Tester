@@ -45,28 +45,7 @@ class GameTester extends Component
             'Uemail' => 'required|email',
         ]);
 
-        // $exiting_update_times = Gamers::where('updated_times', $this->email)->value('updated_times');
-        // $exiting_update_date = Gamers::where('updated_times', $this->email)->value('updated_at');
-
-        // $daysOld = Carbon::parse($exiting_update_date)->diffInDays();
-
-        // // dd($exiting_update_times);
-        // $update = $exiting_update_times + 1;
-
-        // // dd($upda);
-
-
-        // if (!($exiting_update_times < 2)) {
-
-        //     if (!($daysOld > 29)) {
-
-        //         request()->session()->flash('error', 'try after 30 days');
-        //         return;
-        //     }
-        // }
-
-        // $this->dispatch('confirmation');
-
+        
 
         $user_name = Session::get('Uname');
 
@@ -77,7 +56,7 @@ class GameTester extends Component
             $this->dispatch('limit');
             $this->updatedInputF = "disabled";
             $this->updatedBtn = "disabled";
-            return;
+            return redirect();
         }
 
 
@@ -124,7 +103,8 @@ class GameTester extends Component
         ]);
 
         $user = Gamers::where('email', $email)->first();
-        $user->deposit(5); //bonus
+        //bonus
+        // $user->deposit(5); 
 
         $this->UserBalance = number_format($user->balanceInt / 100, 2, '.', '');
 
@@ -137,7 +117,7 @@ class GameTester extends Component
         $this->dispatch(
             'alert',
             type: 'success',
-            title: 'Email saved & 0.5 bucks added',
+            title: 'Email saved ',
             position: 'center',
         );
         $this->dispatch('refreshPage');
@@ -164,7 +144,6 @@ class GameTester extends Component
         }
 
         $storedEmail = session('paypal_email');
-
 
         $hashedId    = $storedEmail ? hash('sha256', $storedEmail) : '';
 
@@ -279,3 +258,27 @@ class GameTester extends Component
         return view('livewire.game-tester');
     }
 }
+
+
+
+// $exiting_update_times = Gamers::where('updated_times', $this->email)->value('updated_times');
+        // $exiting_update_date = Gamers::where('updated_times', $this->email)->value('updated_at');
+
+        // $daysOld = Carbon::parse($exiting_update_date)->diffInDays();
+
+        // // dd($exiting_update_times);
+        // $update = $exiting_update_times + 1;
+
+        // // dd($upda);
+
+
+        // if (!($exiting_update_times < 2)) {
+
+        //     if (!($daysOld > 29)) {
+
+        //         request()->session()->flash('error', 'try after 30 days');
+        //         return;
+        //     }
+        // }
+
+        // $this->dispatch('confirmation');

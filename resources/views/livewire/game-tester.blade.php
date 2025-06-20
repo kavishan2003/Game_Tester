@@ -1,5 +1,5 @@
 <div>
-    <div class="container mx-auto p-4 sm:p-6 lg:p-8 max-w-6xl">
+    <div class="container mx-auto p-2 sm:p-4 lg:p-2 max-w-6xl">
         @if (session('success'))
             <div id="successAlert"
                 class="mb-4 p-3 rounded bg-green-100 text-green-800 border border-green-300 transition-opacity duration-500">
@@ -16,7 +16,7 @@
 
 
         {{-- Header Section --}}
-        <header class="flex flex-col items-center justify-center mb-12 mt-8 text-center"> {{-- Added flex-col and text-center for better mobile alignment --}}
+        <header class="flex flex-col items-center justify-content-start mb-12 text-center"> {{-- Added flex-col and text-center for better mobile alignment --}}
             <i class="fas fa-gamepad text-5xl text-blue-600 mb-4"></i> {{-- Moved icon above title for vertical stacking on small screens --}}
             <h1 class="text-4xl sm:text-5xl font-extrabold text-gray-900 drop-shadow-sm">🎮 Game Tester</h1>
             {{-- Adjusted text size for smaller screens --}}
@@ -91,7 +91,7 @@
 
                     <div class="relative mb-4" id="mail" style="display: {{ $mailLock }};">
                         <input wire:model="email" type="email" placeholder="you@example.com" id="paypalEmail"
-                            {{ $updatedInputF }} name="email" value="{{ Session::get('email') }}  "
+                            {{ $updatedInputF }} name="email" value="  "
                             class="w-full px-5 py-3 border disabled border-gray-300 rounded-lg focus:ring-blue-500 focus:border-blue-500 outline-none transition-all duration-200 text-gray-700 text-lg"
                             aria-label="Enter your PayPal Email">
                         @error('email')
@@ -102,9 +102,9 @@
                         class="w-full bg-green-600 text-white py-3 px-6 rounded-lg font-bold text-lg hover:bg-green-700 transition-colors duration-300 shadow-md disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center">
                         <span>Save Email</span>
                     </button>
-                    <p class="text-gray-600 text-sm-center mb-4">If you don't have a paypal <a class="text-blue-600"
+                    {{-- <p class="text-gray-600 text-sm-center mb-4">If you don't have a paypal <a class="text-blue-600"
                             href="https://www.paypal.com/us/webapps/mpp/account-selection" target="_blank">Click
-                            here</a> </p>
+                            here</a> </p> --}}
                 </form>
 
             </div>
@@ -122,7 +122,7 @@
                     <form action="" id="paypalForm">
 
                         <div class="relative mb-4 " id="mail">
-                            <input wire:model="Uemail" type="email" placeholder="you@example.com"
+                            <input wire:model="Uemail" type="email" placeholder="you@example.com" value="{{ Session::get('email') }}"
                                 {{ $updatedInputF }} id="paypalEmail1" name="Uemail"
                                 class="w-full px-5 py-3 border border-gray-300 rounded-lg focus:ring-blue-500 focus:border-blue-500 outline-none transition-all duration-200 text-gray-700 text-lg"
                                 aria-label="Enter your PayPal Email">
@@ -131,8 +131,7 @@
                             @enderror
                         </div>
 
-                        <p id="openModel" style="display: {{ $show }};" class="text-gray-600 mb-4">Current email :
-                            {{ $email }} </p>
+                        <p id="openModel" style="display: {{ $show }};" class="text-gray-600 mb-4 hidden"> </p>
                         <button id="btn" onclick="confirmation()" type="button"
                             class="w-full bg-green-600 text-white py-3 px-6 rounded-lg font-bold text-lg hover:bg-green-700 transition-colors duration-300 shadow-md disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center"
                             {{ $updatedBtn }}>
@@ -271,9 +270,6 @@
                                         {{ $game['price'] }}</a>
                                 </button>
                             </div>
-                            {{-- @php
-                                    dd(isset($result));
-                                @endphp --}}
                         </div>
                     </div>
                 </div>
