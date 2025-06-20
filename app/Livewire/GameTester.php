@@ -258,10 +258,10 @@ class GameTester extends Component
             $this->email = Session::get('email');
             // $this->show = "block";
             // $this->mailLock = "none";
-            $exEmail = Session::get('Uname');
+            $exEmail = Session::get('email');
             $user = Gamers::where('email', $exEmail)->first();
 
-            $this->UserBalance = number_format($user->balanceInt   ?? "0.00", 2, '.', '')/ 100;
+           $this->UserBalance = number_format(($user?->balanceInt ?? 0) / 100, 2, '.', '');
 
             $this->paypalUpdateCard = "block";
             $this->paypalnewCard = "none";
