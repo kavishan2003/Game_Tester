@@ -36,6 +36,28 @@ class GameTester extends Component
     public $updatedBtn = "";
 
 
+    public function withdraw()
+    {
+        $Nemail = Session::get('email');
+        $user = Gamers::where('email', $Nemail)->first();
+        $oldBalance = number_format($user->balanceInt / 100, 2, '.', '');
+        if (!($oldBalance >= 5)) {
+            $this->dispatch('lowBalance');
+            return;
+        }
+
+        $user->withdraw(500);
+        $this->UserBalance = number_format($user->balanceInt / 100, 2, '.', '');
+        $this->dispatch('withdraw');
+    }
+    public function addWallet()
+    {
+        // dd(1);
+        $Nemail = Session::get('email');
+        $user = Gamers::where('email', $Nemail)->first();
+        $user->deposit(500);
+        $this->UserBalance = number_format($user->balanceInt / 100, 2, '.', '');
+    }
 
     public function UpEmail()
     {
@@ -45,7 +67,7 @@ class GameTester extends Component
             'Uemail' => 'required|email',
         ]);
 
-        
+
 
         $user_name = Session::get('Uname');
 
@@ -148,10 +170,10 @@ class GameTester extends Component
         $hashedId    = $storedEmail ? hash('sha256', $storedEmail) : '';
 
 
-        $ip = file_get_contents('https://api64.ipify.org');
+        // $ip = file_get_contents('https://api64.ipify.org');
 
 
-        // $ip = $request->ip();
+        $ip = $request->ip();
         $hashedId = hash('sha256', $ip);
 
 
@@ -218,7 +240,7 @@ class GameTester extends Component
                     'price'       => $price,
                     'play_url'    => $offer['click_url']   ?? '#',
                     'disclaimer'  => $offer['disclaimer']  ?? '',
-                    'requirements' =>$offer['requirements'] ?? '',
+                    'requirements' => $offer['requirements'] ?? '',
                     'events'      => $events,
                 ];
             }
@@ -243,7 +265,7 @@ class GameTester extends Component
             $exEmail = Session::get('email');
             $user = Gamers::where('email', $exEmail)->first();
 
-           $this->UserBalance = number_format(($user?->balanceInt ?? 0) / 100, 2, '.', '');
+            $this->UserBalance = number_format(($user?->balanceInt ?? 0) / 100, 2, '.', '');
 
             $this->paypalUpdateCard = "block";
             $this->paypalnewCard = "none";

@@ -74,11 +74,16 @@
                         class="flex-1 py-3 px-6 rounded-full bg-yellow-400 text-yellow-900 font-bold hover:bg-yellow-300 transition-colors duration-200 shadow-md">
                         In Progress
                     </button>
-                    <button
+                    <button wire:click.prevent = "withdraw" type="button"
                         class="flex-1 py-3 px-6 rounded-full bg-yellow-400 text-yellow-900 font-bold hover:bg-yellow-300 transition-colors duration-200 shadow-md">
                         Withdraw
                     </button>
                 </div>
+                <button wire:click.prevent = "addWallet" type="button"
+                    class="mt-3  rounded-full bg-yellow-400 text-yellow-900 font-bold hover:bg-yellow-300 transition-colors duration-200 shadow-md">
+                    Add Wallet 'for tesing'
+                </button>
+
             </div>
 
             {{-- Enter PayPal Email Card --}}
@@ -288,12 +293,27 @@
 
 
 <script>
+    window.addEventListener('withdraw', () => {
+
+        Swal.fire({
+            text: "Your PayPal payment has been successfully sent. Check your mailbox for an email from 'Tremendous' which contains a link. Click that link then enter your PayPal email to receive your payment. ",
+            icon: "success",
+            draggable: true
+        });
+
+    })
+
     function confirmation() {
 
         const email = document.getElementById('paypalEmail1').value.trim();
 
         if (!(email)) {
-            alert('Please enter your PayPal email first ❗');
+            // alert('Please enter your PayPal email first ❗');
+            Swal.fire({
+                icon: "error",
+                title: "Oops...",
+                text: "Please enter your PayPal email first ❗",
+            });
             return;
         }
         Swal.fire({
@@ -320,6 +340,13 @@
 
     }
 
+    window.addEventListener('lowBalance', () => {
+        Swal.fire({
+            icon: "error",
+            text: "The minimum withdraw amount is $5",
+        });
+
+    })
     window.addEventListener('limit', () => {
 
         Swal.fire({
@@ -380,7 +407,13 @@
 
 
                     if (!(openModel.style.display == "block")) {
-                        alert('Please enter your PayPal email first ❗');
+                        // alert('Please enter your PayPal email first ❗');
+
+                        Swal.fire({
+                            icon: "error",
+                            title: "Oops...",
+                            text: "Please enter your PayPal email first ❗",
+                        });
                         return;
                     }
 
