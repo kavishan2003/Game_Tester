@@ -66,7 +66,7 @@
                     {{-- Adjusted text size for smaller screens --}}
                 </div>
                 <div class="flex flex-col sm:flex-row space-y-3 sm:space-y-0 sm:space-x-3"> {{-- Buttons stack on mobile, row on sm screens and up --}}
-                    <button
+                    <button wire:click.prevent = "History" type="button"
                         class="flex-1 py-3 px-6 rounded-full bg-yellow-400 text-yellow-900 font-bold hover:bg-yellow-300 transition-colors duration-200 shadow-md">
                         History
                     </button>
@@ -287,12 +287,126 @@
                 </div>
             @endforeach
         </div>
+        {{-- transaction History model --}}
+        <div class="bg-gray-100 w-[480px] h-[70vh] {{ $hideModel }} sm:h-[600px] flex items-center justify-center p-4">
+
+            <div id="transactionHistoryModal"
+                class="fixed inset-0 z-50  overflow-hidden bg-black/60 flex items-center justify-center p-4"
+                style="backdrop-filter: blur(2px);">
+                {{-- The style for backdrop-filter provides a subtle blur to the background for a modern look --}}
+
+                <div
+                    class="relative bg-white rounded-xl shadow-2xl w-300  mx-auto my-8 overflow-hidden h-[700px]  flex flex-col transform transition-all duration-300 scale-95 ">
+                    {{-- Increased max-h to 80vh for medium screens and up. Removed lg:max-h-50 as it's redundant/incorrect. --}}
+                    {{-- Width is now `w-full max-w-4xl` for better responsiveness from small to large screens. --}}
+
+                    <div
+                        class="flex justify-between items-center p-5 border-b border-gray-200 bg-indigo-600 text-white">
+                        {{-- Changed text-black to text-white for better contrast on indigo background, matching the original design intent. --}}
+                        <h3 class="text-2xl font-semibold">
+                            Transaction History
+                        </h3>
+                        {{-- Added a close button icon to the header for better UX, matching previous design --}}
+                        <button id="closeModalBtnHeader" wire:click="$set('hideModel','hidden')"
+                            class="text-white hover:text-indigo-100 focus:outline-none text-2xl font-bold">
+                            &times;
+                        </button>
+                    </div>
+
+                    <div class="p-6 flex-grow overflow-y-auto custom-scrollbar">
+                        <div class="overflow-x-auto rounded-lg border border-gray-200 shadow-sm">
+                            <table class="min-w-full divide-y divide-gray-200">
+                                <thead class="bg-gray-50">
+                                    <tr>
+                                        <th scope="col"
+                                            class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider md:px-6">
+                                            Transaction NO
+                                        </th>
+                                        <th scope="col"
+                                            class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider md:px-6">
+                                            Type
+                                        </th>
+                                        <th scope="col"
+                                            class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider md:px-6">
+                                            Amount
+                                        </th>
+                                        <th scope="col"
+                                            class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider md:px-6">
+                                            Time Updated
+                                        </th>
+                                    </tr>
+                                </thead>
+                                <tbody class="bg-white divide-y divide-gray-200">
+                                    @foreach ($transactionHistory as $transaction)
+                                        <tr>
+                                            <td
+                                                class="px-4 py-4 whitespace-nowrap text-sm font-medium text-gray-900 md:px-6">
+                                                {{ $loop->iteration }}
+                                            </td>
+                                            <td class="px-4 py-4 whitespace-nowrap text-sm md:px-6">
+                                                {{-- Conditional styling based on transaction type --}}
+                                                @if ($transaction['type'] === 'deposit')
+                                                    <span
+                                                        class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-green-100 text-green-800">
+                                                        {{ $transaction['type'] }}
+                                                    </span>
+                                                @elseif ($transaction['type'] === 'withdraw')
+                                                    <span
+                                                        class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-red-100 text-red-800">
+                                                        {{ $transaction['type'] }}
+                                                    </span>
+                                                @else
+                                                    <span
+                                                        class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-gray-100 text-gray-800">
+                                                        {{ $transaction['type'] }}
+                                                    </span>
+                                                @endif
+                                            </td>
+                                            <td class="px-4 py-4 whitespace-nowrap text-sm text-gray-700 md:px-6">
+                                                ${{ number_format($transaction['amount'], 2) }} {{-- Added number formatting for amount --}}
+                                            </td>
+                                            <td class="px-4 py-4 whitespace-nowrap text-sm text-gray-500 md:px-6">
+                                                {{ \Carbon\Carbon::parse($transaction['updated_at'])->format('Y-m-d h:i A') }}
+                                                {{-- Using Carbon for consistent date formatting --}}
+                                            </td>
+                                        </tr>
+                                    @endforeach
+                                    {{-- Add a message if no transactions are available --}}
+                                    @if (count($transactionHistory) === 0)
+                                        <tr>
+                                            <td colspan="4" class="px-4 py-8 text-center text-gray-500 text-lg">
+                                                No transactions found.
+                                            </td>
+                                        </tr>
+                                    @endif
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                    <div class="p-4 border-t border-gray-200 flex justify-end">
+                        <button id="closeModalBtnFooter" wire:click="$set('hideModel','hidden')"
+                            class="px-5 py-2 bg-gray-200 text-gray-800 rounded-lg hover:bg-gray-300 focus:outline-none focus:ring-2 focus:ring-gray-400 focus:ring-offset-2">
+                            Close
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+
     </section>
 </div>
 </div>
 
 
 <script>
+    window.addEventListener('openHistoryModel', () => {
+        // alert('ok');
+        const pick = document.getElementById('transactionHistoryModal');
+        console.log(pick);
+        pick.classList.remove('hidden');
+
+    })
     window.addEventListener('withdraw', () => {
 
         Swal.fire({

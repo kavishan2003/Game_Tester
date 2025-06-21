@@ -6,12 +6,15 @@ namespace App\Livewire;
 use Carbon\Carbon;
 use App\Models\emails;
 use App\Models\Gamers;
+use App\Models\Wallet;
 use Livewire\Component;
 use PHPSTORM_META\type;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Str;
+use App\Models\Transactions;
 use Illuminate\Http\Request;
 use SweetAlert2\Laravel\Swal;
+// use Bavix\Wallet\Interfaces\Wallet;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Session;
 use Jantinnerezo\LivewireAlert\Enums\Position;
@@ -22,6 +25,7 @@ use Coderflex\LaravelTurnstile\Facades\LaravelTurnstile;
 class GameTester extends Component
 {
     public array $games = [];
+    public array $transactionHistory = [];
     public $turnstileToken;
     public $isTurnstile = "block";
     public $email;
@@ -34,13 +38,51 @@ class GameTester extends Component
     public $Uemail;
     public $updatedInputF = "";
     public $updatedBtn = "";
+    public $hideModel = "hidden";
 
 
+
+    public function History(){
+
+        $NewEmail = Session::get('email');
+        // dd($NewEmail);
+        $UserId = Gamers::where('email', $NewEmail)->value('id');
+        // dd($UserId);
+        $walletId = Wallet::where('holder_id',$UserId )->value('id');
+        // dd($walletId);
+        $histroys = Transactions::where('wallet_id',$walletId)->get(['type','amount','updated_at']);
+        $historyArray = $histroys->toArray(); 
+        // dd($historyArray);
+        // $this->$transactionHistory = collect($items)
+
+        $this->transactionHistory = collect($historyArray)->map(
+            function ($histroy,  $index) {
+
+                
+
+                return [
+                    'id'          => $index + 1,
+                    'type'       => $histroy['type']      ?? '',
+                    'amount' => $histroy['amount'] ?? '',
+                    'updated_at'   => $histroy['updated_at']    ?? '',
+                ];
+            }
+        )->all();
+        $this->hideModel = "";
+        // $this->dispatch('openHistoryModel');
+            
+        // dd($this->transactionHistory);
+
+
+        
+    }
     public function withdraw()
     {
-        $Nemail = Session::get('email');
-        $user = Gamers::where('email', $Nemail)->first();
+        $NewEmail = Session::get('email');
+        $user = Gamers::where('email', $NewEmail)->first();
         $oldBalance = number_format($user->balanceInt / 100, 2, '.', '');
+
+
         if (!($oldBalance >= 5)) {
             $this->dispatch('lowBalance');
             return;
