@@ -319,7 +319,7 @@
                                 <tr>
                                     <th scope="col"
                                         class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider md:px-6">
-                                        Transaction NO
+                                        Transaction ID
                                     </th>
                                     <th scope="col"
                                         class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider md:px-6">
@@ -333,14 +333,28 @@
                                         class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider md:px-6">
                                         Time Updated
                                     </th>
+                                    <th scope="col"
+                                        class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider md:px-6">
+                                        Email
+                                    </th>
                                 </tr>
                             </thead>
                             <tbody class="bg-white divide-y divide-gray-200">
                                 @foreach ($transactionHistory as $transaction)
                                     <tr>
-                                        <td
-                                            class="px-4 py-4 whitespace-nowrap text-sm font-medium text-gray-900 md:px-6">
-                                            {{ $loop->iteration }}
+                                        <td class="px-4 py-4 whitespace-nowrap text-capitalize  font-medium text-gray-900 md:px-6"
+                                            style="font-size: 10px;">
+                                            <div class="relative flex items-center w-50 gap-2 group">
+                                                {{-- Abbreviated + upper-cased ID --}}
+                                                <span
+                                                    class="font-semibold select-none tracking-wide">{{ $transaction['id'] }}</span>
+                                                <button
+                                                    class="ml-2 text-xs text-blue-500 opacity-0 group-hover:opacity-100 transition"
+                                                    onclick="copyToClipboard(this)"
+                                                    data-id="{{ $transaction['id'] }}" title="Copy ID">
+                                                    Copy
+                                                </button>
+                                            </div>
                                         </td>
                                         <td class="px-4 py-4 whitespace-nowrap text-sm md:px-6">
                                             {{-- Conditional styling based on transaction type --}}
@@ -361,12 +375,22 @@
                                                 </span>
                                             @endif
                                         </td>
-                                        <td class="px-4 py-4 whitespace-nowrap text-sm text-gray-700 md:px-6">
-                                            ${{ number_format($transaction['amount'], 2) }} {{-- Added number formatting for amount --}}
+                                        @php
+                                            $amount = number_format(abs($transaction['amount']), 2); // always positive, format to 2 decimals
+                                            $isWithdraw = $transaction['type'] === 'withdraw';
+                                        @endphp
+
+                                        <td class="px-4 py-2 font-sm text-left">
+                                            <span class="{{ $isWithdraw ? 'text-red-500' : 'text-green-600' }}">
+                                                {{ $isWithdraw ? '-' : '' }}${{ $amount }}
+                                            </span>
                                         </td>
                                         <td class="px-4 py-4 whitespace-nowrap text-sm text-gray-500 md:px-6">
                                             {{ \Carbon\Carbon::parse($transaction['updated_at'])->format('Y-m-d h:i A') }}
                                             {{-- Using Carbon for consistent date formatting --}}
+                                        </td>
+                                        <td class="px-4 py-4 whitespace-nowrap text-sm text-gray-500 md:px-6">
+                                            {{ $transaction['email'] }}
                                         </td>
                                     </tr>
                                 @endforeach
@@ -397,8 +421,33 @@
 </div>
 </div>
 
+<script>
+    function copyToClipboard(btn) {
+        const text = btn.dataset.id; // what we’re copying
+        const original = btn.textContent; // save current label
+
+        navigator.clipboard.writeText(text).then(() => {
+            // 1) show “Copied!”
+            btn.textContent = 'Copied!';
+            // (optional) green text for feedback
+            btn.classList.remove('text-blue-500');
+            btn.classList.add('text-green-600');
+
+            // 2) after 2 s, restore original label & color
+            setTimeout(() => {
+                btn.textContent = original;
+                btn.classList.remove('text-green-600');
+                btn.classList.add('text-blue-500');
+            }, 2000);
+        }).catch(err => {
+            console.error('Clipboard copy failed:', err);
+        });
+    }
+</script>
 
 <script>
+    // copy button
+
     window.addEventListener('openHistoryModel', () => {
         // alert('ok');
         const pick = document.getElementById('transactionHistoryModal');

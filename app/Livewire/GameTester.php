@@ -42,39 +42,43 @@ class GameTester extends Component
 
 
 
-    public function History(){
+    public function History()
+    {
 
         $NewEmail = Session::get('email');
         // dd($NewEmail);
         $UserId = Gamers::where('email', $NewEmail)->value('id');
         // dd($UserId);
-        $walletId = Wallet::where('holder_id',$UserId )->value('id');
+        $walletId = Wallet::where('holder_id', $UserId)->value('id');
         // dd($walletId);
-        $histroys = Transactions::where('wallet_id',$walletId)->get(['type','amount','updated_at']);
-        $historyArray = $histroys->toArray(); 
-        // dd($historyArray);
+        $histroys = Transactions::where('wallet_id', $walletId)->get(['uuid', 'type', 'amount', 'updated_at']);
+        $historyArray = $histroys->toArray();
+        // dd($historyArray);   
         // $this->$transactionHistory = collect($items)
+
+
 
         $this->transactionHistory = collect($historyArray)->map(
             function ($histroy,  $index) {
 
-                
+                $NewEmail = Session::get('email');
 
                 return [
-                    'id'          => $index + 1,
+                    'id'          => $histroy['uuid']    ?? '',
                     'type'       => $histroy['type']      ?? '',
                     'amount' => $histroy['amount'] ?? '',
+                    'email' => $NewEmail,
                     'updated_at'   => $histroy['updated_at']    ?? '',
                 ];
             }
         )->all();
         $this->hideModel = "";
         // $this->dispatch('openHistoryModel');
-            
+
         // dd($this->transactionHistory);
 
 
-        
+
     }
     public function withdraw()
     {
