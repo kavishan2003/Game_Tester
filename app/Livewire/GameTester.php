@@ -13,8 +13,10 @@ use Illuminate\Support\Arr;
 use Illuminate\Support\Str;
 use App\Models\Transactions;
 use Illuminate\Http\Request;
+use Livewire\WithPagination;
 use SweetAlert2\Laravel\Swal;
 // use Bavix\Wallet\Interfaces\Wallet;
+use Bavix\Wallet\Models\Transaction;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Session;
 use Jantinnerezo\LivewireAlert\Enums\Position;
@@ -24,6 +26,8 @@ use Coderflex\LaravelTurnstile\Facades\LaravelTurnstile;
 
 class GameTester extends Component
 {
+    use WithPagination;
+ 
     public array $games = [];
     public array $transactionHistory = [];
     public $turnstileToken;
@@ -51,27 +55,33 @@ class GameTester extends Component
         // dd($UserId);
         $walletId = Wallet::where('holder_id', $UserId)->value('id');
         // dd($walletId);
-        $histroys = Transactions::where('wallet_id', $walletId)->get(['uuid', 'type', 'amount', 'updated_at']);
-        $historyArray = $histroys->toArray();
+        // $historys = Transactions::where('wallet_id', $walletId)->get(['uuid', 'type', 'amount', 'updated_at'])->paginte();
+        
+        // $this->historys = Transaction::where('wallet_id', $walletId)
+        //     ->select('uuid', 'type', 'amount', 'updated_at')
+        //     ->paginate(10);
+        
+        // dd($this->historys);
+        // $historyArray = $this->historys->toArray();
         // dd($historyArray);   
         // $this->$transactionHistory = collect($items)
 
 
 
-        $this->transactionHistory = collect($historyArray)->map(
-            function ($histroy,  $index) {
+        // $this->transactionHistory = collect($historyArray)->map(
+        //     function ($histroy,  $index) {
 
-                $NewEmail = Session::get('email');
+        //         $NewEmail = Session::get('email');
 
-                return [
-                    'id'          => $histroy['uuid']    ?? '',
-                    'type'       => $histroy['type']      ?? '',
-                    'amount' => $histroy['amount'] ?? '',
-                    'email' => $NewEmail,
-                    'updated_at'   => $histroy['updated_at']    ?? '',
-                ];
-            }
-        )->all();
+        //         return [
+        //             'id'          => $histroy['uuid']    ?? '',
+        //             'type'       => $histroy['type']      ?? '',
+        //             'amount' => $histroy['amount'] ?? '',
+        //             'email' => $NewEmail,
+        //             'updated_at'   => $histroy['updated_at']    ?? '',
+        //         ];
+        //     }
+        // )->all();
         $this->hideModel = "";
         // $this->dispatch('openHistoryModel');
 
@@ -303,19 +313,19 @@ class GameTester extends Component
     }
     public function mount(): void
     {
-        if (Session::get('email')) {
-            // $this->saveButtonDisabled = "disabled";
-            $this->email = Session::get('email');
-            $this->show = "block";
-            // $this->mailLock = "none";
-            $exEmail = Session::get('email');
-            $user = Gamers::where('email', $exEmail)->first();
+        // if (Session::get('email')) {
+        //     // $this->saveButtonDisabled = "disabled";
+        //     $this->email = Session::get('email');
+        //     $this->show = "block";
+        //     // $this->mailLock = "none";
+        //     $exEmail = Session::get('email');
+        //     $user = Gamers::where('email', $exEmail)->first();
 
-            $this->UserBalance = number_format(($user?->balanceInt ?? 0) / 100, 2, '.', '');
+        //     $this->UserBalance = number_format(($user?->balanceInt ?? 0) / 100, 2, '.', '');
 
-            $this->paypalUpdateCard = "block";
-            $this->paypalnewCard = "none";
-        }
+        //     $this->paypalUpdateCard = "block";
+        //     $this->paypalnewCard = "none";
+        // }
     }
 
 
@@ -324,7 +334,19 @@ class GameTester extends Component
 
     public function render()
     {
-        return view('livewire.game-tester');
+        $NewEmail = Session::get('email');
+        // dd($NewEmail);
+        $UserId = Gamers::where('email', $NewEmail)->value('id');
+        // dd($UserId);
+        $walletId = Wallet::where('holder_id', $UserId)->value('id');
+        // dd($walletId);
+        // $historys = Transactions::where('wallet_id', $walletId)->get(['uuid', 'type', 'amount', 'updated_at'])->paginte();
+        
+        
+        return view('livewire.game-tester',['historys'=> Transaction::where('wallet_id', $walletId)
+            ->select('uuid', 'type', 'amount', 'updated_at')
+            ->paginate(5) ]);
+        // return view('livewire.game-tester');
     }
 }
 

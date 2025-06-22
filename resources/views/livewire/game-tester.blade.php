@@ -340,62 +340,68 @@
                                 </tr>
                             </thead>
                             <tbody class="bg-white divide-y divide-gray-200">
-                                @foreach ($transactionHistory as $transaction)
-                                    <tr>
-                                        <td class="px-4 py-4 whitespace-nowrap text-capitalize  font-medium text-gray-900 md:px-6"
-                                            style="font-size: 10px;">
-                                            <div class="relative flex items-center w-50 gap-2 group">
-                                                {{-- Abbreviated + upper-cased ID --}}
-                                                <span
-                                                    class="font-semibold select-none tracking-wide">{{ $transaction['id'] }}</span>
-                                                <button
-                                                    class="ml-2 text-xs text-blue-500 opacity-0 group-hover:opacity-100 transition"
-                                                    onclick="copyToClipboard(this)"
-                                                    data-id="{{ $transaction['id'] }}" title="Copy ID">
-                                                    Copy
-                                                </button>
-                                            </div>
-                                        </td>
-                                        <td class="px-4 py-4 whitespace-nowrap text-sm md:px-6">
-                                            {{-- Conditional styling based on transaction type --}}
-                                            @if ($transaction['type'] === 'deposit')
-                                                <span
-                                                    class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-green-100 text-green-800">
-                                                    {{ $transaction['type'] }}
-                                                </span>
-                                            @elseif ($transaction['type'] === 'withdraw')
-                                                <span
-                                                    class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-red-100 text-red-800">
-                                                    {{ $transaction['type'] }}
-                                                </span>
-                                            @else
-                                                <span
-                                                    class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-gray-100 text-gray-800">
-                                                    {{ $transaction['type'] }}
-                                                </span>
-                                            @endif
-                                        </td>
-                                        @php
-                                            $amount = number_format(abs($transaction['amount']), 2); // always positive, format to 2 decimals
-                                            $isWithdraw = $transaction['type'] === 'withdraw';
-                                        @endphp
+                                @if (isset($historys))
 
-                                        <td class="px-4 py-2 font-sm text-left">
-                                            <span class="{{ $isWithdraw ? 'text-red-500' : 'text-green-600' }}">
-                                                {{ $isWithdraw ? '-' : '' }}${{ $amount }}
-                                            </span>
-                                        </td>
-                                        <td class="px-4 py-4 whitespace-nowrap text-sm text-gray-500 md:px-6">
-                                            {{ \Carbon\Carbon::parse($transaction['updated_at'])->format('Y-m-d h:i A') }}
-                                            {{-- Using Carbon for consistent date formatting --}}
-                                        </td>
-                                        <td class="px-4 py-4 whitespace-nowrap text-sm text-gray-500 md:px-6">
-                                            {{ $transaction['email'] }}
-                                        </td>
-                                    </tr>
-                                @endforeach
+                                    @foreach ($historys as $transaction)
+                                        {{-- <p>come here</p>
+                                            dd($transaction); --}}
+
+                                        <tr>
+                                            <td class="px-4 py-4 whitespace-nowrap text-capitalize  font-medium text-gray-900 md:px-6"
+                                                style="font-size: 10px;">
+                                                <div class="relative flex items-center w-50 gap-2 group">
+                                                    {{-- Abbreviated + upper-cased ID --}}
+                                                    <span
+                                                        class="font-semibold select-none tracking-wide">{{ $transaction['uuid'] }}</span>
+                                                    <button
+                                                        class="ml-2 text-xs text-blue-500 opacity-0 group-hover:opacity-100 transition"
+                                                        onclick="copyToClipboard(this)"
+                                                        data-id="{{ $transaction['uuid'] }}" title="Copy ID">
+                                                        Copy
+                                                    </button>
+                                                </div>
+                                            </td>
+                                            <td class="px-4 py-4 whitespace-nowrap text-sm md:px-6">
+                                                {{-- Conditional styling based on transaction type --}}
+                                                @if ($transaction['type'] === 'deposit')
+                                                    <span
+                                                        class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-green-100 text-green-800">
+                                                        {{ $transaction['type'] }}
+                                                    </span>
+                                                @elseif ($transaction['type'] === 'withdraw')
+                                                    <span
+                                                        class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-red-100 text-red-800">
+                                                        {{ $transaction['type'] }}
+                                                    </span>
+                                                @else
+                                                    <span
+                                                        class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-gray-100 text-gray-800">
+                                                        {{ $transaction['type'] }}
+                                                    </span>
+                                                @endif
+                                            </td>
+                                            @php
+                                                $amount = number_format(abs($transaction['amount']), 2); // always positive, format to 2 decimals
+                                                $isWithdraw = $transaction['type'] === 'withdraw';
+                                            @endphp
+
+                                            <td class="px-4 py-2 font-sm text-left">
+                                                <span class="{{ $isWithdraw ? 'text-red-500' : 'text-green-600' }}">
+                                                    {{ $isWithdraw ? '-' : '' }}${{ $amount }}
+                                                </span>
+                                            </td>
+                                            <td class="px-4 py-4 whitespace-nowrap text-sm text-gray-500 md:px-6">
+                                                {{ \Carbon\Carbon::parse($transaction['updated_at'])->format('Y-m-d h:i A') }}
+                                                {{-- Using Carbon for consistent date formatting --}}
+                                            </td>
+                                            <td class="px-4 py-4 whitespace-nowrap text-sm text-gray-500 md:px-6">
+                                                {{ $transaction['email'] }}
+                                            </td>
+                                        </tr>
+                                    @endforeach
+                                @endif
                                 {{-- Add a message if no transactions are available --}}
-                                @if (count($transactionHistory) === 0)
+                                @if (count($historys) === 0)
                                     <tr>
                                         <td colspan="4" class="px-4 py-8 text-center text-gray-500 text-lg">
                                             No transactions found.
@@ -405,6 +411,10 @@
                             </tbody>
                         </table>
                     </div>
+                    @if (isset($historys))
+                        {{ $historys->links() }}
+                    @endif
+
                 </div>
                 <div class="p-4 border-t border-gray-200 flex justify-end">
                     <button id="closeModalBtnFooter" wire:click="$set('hideModel','hidden')"
@@ -415,8 +425,6 @@
             </div>
         </div>
         {{-- </div> --}}
-
-
     </section>
 </div>
 </div>
@@ -446,6 +454,14 @@
 </script>
 
 <script>
+    //fetch data
+    fetch('/Transactions')
+        .then(res => res.json())
+        .then(data => {
+            console.log(data); // display the data
+        });
+
+
     // copy button
 
     window.addEventListener('openHistoryModel', () => {
