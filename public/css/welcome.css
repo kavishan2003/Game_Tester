@@ -24,6 +24,16 @@ body {
     background-image: linear-gradient(to right, #1aae1f, #77bb28);
 }
 
+nav[role="navigation"] {
+    background-color: white;
+    color: #1a202c;
+    padding: 1rem;
+    border-radius: 0.5rem;
+}
+nav[role="navigation"] a {
+    color: #2563eb; /* Tailwind blue-600 */
+}
+
 /* Custom scrollbar for the table if needed (optional, but good for UX)
 .custom-scrollbar::-webkit-scrollbar {
     height: 8px;

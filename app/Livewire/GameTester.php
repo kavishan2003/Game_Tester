@@ -27,12 +27,14 @@ use Coderflex\LaravelTurnstile\Facades\LaravelTurnstile;
 class GameTester extends Component
 {
     use WithPagination;
- 
+
     public array $games = [];
+    public array $progress = [];
     public array $transactionHistory = [];
     public $turnstileToken;
     public $isTurnstile = "block";
     public $email;
+    public $search;
     public $mailLock = "block";
     public $show = "none";
     public $saveButtonDisabled = "";
@@ -43,8 +45,76 @@ class GameTester extends Component
     public $updatedInputF = "";
     public $updatedBtn = "";
     public $hideModel = "hidden";
+    public $inProgressModel = "hidden";
 
 
+    public function Inprogress(Request $request)
+    {
+        $storedEmail = session('paypal_email');
+
+        $hashedId    = $storedEmail ? hash('sha256', $storedEmail) : '';
+
+        $ip = file_get_contents('https://api64.ipify.org');
+
+        // $ip = $request->ip();
+        $hashedId = hash('sha256', $ip);
+
+        $userUa   = $request->userAgent();
+
+        $response = Http::withHeaders([
+            'User-Agent' => $ip,
+            'X-User-Id' => $hashedId,
+            'X-Api-Token' => 'cacd309f-4f98-47bb-bec0-a631b9c139f8',
+        ])->get('https://api.bitlabs.ai/v2/client/offers', [
+            'client_ip'         => $ip,
+            'client_user_agent' => $userUa,
+            'devices'           => ['android'],
+            'is_game'           => 'true',
+        ]);
+
+        if (! $response->successful()) {
+
+            logger()->error('BitLabs API failed', [
+
+                'status' => $response->status(),
+
+                'body'   => $response->body(),
+            ]);
+            return;
+        }
+
+        $offers = data_get($response->json(), 'data.offers', []);   // safer than $array['data']
+
+        $offers = array_slice($offers, 0, 30);
+        // dd($offers);
+        $this->progress = collect($offers)->map(
+            function ($offer) {
+
+                // Per‑event breakdown
+                $events = collect($offer['events'] ?? [])
+
+                    ->map(fn($e) => [
+                        'name'   => $e['name'],
+                        'points' => '$' . number_format((float) $e['points'], 2),
+                        'status' => $e['status'] ?? '',
+                    ])
+
+                    ->sortBy('points')
+                    ->values()
+                    ->all();
+
+                return [
+
+                    'title'       => $offer['anchor']      ?? '',
+                    'thumbnail'   => $offer['icon_url']    ?? '',
+                    'play_url'    => $offer['click_url']   ?? '#',
+                    'events'      => $events,
+                     'event_count' => count($events),
+                ];
+            }
+        )->all();
+        $this->inProgressModel = "";
+    }
 
     public function History()
     {
@@ -56,11 +126,11 @@ class GameTester extends Component
         $walletId = Wallet::where('holder_id', $UserId)->value('id');
         // dd($walletId);
         // $historys = Transactions::where('wallet_id', $walletId)->get(['uuid', 'type', 'amount', 'updated_at'])->paginte();
-        
+
         // $this->historys = Transaction::where('wallet_id', $walletId)
         //     ->select('uuid', 'type', 'amount', 'updated_at')
         //     ->paginate(10);
-        
+
         // dd($this->historys);
         // $historyArray = $this->historys->toArray();
         // dd($historyArray);   
@@ -90,6 +160,7 @@ class GameTester extends Component
 
 
     }
+
     public function withdraw()
     {
         $NewEmail = Session::get('email');
@@ -106,6 +177,7 @@ class GameTester extends Component
         $this->UserBalance = number_format($user->balanceInt / 100, 2, '.', '');
         $this->dispatch('withdraw');
     }
+
     public function addWallet()
     {
         // dd(1);
@@ -200,7 +272,6 @@ class GameTester extends Component
         );
         $this->dispatch('refreshPage');
     }
-
 
     public function updatedturnstileToken(Request $request)
     {
@@ -305,27 +376,27 @@ class GameTester extends Component
         $this->dispatch('model');
     }
 
-
     public function openModel($index)
     {
 
         dd($index);
     }
+
     public function mount(): void
     {
-        // if (Session::get('email')) {
-        //     // $this->saveButtonDisabled = "disabled";
-        //     $this->email = Session::get('email');
-        //     $this->show = "block";
-        //     // $this->mailLock = "none";
-        //     $exEmail = Session::get('email');
-        //     $user = Gamers::where('email', $exEmail)->first();
+        if (Session::get('email')) {
+            // $this->saveButtonDisabled = "disabled";
+            $this->email = Session::get('email');
+            $this->show = "block";
+            // $this->mailLock = "none";
+            $exEmail = Session::get('email');
+            $user = Gamers::where('email', $exEmail)->first();
 
-        //     $this->UserBalance = number_format(($user?->balanceInt ?? 0) / 100, 2, '.', '');
+            $this->UserBalance = number_format(($user?->balanceInt ?? 0) / 100, 2, '.', '');
 
-        //     $this->paypalUpdateCard = "block";
-        //     $this->paypalnewCard = "none";
-        // }
+            $this->paypalUpdateCard = "block";
+            $this->paypalnewCard = "none";
+        }
     }
 
 
@@ -334,42 +405,21 @@ class GameTester extends Component
 
     public function render()
     {
+        $result = "";
+
+        if (strlen($this->search) >= 3) {
+        }
+
         $NewEmail = Session::get('email');
-        // dd($NewEmail);
+
         $UserId = Gamers::where('email', $NewEmail)->value('id');
-        // dd($UserId);
+
         $walletId = Wallet::where('holder_id', $UserId)->value('id');
-        // dd($walletId);
-        // $historys = Transactions::where('wallet_id', $walletId)->get(['uuid', 'type', 'amount', 'updated_at'])->paginte();
-        
-        
-        return view('livewire.game-tester',['historys'=> Transaction::where('wallet_id', $walletId)
+
+
+        return view('livewire.game-tester', ['historys' => Transaction::where('wallet_id', $walletId)
             ->select('uuid', 'type', 'amount', 'updated_at')
-            ->paginate(5) ]);
-        // return view('livewire.game-tester');
+            ->orderByDesc('updated_at')
+            ->paginate(30)]);
     }
 }
-
-
-
-// $exiting_update_times = Gamers::where('updated_times', $this->email)->value('updated_times');
-        // $exiting_update_date = Gamers::where('updated_times', $this->email)->value('updated_at');
-
-        // $daysOld = Carbon::parse($exiting_update_date)->diffInDays();
-
-        // // dd($exiting_update_times);
-        // $update = $exiting_update_times + 1;
-
-        // // dd($upda);
-
-
-        // if (!($exiting_update_times < 2)) {
-
-        //     if (!($daysOld > 29)) {
-
-        //         request()->session()->flash('error', 'try after 30 days');
-        //         return;
-        //     }
-        // }
-
-        // $this->dispatch('confirmation');

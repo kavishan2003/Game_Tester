@@ -70,7 +70,7 @@
                         class="flex-1 py-3 px-6 rounded-full bg-yellow-400 text-yellow-900 font-bold hover:bg-yellow-300 transition-colors duration-200 shadow-md">
                         History
                     </button>
-                    <button
+                    <button wire:click.prevent = "Inprogress"
                         class="flex-1 py-3 px-6 rounded-full bg-yellow-400 text-yellow-900 font-bold hover:bg-yellow-300 transition-colors duration-200 shadow-md">
                         In Progress
                     </button>
@@ -246,7 +246,7 @@
                                 {{ $game['description'] }}
                             </p>
 
-                            <p class="text-red-700 text-sm text-base leading-relaxed mb-1"> {{-- Changed text-md-start to text-base and increased mb --}}
+                            <p class="text-green-700 text-sm text-base leading-relaxed mb-1"> {{-- Changed text-md-start to text-base and increased mb --}}
                                 Requirements :
                             </p>
                             <p class="text-gray-700 text-sm text-base leading-relaxed mb-4"> {{-- Changed text-md-start to text-base and increased mb --}}
@@ -288,7 +288,6 @@
             @endforeach
         </div>
         {{-- transaction History model --}}
-        {{-- <div class="bg-gray-100 w-[480px] h-[70vh]  sm:h-[600px] flex items-center justify-center p-4"> --}}
 
         <div id="transactionHistoryModal"
             class="fixed inset-0 z-50 {{ $hideModel }} overflow-hidden bg-black/60 flex items-center justify-center p-4"
@@ -306,10 +305,63 @@
                         Transaction History
                     </h3>
                     {{-- Added a close button icon to the header for better UX, matching previous design --}}
-                    <button id="closeModalBtnHeader" wire:click="$set('hideModel','hidden')"
-                        class="text-white hover:text-indigo-100 focus:outline-none text-2xl font-bold">
-                        &times;
-                    </button>
+                    <div>
+                        <div class="flex items-center space-x-4">
+                            <div class="relative flex-grow">
+                                <input wire:model.live = "search" type="text" id="transactionSearchInput"
+                                    placeholder="Search transactions..."
+                                    class="w-full pl-10 pr-10 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent text-gray-700 placeholder-gray-400" />
+                                <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                                    <svg class="h-5 w-5 text-gray-400" fill="none" stroke="currentColor"
+                                        viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                            d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
+                                    </svg>
+                                </div>
+
+                                <button type="button" id="clearSearchButton"
+                                    class="absolute inset-y-0 right-0 pr-3 flex items-center hidden"
+                                    aria-label="Clear search">
+                                    <svg class="h-5 w-5 text-gray-500 hover:text-gray-700" fill="none"
+                                        stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                            d="M6 18L18 6M6 6l12 12"></path>
+                                    </svg>
+                                </button>
+                            </div>
+
+                            <div class="relative inline-block text-left">
+                                <div>
+                                    <button type="button"
+                                        class="inline-flex justify-center w-full rounded-md border border-gray-300 shadow-sm px-4 py-2 bg-white text-sm font-medium text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
+                                        id="options-menu" aria-haspopup="true" aria-expanded="true">
+                                        Filter by Type
+                                        <svg class="-mr-1 ml-2 h-5 w-5" xmlns="http://www.w3.org/2000/svg"
+                                            viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
+                                            <path fill-rule="evenodd"
+                                                d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z"
+                                                clip-rule="evenodd" />
+                                        </svg>
+                                    </button>
+                                </div>
+
+                                <div class="origin-top-right absolute right-0 mt-2 w-56 rounded-md shadow-lg bg-white ring-1 ring-black ring-opacity-5 focus:outline-none hidden"
+                                    role="menu" aria-orientation="vertical" aria-labelledby="options-menu">
+                                    <div class="py-1" role="none">
+                                        <a href="#"
+                                            class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 hover:text-gray-900"
+                                            role="menuitem">All Types</a>
+                                        <a href="#"
+                                            class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 hover:text-gray-900"
+                                            role="menuitem">Deposit</a>
+                                        <a href="#"
+                                            class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 hover:text-gray-900"
+                                            role="menuitem">Withdraw</a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
                 </div>
 
                 <div class="p-6 flex-grow overflow-y-auto custom-scrollbar">
@@ -381,7 +433,7 @@
                                                 @endif
                                             </td>
                                             @php
-                                                $amount = number_format(abs($transaction['amount']), 2); // always positive, format to 2 decimals
+                                                $amount = number_format(abs($transaction['amount']) / 100, 2); // always positive, format to 2 decimals
                                                 $isWithdraw = $transaction['type'] === 'withdraw';
                                             @endphp
 
@@ -395,7 +447,7 @@
                                                 {{-- Using Carbon for consistent date formatting --}}
                                             </td>
                                             <td class="px-4 py-4 whitespace-nowrap text-sm text-gray-500 md:px-6">
-                                                {{ $transaction['email'] }}
+                                                {{ Session::get('email') }}
                                             </td>
                                         </tr>
                                     @endforeach
@@ -411,25 +463,232 @@
                             </tbody>
                         </table>
                     </div>
+
+                </div>
+
+
+                <div class="p-4 border-t border-gray-200 h-[75px] flex justify-between items-center">
                     @if (isset($historys))
                         {{ $historys->links() }}
                     @endif
-
-                </div>
-                <div class="p-4 border-t border-gray-200 flex justify-end">
                     <button id="closeModalBtnFooter" wire:click="$set('hideModel','hidden')"
                         class="px-5 py-2 bg-gray-200 text-gray-800 rounded-lg hover:bg-gray-300 focus:outline-none focus:ring-2 focus:ring-gray-400 focus:ring-offset-2">
                         Close
                     </button>
+
                 </div>
             </div>
         </div>
+        {{-- in progress model --}}
+
+        <div id="inProgressModel"
+            class="fixed inset-0 z-50
+             {{ $inProgressModel }} 
+              overflow-hidden bg-black/60 flex items-center justify-center p-4"
+            style="backdrop-filter: blur(2px);">
+            {{-- The style for backdrop-filter provides a subtle blur to the background for a modern look --}}
+
+            <div
+                class="relative bg-white rounded-xl shadow-2xl w-300  mx-auto my-8 overflow-hidden h-[700px]  flex flex-col transform transition-all duration-300 scale-95 ">
+
+
+                <div class="flex justify-between items-center p-5 border-b border-gray-200 bg-indigo-600 text-white">
+                    <h3 class="text-2xl font-semibold">
+                        In progress :
+                    </h3>
+                </div>
+
+                <div class="p-6 flex-grow overflow-y-auto custom-scrollbar">
+                    <div class="overflow-x-auto rounded-lg border border-gray-200 shadow-sm">
+                        @if (isset($progress))
+                            <table class="min-w-full divide-y divide-gray-200">
+                                <thead class="bg-gray-50">
+                                    <tr>
+                                        <th scope="col"
+                                            class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider md:px-6">
+                                            Game Name
+                                        </th>
+
+                                        <th scope="col"
+                                            class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider md:px-6">
+                                            Event
+                                        </th>
+                                        <th scope="col"
+                                            class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider md:px-6">
+                                            Status
+                                        </th>
+                                    </tr>
+                                </thead>
+                                <tbody class="bg-white divide-y divide-gray-200">
+
+                                    @foreach ($progress as $detail)
+                                        {{-- <tr>
+                                            <td class="px-4 py-4 whitespace-nowrap text-capitalize  font-medium text-gray-900 md:px-6"
+                                                style="font-size: 15px;">
+                                                <div class="relative flex items-center w-50 gap-2 group">
+                                                    <span
+                                                        class="font-semibold select-none tracking-wide">{{ $detail['title'] }}
+                                                    </span>
+                                                </div>
+                                            </td>
+                                        </tr> --}}
+                                        @foreach ($progress as $detail)
+                                            @php
+                                                $eventCount = count($detail['events']);
+                                            @endphp
+                                            @foreach ($detail['events'] as $eventIndex => $event)
+                                                <tr>
+                                                    @if ($eventIndex === 0)
+                                                        <td rowspan="{{ $eventCount }}"
+                                                            class="px-4 py-4 whitespace-nowrap text-capitalize font-medium text-gray-900 md:px-6"
+                                                            style="font-size: 15px;">
+                                                            <div class="relative flex items-center w-50 gap-2 group">
+                                                                <span
+                                                                    class="font-semibold select-none tracking-wide">{{ $detail['title'] }}</span>
+                                                            </div>
+                                                        </td>
+                                                    @endif
+                                                    <td class="px-4 py-4 whitespace-nowrap text-sm md:px-6">
+                                                        <span
+                                                            class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-blue-100 text-blue-800">
+                                                            {{ $event['name'] }}
+                                                        </span>
+                                                    </td>
+                                                    <td class="px-4 py-2 font-sm text-left">
+                                                        <span
+                                                            class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full text-grey-800">
+                                                            status :{{ $event['status'] }}
+                                                        </span>
+                                                    </td>
+
+                                                </tr>
+                                            @endforeach
+                                        @endforeach
+                                        {{-- @foreach ($detail['events'] as $event)
+                                                <td class="px-4 py-4 whitespace-nowrap text-sm md:px-6">
+                                                    <span
+                                                        class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-red-100 text-red-800">
+                                                        {{ $event['name'] }}
+                                                    </span>
+                                                </td>
+                                                <td class="px-4 py-2 font-sm text-left">
+                                                    <span
+                                                        class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-red-100 text-red-800">
+                                                        status :{{ $event['status'] }}
+                                                    </span>
+                                                </td>
+                                            @endforeach --}}
+                                        {{-- <td class="px-4 py-4 whitespace-nowrap text-sm text-gray-500 md:px-6">
+                                                {{ \Carbon\Carbon::parse($transaction['updated_at'])->format('Y-m-d h:i A') }}
+                                            </td> --}}
+                                        {{-- <td class="px-4 py-4 whitespace-nowrap text-sm text-gray-500 md:px-6">
+                                            {{ Session::get('email') }}
+                                        </td> --}}
+                                        </tr>
+                                    @endforeach
+
+                                    {{-- Add a message if no transactions are available --}}
+                                    @if (count($progress) === 0)
+                                        <tr>
+                                            <td colspan="4" class="px-4 py-8 text-center text-gray-500 text-lg">
+                                                No Inprogress Status found.
+                                            </td>
+                                        </tr>
+                                    @endif
+                                </tbody>
+
+                            </table>
+                        @endif
+                    </div>
+
+                </div>
+                <div class="p-4 border-t border-gray-200 h-[75px] flex justify-between items-center">
+                    <button id="closeModalBtnFooter" wire:click="$set('inProgressModel','hidden')"
+                        class="px-5 py-2 bg-gray-200 text-gray-800 rounded-lg hover:bg-gray-300 focus:outline-none focus:ring-2 focus:ring-gray-400 focus:ring-offset-2">
+                        Close
+                    </button>
+
+                </div>
+            </div>
+        </div>
+
         {{-- </div> --}}
     </section>
 </div>
 </div>
 
 <script>
+    //search bar
+    document.addEventListener('DOMContentLoaded', () => {
+        // --- Dropdown Functionality (from previous response, ensure it's still here) ---
+        const dropdownButton = document.getElementById('options-menu');
+        const dropdownPanel = dropdownButton.nextElementSibling;
+
+        if (dropdownButton && dropdownPanel) {
+            dropdownButton.addEventListener('click', () => {
+                dropdownPanel.classList.toggle('hidden');
+                dropdownPanel.classList.toggle('block');
+                const expanded = dropdownButton.getAttribute('aria-expanded') === 'true' || false;
+                dropdownButton.setAttribute('aria-expanded', !expanded);
+            });
+
+            document.addEventListener('click', (event) => {
+                if (!dropdownButton.contains(event.target) && !dropdownPanel.contains(event.target)) {
+                    dropdownPanel.classList.add('hidden');
+                    dropdownPanel.classList.remove('block');
+                    dropdownButton.setAttribute('aria-expanded', 'false');
+                }
+            });
+
+            dropdownPanel.querySelectorAll('a').forEach(item => {
+                item.addEventListener('click', (event) => {
+                    event.preventDefault();
+                    const selectedText = item.textContent;
+                    console.log('Selected filter:', selectedText);
+                    dropdownButton.childNodes[0].nodeValue = selectedText;
+                    dropdownPanel.classList.add('hidden');
+                    dropdownPanel.classList.remove('block');
+                    dropdownButton.setAttribute('aria-expanded', 'false');
+                    // In a real application, you would trigger your data filtering here
+                });
+            });
+        }
+
+        // --- Clear Button Functionality ---
+        const searchInput = document.getElementById('transactionSearchInput');
+        const clearButton = document.getElementById('clearSearchButton');
+
+        if (searchInput && clearButton) {
+            // Show/hide clear button based on input value
+            searchInput.addEventListener('input', () => {
+                if (searchInput.value.length > 0) {
+                    clearButton.classList.remove('hidden');
+                    clearButton.classList.add('block');
+                } else {
+                    clearButton.classList.add('hidden');
+                    clearButton.classList.remove('block');
+                }
+            });
+
+            // Clear input on button click
+            clearButton.addEventListener('click', () => {
+                searchInput.value = ''; // Clear the input field
+                clearButton.classList.add('hidden'); // Hide the button
+                clearButton.classList.remove('block');
+                searchInput.focus(); // Optional: put focus back on the input
+                // In a real application, you would trigger your data filtering/reset here
+                // e.g., trigger a search with an empty string to show all results
+            });
+
+            // Initial check in case there's pre-filled text (though unlikely for a search bar)
+            if (searchInput.value.length > 0) {
+                clearButton.classList.remove('hidden');
+                clearButton.classList.add('block');
+            }
+        }
+    });
+    //
+
     function copyToClipboard(btn) {
         const text = btn.dataset.id; // what we’re copying
         const original = btn.textContent; // save current label
