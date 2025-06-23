@@ -74,12 +74,12 @@
                         class="flex-1 py-3 px-6 rounded-full bg-yellow-400 text-yellow-900 font-bold hover:bg-yellow-300 transition-colors duration-200 shadow-md">
                         In Progress
                     </button>
-                    <button wire:click.prevent = "withdraw" type="button"
+                    <button wire:click.prevent = "withdraw" type="button" {{ $withdrawShow }}
                         class="flex-1 py-3 px-6 rounded-full bg-yellow-400 text-yellow-900 font-bold hover:bg-yellow-300 transition-colors duration-200 shadow-md">
                         Withdraw
                     </button>
                 </div>
-                <button wire:click.prevent = "addWallet" type="button"
+                <button wire:click.prevent = "addWallet" type="button" {{ $addShow }}
                     class="mt-3  rounded-full bg-yellow-400 text-yellow-900 font-bold hover:bg-yellow-300 transition-colors duration-200 shadow-md">
                     Add Wallet 'for tesing'
                 </button>
@@ -299,14 +299,14 @@
                 {{-- Increased max-h to 80vh for medium screens and up. Removed lg:max-h-50 as it's redundant/incorrect. --}}
                 {{-- Width is now `w-full max-w-4xl` for better responsiveness from small to large screens. --}}
 
-                <div class="flex justify-between items-center p-5 border-b border-gray-200 bg-indigo-600 text-white">
+                <div class="flex flex-wrap gap-4 md:gap-0 justify-between items-center p-5 border-b border-gray-200 bg-indigo-600 text-white">
                     {{-- Changed text-black to text-white for better contrast on indigo background, matching the original design intent. --}}
-                    <h3 class="text-2xl font-semibold">
+                    <h3 class="text-2xl font-semibold w-full md:w-auto">
                         Transaction History
                     </h3>
                     {{-- Added a close button icon to the header for better UX, matching previous design --}}
                     <div>
-                        <div class="flex items-center space-x-4">
+                         <div class="relative flex-grow w-full md:w-1/2">
                             <div class="relative flex-grow">
                                 <input wire:model.live = "search" type="text" id="transactionSearchInput"
                                     placeholder="Search transactions..."

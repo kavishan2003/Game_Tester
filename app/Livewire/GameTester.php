@@ -46,6 +46,8 @@ class GameTester extends Component
     public $updatedBtn = "";
     public $hideModel = "hidden";
     public $inProgressModel = "hidden";
+    public $addShow = "disabled";
+    public $withdrawShow = "disabled";
 
 
     public function search() {}
@@ -302,6 +304,7 @@ class GameTester extends Component
 
 
         $ip = $request->ip();
+
         $hashedId = hash('sha256', $ip);
 
 
@@ -390,6 +393,7 @@ class GameTester extends Component
         if (Session::get('email')) {
             // $this->saveButtonDisabled = "disabled";
             $this->email = Session::get('email');
+            $this->addShow = "";
             $this->show = "block";
             // $this->mailLock = "none";
             $exEmail = Session::get('email');
@@ -399,6 +403,8 @@ class GameTester extends Component
 
             $this->paypalUpdateCard = "block";
             $this->paypalnewCard = "none";
+            $this->Uemail;
+            $this->withdrawShow = "";
         }
     }
 
