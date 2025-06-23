@@ -50,73 +50,9 @@ class GameTester extends Component
     public $withdrawShow = "disabled";
 
 
-    public function search() {}
-
-    public function Inprogress(Request $request)
+    public function Inprogress()
     {
-        // $storedEmail = session('paypal_email');
-
-        // $hashedId    = $storedEmail ? hash('sha256', $storedEmail) : '';
-
-        // $ip = file_get_contents('https://api64.ipify.org');
-
-        // // $ip = $request->ip();
-        // $hashedId = hash('sha256', $ip);
-
-        // $userUa   = $request->userAgent();
-
-        // $response = Http::withHeaders([
-        //     'User-Agent' => $ip,
-        //     'X-User-Id' => $hashedId,
-        //     'X-Api-Token' => 'cacd309f-4f98-47bb-bec0-a631b9c139f8',
-        // ])->get('https://api.bitlabs.ai/v2/client/offers', [
-        //     'client_ip'         => $ip,
-        //     'client_user_agent' => $userUa,
-        //     'devices'           => ['android'],
-        //     'is_game'           => 'true',
-        // ]);
-
-        // if (! $response->successful()) {
-
-        //     logger()->error('BitLabs API failed', [
-
-        //         'status' => $response->status(),
-
-        //         'body'   => $response->body(),
-        //     ]);
-        //     return;
-        // }
-
-        // $offers = data_get($response->json(), 'data.offers', []);   // safer than $array['data']
-
-        // $offers = array_slice($offers, 0, 30);
-        // // dd($offers);
-        // $this->progress = collect($offers)->map(
-        //     function ($offer) {
-
-        //         // Per‑event breakdown
-        //         $events = collect($offer['events'] ?? [])
-
-        //             ->map(fn($e) => [
-        //                 'name'   => $e['name'],
-        //                 'points' => '$' . number_format((float) $e['points'], 2),
-        //                 'status' => $e['status'] ?? '',
-        //             ])
-
-        //             ->sortBy('points')
-        //             ->values()
-        //             ->all();
-
-        //         return [
-
-        //             'title'       => $offer['anchor']      ?? '',
-        //             'thumbnail'   => $offer['icon_url']    ?? '',
-        //             'play_url'    => $offer['click_url']   ?? '#',
-        //             'events'      => $events,
-        //             'event_count' => count($events),
-        //         ];
-        //     }
-        // )->all();
+       
         $this->inProgressModel = "";
     }
 
@@ -289,7 +225,7 @@ class GameTester extends Component
 
 
         if (!$response['success']) {
-            // dd('hrll');
+            
             $this->dispatch('turnstile-fail');
             session()->flash('error', 'Captcha verification failed. Please try again.');
             return;
@@ -300,10 +236,10 @@ class GameTester extends Component
         $hashedId    = $storedEmail ? hash('sha256', $storedEmail) : '';
 
 
-        // $ip = file_get_contents('https://api64.ipify.org');
+        $ip = file_get_contents('https://api64.ipify.org');
 
 
-        $ip = $request->ip();
+        // $ip = $request->ip();
 
         $hashedId = hash('sha256', $ip);
 
@@ -341,8 +277,6 @@ class GameTester extends Component
         $this->games = collect($offers)->map(
             function ($offer) {
 
-                // Sum all event points if total_points is missing
-
                 $eventPoints = collect($offer['events'] ?? [])
 
                     ->sum(fn($e) => floatval($e['points']));
@@ -351,7 +285,6 @@ class GameTester extends Component
 
                 $price  = '$' . number_format($points, 2);
 
-                // Per‑event breakdown
                 $events = collect($offer['events'] ?? [])
 
                     ->map(fn($e) => [
@@ -382,12 +315,6 @@ class GameTester extends Component
         $this->dispatch('model');
     }
 
-    public function openModel($index)
-    {
-
-        dd($index);
-    }
-
     public function mount(): void
     {
         if (Session::get('email')) {
@@ -403,15 +330,11 @@ class GameTester extends Component
 
             $this->paypalUpdateCard = "block";
             $this->paypalnewCard = "none";
-            $this->Uemail;
+            $this->Uemail = $exEmail;
             $this->withdrawShow = "";
         }
     }
-
-
-    public function capture() {}
-
-
+    
     public function render()
     {
 

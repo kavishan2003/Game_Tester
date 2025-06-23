@@ -1,5 +1,5 @@
 <div>
-    <div class="container mx-auto p-2 sm:p-4 lg:p-2 max-w-6xl">
+    <div class="container mx-auto p-2 sm:p-4 lg:p-2 max-w-6xl ">
         @if (session('success'))
             <div id="successAlert"
                 class="mb-4 p-3 rounded bg-green-100 text-green-800 border border-green-300 transition-opacity duration-500">
@@ -67,10 +67,12 @@
                 </div>
                 <div class="flex flex-col sm:flex-row space-y-3 sm:space-y-0 sm:space-x-3"> {{-- Buttons stack on mobile, row on sm screens and up --}}
                     <button wire:click.prevent = "History" type="button"
+                        onclick="document.body.classList.add('overflow-hidden');
+"
                         class="flex-1 py-3 px-6 rounded-full bg-yellow-400 text-yellow-900 font-bold hover:bg-yellow-300 transition-colors duration-200 shadow-md">
                         History
                     </button>
-                    <button wire:click.prevent = "Inprogress"
+                    <button wire:click.prevent = "Inprogress" onclick="document.body.classList.add('overflow-hidden');"
                         class="flex-1 py-3 px-6 rounded-full bg-yellow-400 text-yellow-900 font-bold hover:bg-yellow-300 transition-colors duration-200 shadow-md">
                         In Progress
                     </button>
@@ -126,8 +128,8 @@
                         Email only after 30 days again </p>
                     <form action="" id="paypalForm">
                         <div class="relative mb-4 " id="mail">
-                            <input type="email" placeholder="you@example.com" value="{{ Session::get('email') }}"
-                                {{ $updatedInputF }} id="paypalEmail1" name="Uemail"wire:model="Uemail"
+                            <input type="email" placeholder="you@example.com" {{ $updatedInputF }} id="paypalEmail1"
+                                name="Uemail"wire:model="Uemail"
                                 class="w-full px-5 py-3 border border-gray-300 rounded-lg focus:ring-blue-500 focus:border-blue-500 outline-none transition-all duration-200 text-gray-700 text-lg"
                                 aria-label="Enter your PayPal Email">
                             @error('Uemail')
@@ -299,14 +301,15 @@
                 {{-- Increased max-h to 80vh for medium screens and up. Removed lg:max-h-50 as it's redundant/incorrect. --}}
                 {{-- Width is now `w-full max-w-4xl` for better responsiveness from small to large screens. --}}
 
-                <div class="flex flex-wrap gap-4 md:gap-0 justify-between items-center p-5 border-b border-gray-200 bg-indigo-600 text-white">
+                <div
+                    class="flex flex-wrap gap-4 md:gap-0 justify-between items-center p-5 border-b border-gray-200 bg-indigo-600 text-white">
                     {{-- Changed text-black to text-white for better contrast on indigo background, matching the original design intent. --}}
                     <h3 class="text-2xl font-semibold w-full md:w-auto">
                         Transaction History
                     </h3>
                     {{-- Added a close button icon to the header for better UX, matching previous design --}}
                     <div>
-                         <div class="relative flex-grow w-full md:w-1/2">
+                        <div class="relative flex-grow w-full md:w-1/2">
                             <div class="relative flex-grow">
                                 <input wire:model.live = "search" type="text" id="transactionSearchInput"
                                     placeholder="Search transactions..."
@@ -442,6 +445,8 @@
                         {{ $historys->links() }}
                     @endif
                     <button id="closeModalBtnFooter" wire:click="$set('hideModel','hidden')"
+                        onclick="document.body.classList.remove('overflow-hidden');
+"
                         class="px-5 py-2 bg-gray-200 text-gray-800 rounded-lg hover:bg-gray-300 focus:outline-none focus:ring-2 focus:ring-gray-400 focus:ring-offset-2">
                         Close
                     </button>
@@ -534,29 +539,6 @@
                                             </tr>
                                         @endforeach
                                     @endforeach
-                                    {{-- @foreach ($detail['events'] as $event)
-                                                <td class="px-4 py-4 whitespace-nowrap text-sm md:px-6">
-                                                    <span
-                                                        class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-red-100 text-red-800">
-                                                        {{ $event['name'] }}
-                                                    </span>
-                                                </td>
-                                                <td class="px-4 py-2 font-sm text-left">
-                                                    <span
-                                                        class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-red-100 text-red-800">
-                                                        status :{{ $event['status'] }}
-                                                    </span>
-                                                </td>
-                                            @endforeach --}}
-                                    {{-- <td class="px-4 py-4 whitespace-nowrap text-sm text-gray-500 md:px-6">
-                                                {{ \Carbon\Carbon::parse($transaction['updated_at'])->format('Y-m-d h:i A') }}
-                                            </td> --}}
-                                    {{-- <td class="px-4 py-4 whitespace-nowrap text-sm text-gray-500 md:px-6">
-                                            {{ Session::get('email') }}
-                                        </td> --}}
-                                    {{-- @endforeach --}}
-
-                                    {{-- Add a message if no transactions are available --}}
                                     @if (count($games) === 0)
                                         <tr>
                                             <td colspan="4" class="px-4 py-8 text-center text-gray-500 text-lg">
@@ -573,6 +555,8 @@
                 </div>
                 <div class="p-4 border-t border-gray-200 h-[75px] flex justify-between items-center">
                     <button id="closeModalBtnFooter" wire:click="$set('inProgressModel','hidden')"
+                        onclick="document.body.classList.remove('overflow-hidden');
+"
                         class="px-5 py-2 bg-gray-200 text-gray-800 rounded-lg hover:bg-gray-300 focus:outline-none focus:ring-2 focus:ring-gray-400 focus:ring-offset-2">
                         Close
                     </button>
@@ -587,12 +571,6 @@
 </div>
 
 <script>
-    //join model
-
-    // document.getElementById("image1").addEventListener("click", function() {
-    //     document.getElementById("button2").click(); // Triggers click on Button 2
-    // });
-
     //search bar
     document.addEventListener('DOMContentLoaded', () => {
         // --- Dropdown Functionality (from previous response, ensure it's still here) ---
