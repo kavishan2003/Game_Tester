@@ -215,7 +215,7 @@
                 {{-- wire:click.prevent=openModel({{$index}}) --}}
                 {{-- Modal Overlay (unique per item) --}}
                 <div id="jackpotModal-{{ $index }}"
-                    class="fixed inset-0 bg-black/60 flex items-center justify-center p-4 hidden z-50">
+                    class="fixed inset-0 bg-black/60 flex items-center justify-center p-4 hidden z-100">
                     <div class="relative bg-white rounded-xl shadow-2xl w-full max-w-md mx-auto overflow-hidden transform transition-all duration-300 scale-95 opacity-0"
                         id="modalContent-{{ $index }}">
                         {{-- Modal Header --}}
@@ -330,36 +330,6 @@
                                 </button>
                             </div>
 
-                            <div class="relative inline-block text-left">
-                                <div>
-                                    <button type="button"
-                                        class="inline-flex justify-center w-full rounded-md border border-gray-300 shadow-sm px-4 py-2 bg-white text-sm font-medium text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
-                                        id="options-menu" aria-haspopup="true" aria-expanded="true">
-                                        Filter by Type
-                                        <svg class="-mr-1 ml-2 h-5 w-5" xmlns="http://www.w3.org/2000/svg"
-                                            viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
-                                            <path fill-rule="evenodd"
-                                                d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z"
-                                                clip-rule="evenodd" />
-                                        </svg>
-                                    </button>
-                                </div>
-
-                                <div class="origin-top-right absolute right-0 mt-2 w-56 rounded-md shadow-lg bg-white ring-1 ring-black ring-opacity-5 focus:outline-none hidden"
-                                    role="menu" aria-orientation="vertical" aria-labelledby="options-menu">
-                                    <div class="py-1" role="none">
-                                        <a href="#"
-                                            class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 hover:text-gray-900"
-                                            role="menuitem">All Types</a>
-                                        <a href="#"
-                                            class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 hover:text-gray-900"
-                                            role="menuitem">Deposit</a>
-                                        <a href="#"
-                                            class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 hover:text-gray-900"
-                                            role="menuitem">Withdraw</a>
-                                    </div>
-                                </div>
-                            </div>
                         </div>
                     </div>
                 </div>
@@ -500,7 +470,7 @@
 
                 <div class="p-6 flex-grow overflow-y-auto custom-scrollbar">
                     <div class="overflow-x-auto rounded-lg border border-gray-200 shadow-sm">
-                        @if (isset($progress))
+                        @if (isset($games))
                             <table class="min-w-full divide-y divide-gray-200">
                                 <thead class="bg-gray-50">
                                     <tr>
@@ -520,51 +490,51 @@
                                     </tr>
                                 </thead>
                                 <tbody class="bg-white divide-y divide-gray-200">
+                                    @foreach ($games as $index => $game)
+                                        @php
+                                            $eventCount = count($game['events']);
+                                        @endphp
+                                        @foreach ($game['events'] as $eventIndex => $event)
+                                            <tr>
+                                                @if ($eventIndex === 0)
+                                                    <td rowspan="{{ $eventCount }}"
+                                                        class="px-4 py-4 whitespace-nowrap text-capitalize font-medium text-gray-900 md:px-6"
+                                                        style="font-size: 15px;">
+                                                        <div class="relative flex items-center w-50 gap-2 group">
+                                                            <span
+                                                                class="font-semibold select-none tracking-wide">{{ $game['title'] }}</span>
+                                                        </div>
+                                                        <div
+                                                            class="mb-4 rounded-lg flex justify-center overflow-hidden ">
+                                                            {{-- Centered image --}}
+                                                            <img id="openModalBtn-{{ $index }}"
+                                                                {{-- UNIQUE id --}}
+                                                                data-index="{{ $index }}"
+                                                                src="{{ $game['thumbnail'] }}" alt="Game Preview"
+                                                                id="image1"
+                                                                class="openModalBtn w-50 h-auto object-cover rounded-lg">
+                                                            {{-- Made image fully responsive within its container --}}
+                                                        </div>
 
-                                    @foreach ($progress as $detail)
-                                        {{-- <tr>
-                                            <td class="px-4 py-4 whitespace-nowrap text-capitalize  font-medium text-gray-900 md:px-6"
-                                                style="font-size: 15px;">
-                                                <div class="relative flex items-center w-50 gap-2 group">
+                                                    </td>
+                                                @endif
+                                                <td class="px-4 py-4 whitespace-nowrap text-sm md:px-6">
                                                     <span
-                                                        class="font-semibold select-none tracking-wide">{{ $detail['title'] }}
+                                                        class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-blue-100 text-blue-800">
+                                                        {{ $event['name'] }}
                                                     </span>
-                                                </div>
-                                            </td>
-                                        </tr> --}}
-                                        @foreach ($progress as $detail)
-                                            @php
-                                                $eventCount = count($detail['events']);
-                                            @endphp
-                                            @foreach ($detail['events'] as $eventIndex => $event)
-                                                <tr>
-                                                    @if ($eventIndex === 0)
-                                                        <td rowspan="{{ $eventCount }}"
-                                                            class="px-4 py-4 whitespace-nowrap text-capitalize font-medium text-gray-900 md:px-6"
-                                                            style="font-size: 15px;">
-                                                            <div class="relative flex items-center w-50 gap-2 group">
-                                                                <span
-                                                                    class="font-semibold select-none tracking-wide">{{ $detail['title'] }}</span>
-                                                            </div>
-                                                        </td>
-                                                    @endif
-                                                    <td class="px-4 py-4 whitespace-nowrap text-sm md:px-6">
-                                                        <span
-                                                            class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-blue-100 text-blue-800">
-                                                            {{ $event['name'] }}
-                                                        </span>
-                                                    </td>
-                                                    <td class="px-4 py-2 font-sm text-left">
-                                                        <span
-                                                            class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full text-grey-800">
-                                                            status :{{ $event['status'] }}
-                                                        </span>
-                                                    </td>
+                                                </td>
+                                                <td class="px-4 py-2 font-sm text-left">
+                                                    <span
+                                                        class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full text-grey-800">
+                                                        status :{{ $event['status'] }}
+                                                    </span>
+                                                </td>
 
-                                                </tr>
-                                            @endforeach
+                                            </tr>
                                         @endforeach
-                                        {{-- @foreach ($detail['events'] as $event)
+                                    @endforeach
+                                    {{-- @foreach ($detail['events'] as $event)
                                                 <td class="px-4 py-4 whitespace-nowrap text-sm md:px-6">
                                                     <span
                                                         class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-red-100 text-red-800">
@@ -578,14 +548,13 @@
                                                     </span>
                                                 </td>
                                             @endforeach --}}
-                                        {{-- <td class="px-4 py-4 whitespace-nowrap text-sm text-gray-500 md:px-6">
+                                    {{-- <td class="px-4 py-4 whitespace-nowrap text-sm text-gray-500 md:px-6">
                                                 {{ \Carbon\Carbon::parse($transaction['updated_at'])->format('Y-m-d h:i A') }}
                                             </td> --}}
-                                        {{-- <td class="px-4 py-4 whitespace-nowrap text-sm text-gray-500 md:px-6">
+                                    {{-- <td class="px-4 py-4 whitespace-nowrap text-sm text-gray-500 md:px-6">
                                             {{ Session::get('email') }}
                                         </td> --}}
-                                        </tr>
-                                    @endforeach
+                                    {{-- @endforeach --}}
 
                                     {{-- Add a message if no transactions are available --}}
                                     @if (count($progress) === 0)
@@ -618,6 +587,12 @@
 </div>
 
 <script>
+    //join model
+
+    // document.getElementById("image1").addEventListener("click", function() {
+    //     document.getElementById("button2").click(); // Triggers click on Button 2
+    // });
+
     //search bar
     document.addEventListener('DOMContentLoaded', () => {
         // --- Dropdown Functionality (from previous response, ensure it's still here) ---
