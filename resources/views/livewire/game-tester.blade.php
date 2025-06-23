@@ -557,7 +557,7 @@
                                     {{-- @endforeach --}}
 
                                     {{-- Add a message if no transactions are available --}}
-                                    @if (count($progress) === 0)
+                                    @if (count($games) === 0)
                                         <tr>
                                             <td colspan="4" class="px-4 py-8 text-center text-gray-500 text-lg">
                                                 No Inprogress Status found.
