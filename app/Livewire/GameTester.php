@@ -219,7 +219,7 @@ class GameTester extends Component
     public function updatedturnstileToken(Request $request)
     {
 
-        logger($request->all());
+        logger($request->headers->all());
 
         $response = LaravelTurnstile::validate(
             $this->turnstileToken // this will be created from the cloudflare widget.
