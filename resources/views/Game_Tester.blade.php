@@ -136,108 +136,112 @@
 
             {{-- class="text-gray-500 text-center rounded-xl p-5 cf-turnstile flex items-center justify-center" --}}
 
-         
+
             <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 hidden"> {{-- Stays as 1 column on mobile, adapts to 2 or 3 --}}
-                @foreach ($games as $index => $game)
-                    <div
-                        class="bg-white p-6 rounded-2xl shadow-xl flex flex-col items-center text-center
+                @if (!isset($games))
+                    <h2>wait till the games load......</h2>
+                @else
+                    @foreach ($games as $index => $game)
+                        <div
+                            class="bg-white p-6 rounded-2xl shadow-xl flex flex-col items-center text-center
                         transition duration-300 hover:scale-[1.03] hover:shadow-2xl">
-                        {{-- thumbnail --}}
-                        <img src="{{ $game['thumbnail'] }}" alt="{{ $game['title'] }}"
-                            class="w-full max-w-xs h-auto object-cover mb-4 border-4 border-red-500 shadow-lg rounded-lg">
-                        {{-- Made image fully responsive and added rounded-lg --}}
+                            {{-- thumbnail --}}
+                            <img src="{{ $game['thumbnail'] }}" alt="{{ $game['title'] }}"
+                                class="w-full max-w-xs h-auto object-cover mb-4 border-4 border-red-500 shadow-lg rounded-lg">
+                            {{-- Made image fully responsive and added rounded-lg --}}
 
-                        {{-- title --}}
-                        <h3 class="text-xl sm:text-2xl font-bold text-gray-900 mb-2"> {{-- Adjusted text size for smaller screens --}}
-                            {{ $game['title'] }}
-                        </h3>
+                            {{-- title --}}
+                            <h3 class="text-xl sm:text-2xl font-bold text-gray-900 mb-2"> {{-- Adjusted text size for smaller screens --}}
+                                {{ $game['title'] }}
+                            </h3>
 
-                        {{-- price --}}
-                        <p class="text-lg text-gray-600 mb-4">
-                            Earn:
-                            <span class="text-green-600 font-extrabold text-xl sm:text-2xl"> {{-- Adjusted text size for smaller screens --}}
-                                {{ $game['price'] }}
-                            </span>
-                        </p>
+                            {{-- price --}}
+                            <p class="text-lg text-gray-600 mb-4">
+                                Earn:
+                                <span class="text-green-600 font-extrabold text-xl sm:text-2xl"> {{-- Adjusted text size for smaller screens --}}
+                                    {{ $game['price'] }}
+                                </span>
+                            </p>
 
-                        {{-- play button with unique ID --}}
-                        <button id="openModalBtn-{{ $index }}"
-                            class="openModalBtn w-full bg-blue-600 text-white py-3 rounded-lg font-bold text-lg
+                            {{-- play button with unique ID --}}
+                            <button id="openModalBtn-{{ $index }}"
+                                class="openModalBtn w-full bg-blue-600 text-white py-3 rounded-lg font-bold text-lg
                             hover:bg-blue-700 transition-colors duration-300 shadow-md"
-                            data-index="{{ $index }}">
-                            Play Now
-                        </button>
-                    </div>
+                                data-index="{{ $index }}">
+                                Play Now
+                            </button>
+                        </div>
 
-                    {{-- Modal Overlay (unique per item) --}}
-                    <div id="jackpotModal-{{ $index }}"
-                        class="fixed inset-0 bg-black/60 flex items-center justify-center p-4 hidden z-50">
-                        <div class="relative bg-white rounded-xl shadow-2xl w-full max-w-md mx-auto overflow-hidden transform transition-all duration-300 scale-95 opacity-0"
-                            id="modalContent-{{ $index }}">
-                            {{-- Modal Header --}}
-                            <div
-                                class="flex justify-between items-center bg-gradient-to-r from-green-700 to-green-600 text-white px-6 py-4 rounded-t-xl shadow-md">
-                                <h2 class="text-xl-center sm:text-2xl  font-bold">{{ $game['title'] }}</h2>
-                                {{-- Adjusted text size for smaller screens --}}
-                                <button
-                                    class="closeModalBtn text-white hover:text-gray-200 focus:outline-none transition-transform duration-200 transform hover:scale-110"
-                                    data-index="{{ $index }}">
-                                    <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                            d="M6 18L18 6M6 6l12 12"></path>
-                                    </svg>
-                                </button>
-                            </div>
-
-                            {{-- Modal Body --}}
-                            <div class="modal-body-scrollable  p-4 max-h-[80vh] overflow-y-auto"> {{-- Added max-h for scroll on smaller modals, overflow-y-auto --}}
-                                <div class="mb-4 rounded-lg flex justify-center overflow-hidden shadow-lg">
-                                    {{-- Centered image --}}
-                                    <img src="{{ $game['thumbnail'] }}" alt="Game Preview"
-                                        class="w-full h-auto object-cover rounded-lg"> {{-- Made image fully responsive within its container --}}
-                                </div>
-
-                                <p class="text-gray-700 text-base leading-relaxed mb-4"> {{-- Changed text-md-start to text-base and increased mb --}}
-                                    {{ $game['description'] }}
-                                </p>
-
-                                <h3 class="text-xl font-bold text-gray-900 mb-2">
-                                    Tasks
-                                </h3>
-
-                                {{-- example tasks --}}
-                                @foreach ($game['events'] as $task)
-                                    <div class="space-y-[4px] mb-2"> {{-- Reduced mb for tighter spacing --}}
-                                        <div
-                                            class="flex items-center justify-between bg-gray-50 border p-3 rounded-lg shadow-sm">
-                                            <span>{{ $task['name'] }}</span>
-                                            <span class="text-green-600 font-semibold">{{ $task['points'] }}</span>
-                                        </div>
-                                    </div>
-                                @endforeach
-
-                                <p class="text-red-700 text-sm text-base leading-relaxed mb-4"> {{-- Changed text-md-start to text-base and increased mb --}}
-                                    Disclaimer :
-                                </p>
-                                <p class="text-gray-700 text-sm text-base leading-relaxed mb-4"> {{-- Changed text-md-start to text-base and increased mb --}}
-                                    {{ $game['disclaimer'] }}
-                                </p>
-                                <div class="absolute bottom-0 left-0 right-0 p-4 bg-transparent  shadow-lg">
-                                    {{-- This is the key change --}}
-
+                        {{-- Modal Overlay (unique per item) --}}
+                        <div id="jackpotModal-{{ $index }}"
+                            class="fixed inset-0 bg-black/60 flex items-center justify-center p-4 hidden z-50">
+                            <div class="relative bg-white rounded-xl shadow-2xl w-full max-w-md mx-auto overflow-hidden transform transition-all duration-300 scale-95 opacity-0"
+                                id="modalContent-{{ $index }}">
+                                {{-- Modal Header --}}
+                                <div
+                                    class="flex justify-between items-center bg-gradient-to-r from-green-700 to-green-600 text-white px-6 py-4 rounded-t-xl shadow-md">
+                                    <h2 class="text-xl-center sm:text-2xl  font-bold">{{ $game['title'] }}</h2>
+                                    {{-- Adjusted text size for smaller screens --}}
                                     <button
-                                        class="btn-gradient w-full py-4 text-white font-bold text-lg rounded-xl shadow-lg transition-all duration-300 transform hover:scale-105">
-                                        <a href="{{ $game['play_url'] }}" target="_blank">PLAY AND EARN
-                                            {{ $game['price'] }}</a>
+                                        class="closeModalBtn text-white hover:text-gray-200 focus:outline-none transition-transform duration-200 transform hover:scale-110"
+                                        data-index="{{ $index }}">
+                                        <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                                d="M6 18L18 6M6 6l12 12"></path>
+                                        </svg>
                                     </button>
                                 </div>
-                                {{-- @php
+
+                                {{-- Modal Body --}}
+                                <div class="modal-body-scrollable  p-4 max-h-[80vh] overflow-y-auto"> {{-- Added max-h for scroll on smaller modals, overflow-y-auto --}}
+                                    <div class="mb-4 rounded-lg flex justify-center overflow-hidden shadow-lg">
+                                        {{-- Centered image --}}
+                                        <img src="{{ $game['thumbnail'] }}" alt="Game Preview"
+                                            class="w-full h-auto object-cover rounded-lg"> {{-- Made image fully responsive within its container --}}
+                                    </div>
+
+                                    <p class="text-gray-700 text-base leading-relaxed mb-4"> {{-- Changed text-md-start to text-base and increased mb --}}
+                                        {{ $game['description'] }}
+                                    </p>
+
+                                    <h3 class="text-xl font-bold text-gray-900 mb-2">
+                                        Tasks
+                                    </h3>
+
+                                    {{-- example tasks --}}
+                                    @foreach ($game['events'] as $task)
+                                        <div class="space-y-[4px] mb-2"> {{-- Reduced mb for tighter spacing --}}
+                                            <div
+                                                class="flex items-center justify-between bg-gray-50 border p-3 rounded-lg shadow-sm">
+                                                <span>{{ $task['name'] }}</span>
+                                                <span class="text-green-600 font-semibold">{{ $task['points'] }}</span>
+                                            </div>
+                                        </div>
+                                    @endforeach
+
+                                    <p class="text-red-700 text-sm text-base leading-relaxed mb-4"> {{-- Changed text-md-start to text-base and increased mb --}}
+                                        Disclaimer :
+                                    </p>
+                                    <p class="text-gray-700 text-sm text-base leading-relaxed mb-4"> {{-- Changed text-md-start to text-base and increased mb --}}
+                                        {{ $game['disclaimer'] }}
+                                    </p>
+                                    <div class="absolute bottom-0 left-0 right-0 p-4 bg-transparent  shadow-lg">
+                                        {{-- This is the key change --}}
+
+                                        <button
+                                            class="btn-gradient w-full py-4 text-white font-bold text-lg rounded-xl shadow-lg transition-all duration-300 transform hover:scale-105">
+                                            <a href="{{ $game['play_url'] }}" target="_blank">PLAY AND EARN
+                                                {{ $game['price'] }}</a>
+                                        </button>
+                                    </div>
+                                    {{-- @php
                                     dd(isset($result));
                                 @endphp --}}
+                                </div>
                             </div>
                         </div>
-                    </div>
-                @endforeach
+                    @endforeach
+                @endif
             </div>
         </section>
 
