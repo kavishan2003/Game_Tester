@@ -238,10 +238,11 @@ class GameTester extends Component
         $hashedId    = $storedEmail ? hash('sha256', $storedEmail) : '';
 
 
-        $ip = file_get_contents('https://api64.ipify.org');
+        // $ip = file_get_contents('https://api64.ipify.org');
 
+        // $ip = "111.223.182.102" ;
 
-        // $ip = $request->ip();
+        $ip = $request->ip();
 
         $hashedId = hash('sha256', $ip);
 
@@ -276,7 +277,7 @@ class GameTester extends Component
 
         $offers = array_slice($offers, 0, 30);
 
-        // dd($offers);
+        dd($offers);
 
         $this->games = collect($offers)->map(
             function ($offer) {
