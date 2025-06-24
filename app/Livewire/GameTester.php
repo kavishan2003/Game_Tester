@@ -52,7 +52,7 @@ class GameTester extends Component
 
     public function Inprogress()
     {
-       
+
         $this->inProgressModel = "";
     }
 
@@ -225,7 +225,7 @@ class GameTester extends Component
 
 
         if (!$response['success']) {
-            
+
             $this->dispatch('turnstile-fail');
             session()->flash('error', 'Captcha verification failed. Please try again.');
             return;
@@ -254,7 +254,7 @@ class GameTester extends Component
         ])->get('https://api.bitlabs.ai/v2/client/offers', [
             'client_ip'         => $ip,
             'client_user_agent' => $userUa,
-            'devices'           => ['android'],
+            'devices' => ['android', 'ios'],
             'is_game'           => 'true',
         ]);
 
@@ -334,7 +334,7 @@ class GameTester extends Component
             $this->withdrawShow = "";
         }
     }
-    
+
     public function render()
     {
 
