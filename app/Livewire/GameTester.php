@@ -245,6 +245,8 @@ class GameTester extends Component
 
         $ip = $request->ip();
 
+        logger($ip);
+
         $hashedId = hash('sha256', $ip);
 
         $userUa   = $request->userAgent();
