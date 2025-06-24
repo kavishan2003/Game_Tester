@@ -253,11 +253,11 @@ class GameTester extends Component
 
         $userUa = $request->userAgent();
 
-        Ipcatch::create([
-            'ip_address' => $ip,
-            'user_agent' => $userUa,
+        // Ipcatch::create([
+        //     'ip_address' => $ip,
+        //     'user_agent' => $userUa,
 
-        ]);
+        // ]);
 
         $response = Http::withHeaders([
             'User-Agent' => $userUa,
