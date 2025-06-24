@@ -553,7 +553,7 @@
                     </div>
 
                 </div>
-                <div class="p-4 border-t border-gray-200 h-[75px] flex justify-between items-center">
+                <div class="p-4 border-t border-gray-200 h-[75px] flex justify-end items-center">
                     <button id="closeModalBtnFooter" wire:click="$set('inProgressModel','hidden')"
                         onclick="document.body.classList.remove('overflow-hidden');
 "

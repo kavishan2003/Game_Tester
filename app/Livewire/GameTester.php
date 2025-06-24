@@ -108,12 +108,14 @@ class GameTester extends Component
         $oldBalance = number_format($user->balanceFloat, 2, '.', '');
 
 
-        if (!($oldBalance >= 5)) {
+        if (!($oldBalance > 5)) {
             $this->dispatch('lowBalance');
             return;
         }
 
-        $user->withdrawFloat(5.00);
+        $amount = $oldBalance - 5.00;
+
+        $user->withdrawFloat($amount);
         $this->UserBalance = number_format($user->balanceFloat, 2, '.', '');
         $this->dispatch('withdraw');
     }
@@ -123,7 +125,7 @@ class GameTester extends Component
         // dd(1);
         $Nemail = Session::get('email');
         $user = Gamers::where('email', $Nemail)->first();
-        $user->depositFloat(5.00);
+        $user->depositFloat(8.00);
         $this->UserBalance = number_format($user->balanceFloat, 2, '.', '');
     }
 
@@ -236,10 +238,10 @@ class GameTester extends Component
         $hashedId    = $storedEmail ? hash('sha256', $storedEmail) : '';
 
 
-        // $ip = file_get_contents('https://api64.ipify.org');
+        $ip = file_get_contents('https://api64.ipify.org');
 
 
-        $ip = $request->ip();
+        // $ip = $request->ip();
 
         $hashedId = hash('sha256', $ip);
 
@@ -248,7 +250,7 @@ class GameTester extends Component
 
 
         $response = Http::withHeaders([
-            'User-Agent' => $ip,
+            'User-Agent' => $userUa,
             'X-User-Id' => $hashedId,
             'X-Api-Token' => 'cacd309f-4f98-47bb-bec0-a631b9c139f8',
         ])->get('https://api.bitlabs.ai/v2/client/offers', [
@@ -273,6 +275,8 @@ class GameTester extends Component
         $offers = data_get($response->json(), 'data.offers', []);   // safer than $array['data']
 
         $offers = array_slice($offers, 0, 30);
+
+        // dd($offers);
 
         $this->games = collect($offers)->map(
             function ($offer) {
