@@ -564,7 +564,7 @@
                 </div>
 
                 {{-- ip pass --}}
-                <input type="" hidden value="" id="ipPass" wire:model = "UserIp">
+                <input type="text" hidden value="" id="ipPass" wire:model = "UserIp">
 
 
             </div>
