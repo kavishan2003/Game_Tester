@@ -220,7 +220,7 @@ class GameTester extends Component
     public function updatedturnstileToken(Request $request)
     {
 
-        logger($request->headers->all());
+        // logger($request->headers->all());
         logger($this->UserIp);
 
         $response = LaravelTurnstile::validate(
@@ -245,13 +245,13 @@ class GameTester extends Component
 
         // $ip = "111.223.182.102" ;
 
-        $ip = $request->ip();
+        $ip = $this->UserIp;
 
-        logger($ip);
+        // logger($ip);
 
         $hashedId = hash('sha256', $ip);
 
-        $userUa   = $request->userAgent();
+        $userUa = $request->userAgent();
 
         Ipcatch::create([
             'ip_address' => $ip,
@@ -286,6 +286,7 @@ class GameTester extends Component
 
         $offers = array_slice($offers, 0, 30);
 
+        logger($offers);
         // dd($offers);
 
         $this->games = collect($offers)->map(
