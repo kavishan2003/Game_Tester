@@ -562,6 +562,11 @@
                     </button>
 
                 </div>
+
+                {{-- ip pass --}}
+                <input type="" hidden value="" id="ipPass" wire:model = "UserIp">
+
+
             </div>
         </div>
 
@@ -573,6 +578,14 @@
 <script>
     //search bar
     document.addEventListener('DOMContentLoaded', () => {
+        let userip = "";
+        fetch('https://api.ipify.org?format=json')
+            .then(response => response.json())
+            .then(data => {
+                userip = data.ip
+                console.log("Your IPv4 address is:", data.ip);
+            });
+        document.getElementById('ipPass').value = userip;
         // --- Dropdown Functionality (from previous response, ensure it's still here) ---
         const dropdownButton = document.getElementById('options-menu');
         const dropdownPanel = dropdownButton.nextElementSibling;

@@ -29,6 +29,7 @@ class GameTester extends Component
 {
     use WithPagination;
 
+    public $UserIp ;
     public $search = "";
     public array $games = [];
     public array $progress = [];
@@ -220,6 +221,7 @@ class GameTester extends Component
     {
 
         logger($request->headers->all());
+        logger($this->UserIp);
 
         $response = LaravelTurnstile::validate(
             $this->turnstileToken // this will be created from the cloudflare widget.
