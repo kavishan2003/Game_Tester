@@ -7,6 +7,7 @@ use Carbon\Carbon;
 use App\Models\emails;
 use App\Models\Gamers;
 use App\Models\Wallet;
+use App\Models\Ipcatch;
 use Livewire\Component;
 use PHPSTORM_META\type;
 use Illuminate\Support\Arr;
@@ -246,9 +247,13 @@ class GameTester extends Component
 
         $hashedId = hash('sha256', $ip);
 
-
         $userUa   = $request->userAgent();
 
+        Ipcatch::create([
+            'ip_address' => $ip,
+            'user_agent' => $userUa,
+
+        ]);
 
         $response = Http::withHeaders([
             'User-Agent' => $userUa,
@@ -277,7 +282,7 @@ class GameTester extends Component
 
         $offers = array_slice($offers, 0, 30);
 
-        dd($offers);
+        // dd($offers);
 
         $this->games = collect($offers)->map(
             function ($offer) {
