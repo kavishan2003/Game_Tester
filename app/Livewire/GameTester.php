@@ -29,7 +29,7 @@ class GameTester extends Component
 {
     use WithPagination;
 
-    public $UserIp ;
+    public $UserIp;
     public $search = "";
     public array $games = [];
     public array $progress = [];
@@ -266,7 +266,7 @@ class GameTester extends Component
         ])->get('https://api.bitlabs.ai/v2/client/offers', [
             'client_ip'         => $ip,
             'client_user_agent' => $userUa,
-            'devices' => ['android', 'ios'],
+            'devices' => 'android',
             'is_game'           => 'true',
         ]);
 
@@ -280,15 +280,35 @@ class GameTester extends Component
             ]);
             return;
         }
+        $response_json = $response->json();
 
+        logger($response_json['data']['started_offers']);
+
+        $started_offers = data_get($response->json(), 'data.started_offers', []);
+
+        // dd($started_offers);
 
         $offers = data_get($response->json(), 'data.offers', []);   // safer than $array['data']
 
         $offers = array_slice($offers, 0, 30);
 
-        logger($offers);
+
         // dd($offers);
 
+        $this->progress = collect($started_offers)->map(
+            function ($started_offers) {
+
+                $date = $started_offers['latest_date'] ?? null;
+
+                $relativeTime = $date ? Carbon::parse($date)->diffForHumans() : '';
+
+                return [
+                    'name' => $started_offers['anchor'],
+                    'thumbnail'   => $started_offers['icon_url']    ?? '',
+                    'date'   => $relativeTime   ?? '',
+                ];
+            }
+        )->all();
         $this->games = collect($offers)->map(
             function ($offer) {
 
@@ -305,7 +325,7 @@ class GameTester extends Component
                     ->map(fn($e) => [
                         'name'   => $e['name'],
                         'points' => '$' . number_format((float) $e['points'], 2),
-                        'status' => $e['status'] ?? '',
+                        // 'status' => $e['icon_url'] ?? '',
                     ])
 
                     ->sortBy('points')

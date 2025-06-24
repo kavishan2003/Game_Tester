@@ -475,19 +475,19 @@
 
                 <div class="p-6 flex-grow overflow-y-auto custom-scrollbar">
                     <div class="overflow-x-auto rounded-lg border border-gray-200 shadow-sm">
-                        @if (isset($games))
+                        @if (isset($progress))
                             <table class="min-w-full divide-y divide-gray-200">
                                 <thead class="bg-gray-50">
                                     <tr>
                                         <th scope="col"
                                             class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider md:px-6">
-                                            Game Name
+                                            Game 
                                         </th>
 
-                                        <th scope="col"
+                                        {{-- <th scope="col"
                                             class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider md:px-6">
-                                            Event
-                                        </th>
+                                            Image
+                                        </th> --}}
                                         <th scope="col"
                                             class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider md:px-6">
                                             Status
@@ -495,49 +495,44 @@
                                     </tr>
                                 </thead>
                                 <tbody class="bg-white divide-y divide-gray-200">
-                                    @foreach ($games as $index => $game)
+                                    @foreach ($progress as $index => $game)
                                         @php
-                                            $eventCount = count($game['events']);
+                                            // $eventCount = count($game['events']);
                                         @endphp
-                                        @foreach ($game['events'] as $eventIndex => $event)
-                                            <tr>
-                                                @if ($eventIndex === 0)
-                                                    <td rowspan="{{ $eventCount }}"
-                                                        class="px-4 py-4 whitespace-nowrap text-capitalize font-medium text-gray-900 md:px-6"
-                                                        style="font-size: 15px;">
-                                                        <div class="relative flex items-center w-50 gap-2 group">
-                                                            <span
-                                                                class="font-semibold select-none tracking-wide">{{ $game['title'] }}</span>
-                                                        </div>
-                                                        <div
-                                                            class="mb-4 rounded-lg flex justify-center overflow-hidden ">
-                                                            {{-- Centered image --}}
-                                                            <img id="openModalBtn-{{ $index }}"
-                                                                {{-- UNIQUE id --}}
-                                                                data-index="{{ $index }}"
-                                                                src="{{ $game['thumbnail'] }}" alt="Game Preview"
-                                                                id="image1"
-                                                                class="openModalBtn w-50 h-auto object-cover rounded-lg">
-                                                            {{-- Made image fully responsive within its container --}}
-                                                        </div>
+                                        {{-- @foreach ($game['events'] as $eventIndex => $event) --}}
+                                        <tr>
+                                            {{-- @if ($eventIndex === 0) --}}
+                                            <td class="px-4 py-4 whitespace-nowrap text-sm md:px-6">
+                                                <span
+                                                    class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-blue-100 text-blue-800">
+                                                    {{ $game['name'] }}
+                                                </span>
+                                                <div class="mb-4 rounded-lg flex justify-center overflow-hidden ">
 
-                                                    </td>
-                                                @endif
-                                                <td class="px-4 py-4 whitespace-nowrap text-sm md:px-6">
-                                                    <span
-                                                        class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-blue-100 text-blue-800">
-                                                        {{ $event['name'] }}
-                                                    </span>
-                                                </td>
-                                                <td class="px-4 py-2 font-sm text-left">
-                                                    <span
-                                                        class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full text-grey-800">
-                                                        status :{{ $event['status'] }}
-                                                    </span>
-                                                </td>
+                                                    <img id="openModalBtn-{{ $index }}"
+                                                        data-index="{{ $index }}"
+                                                        src="{{ $game['thumbnail'] }}" alt="Game Preview"
+                                                        id="image1"
+                                                        class="openModalBtn w-50 h-auto object-cover rounded-lg">
 
-                                            </tr>
-                                        @endforeach
+                                                </div>
+                                            </td>
+                                            {{-- <td 
+                                                class="px-4 py-4 whitespace-nowrap text-capitalize font-medium text-gray-900 md:px-6"
+                                                style="font-size: 15px;">
+                                                <div class="relative flex items-center w-50 gap-2 group">
+                                                </div>
+                                            </td> --}}
+
+                                            <td class="px-4 py-2 font-sm text-left">
+                                                <span
+                                                    class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full text-grey-800">
+                                                    updated :{{ $game['date'] }}
+                                                </span>
+                                            </td>
+
+                                        </tr>
+                                        {{-- @endforeach --}}
                                     @endforeach
                                     @if (count($games) === 0)
                                         <tr>
