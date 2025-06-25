@@ -362,6 +362,10 @@
                                         class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider md:px-6">
                                         Email
                                     </th>
+                                    <th scope="col"
+                                        class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider md:px-6">
+                                        Status
+                                    </th>
                                 </tr>
                             </thead>
                             <tbody class="bg-white divide-y divide-gray-200">
@@ -422,6 +426,9 @@
                                             <td class="px-4 py-4 whitespace-nowrap text-sm text-gray-500 md:px-6">
                                                 {{ Session::get('email') }}
                                             </td>
+                                            {{-- <td class="px-4 py-4 whitespace-nowrap text-sm text-gray-500 md:px-6">
+                                                {{ $status }}
+                                            </td> --}}
                                         </tr>
                                     @endforeach
                                 @endif

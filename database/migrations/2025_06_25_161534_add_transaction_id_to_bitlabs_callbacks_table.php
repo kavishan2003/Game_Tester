@@ -11,13 +11,8 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('gamers', function (Blueprint $table) {
-            $table->id();
-            $table->timestamps();
-            $table->string('email');
-            $table->string('Uname');
-            $table->string('ip')->nullable();
-            $table->string('hash_id');
+        Schema::table('bitlabs_callbacks', function (Blueprint $table) {
+            //
         });
     }
 
@@ -26,6 +21,9 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('gamers');
+        Schema::table('bitlabs_callbacks', function (Blueprint $table) {
+            $table->unsignedBigInteger('transaction_id')->nullable()->after('tx');
+            $table->foreign('transaction_id')->references('id')->on('transactions')->onDelete('set null');
+        });
     }
 };

@@ -15,5 +15,7 @@ class Gamers extends Model implements Wallet
         'id',
         'email',
         'Uname',
+        'ip',
+        'hash_id',
     ];
 }

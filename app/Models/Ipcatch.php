@@ -10,5 +10,6 @@ class Ipcatch extends Model
         'id',
         'ip_address',
         'user_agent',
+        
     ];
 }

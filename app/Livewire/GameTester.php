@@ -30,10 +30,12 @@ class GameTester extends Component
     use WithPagination;
 
     public $UserIp;
+    public $Userhash;
     public $search = "";
     public array $games = [];
     public array $progress = [];
     public array $transactionHistory = [];
+    public array $status = [];
     public $turnstileToken;
     public $isTurnstile = "block";
     public $email;
@@ -66,6 +68,11 @@ class GameTester extends Component
         $UserId = Gamers::where('email', $NewEmail)->value('id');
         // dd($UserId);
         $walletId = Wallet::where('holder_id', $UserId)->value('id');
+
+
+
+
+        
         // dd($walletId);
         // $historys = Transactions::where('wallet_id', $walletId)->get(['uuid', 'type', 'amount', 'updated_at'])->paginte();
 
@@ -94,10 +101,14 @@ class GameTester extends Component
         //         ];
         //     }
         // )->all();
-        $this->hideModel = "";
-        // $this->dispatch('openHistoryModel');
 
-        // dd($this->transactionHistory);
+
+
+
+        
+        $this->hideModel = "";
+        
+
 
 
 
@@ -184,11 +195,15 @@ class GameTester extends Component
 
         $email = $this->email;
 
+        // $user_ip = $this->UserIp;
+
         $localPart = strstr($this->email, '@', true);
 
         Gamers::create([
             'email' => $email,
             'Uname' => $localPart,
+            'ip' => $this->UserIp,
+            'hash_id' => $this->Userhash,
         ]);
 
         Session::put([
@@ -222,6 +237,7 @@ class GameTester extends Component
 
         // logger($request->headers->all());
         logger($this->UserIp);
+        logger("hi");
 
         $response = LaravelTurnstile::validate(
             $this->turnstileToken // this will be created from the cloudflare widget.
@@ -250,6 +266,8 @@ class GameTester extends Component
         // logger($ip);
 
         $hashedId = hash('sha256', $ip);
+
+        $this->Userhash = $hashedId;
 
         $userUa = $request->userAgent();
 
@@ -282,7 +300,7 @@ class GameTester extends Component
         }
         $response_json = $response->json();
 
-        logger($response_json['data']);
+        // logger($response_json['data']);
 
         $started_offers = data_get($response->json(), 'data.started_offers', []);
 
