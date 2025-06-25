@@ -282,7 +282,7 @@ class GameTester extends Component
         }
         $response_json = $response->json();
 
-        logger($response_json['data']['started_offers']);
+        logger($response_json['data']);
 
         $started_offers = data_get($response->json(), 'data.started_offers', []);
 

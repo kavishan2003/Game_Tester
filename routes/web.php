@@ -2,6 +2,7 @@
 
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\GameController;
+use App\Http\Controllers\BitlabsController;
 use App\Http\Controllers\CaptureController;
 use App\Http\Controllers\PayEmailController;
 use App\Http\Controllers\TransactionController;
@@ -15,3 +16,5 @@ Route::get('/', [GameController::class, 'getGames']);
 Route::post('/contact/send', [CaptureController::class, 'send'])->name('contact.send');
 
 Route::post('/paypal', [PayEmailController::class, 'save']);
+
+Route::get('/bitlabs/callback', [BitlabsController::class, 'handleCallback']);
