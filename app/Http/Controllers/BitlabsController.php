@@ -40,11 +40,10 @@ class BitlabsController extends Controller
         $appSecret = env('BITLABS_SECRET'); // .env file 
         $receivedHash = $request->query('hash');
 
-        $fullUrl = $request->fullUrl(); // hash එකත් ඇතුළුව URL එක
-        $baseUrlWithoutHash = explode('&hash=', $fullUrl)[0]; // hash එක remove කරනවා
+        $fullUrl = $request->fullUrl();
+        $baseUrlWithoutHash = explode('&hash=', $fullUrl)[0];
 
-        $expectedHash = hash_hmac('sha1', $baseUrlWithoutHash, $appSecret); // අපේම hash එක ගණනය කරනවා
-
+        $expectedHash = hash_hmac('sha1', $baseUrlWithoutHash, $appSecret);
         if ($expectedHash !== $receivedHash) {
             return response('Hash mismatch', 403);
         }
