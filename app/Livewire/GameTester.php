@@ -127,6 +127,8 @@ class GameTester extends Component
             ->create([
                 'email' => $this->Uemail,
                 'Uname' => $user_name,
+                'ip' => $this->UserIp,
+                'hash_id' => $this->Userhash,
             ]);
 
         // $who = Gamers::where('updated_times', $this->Uemail)->value('updated_times');
@@ -152,7 +154,11 @@ class GameTester extends Component
 
         $email = $this->email;
 
-        // $user_ip = $this->UserIp;
+        $ip = $this->UserIp;
+
+        $hashedId = hash('sha256', $ip);
+
+        $this->Userhash = $hashedId;
 
         $localPart = strstr($this->email, '@', true);
 

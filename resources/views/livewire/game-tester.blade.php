@@ -81,10 +81,10 @@
                         Withdraw
                     </button>
                 </div>
-                <button wire:click.prevent = "addWallet" type="button" {{ $addShow }}
+                {{-- <button wire:click.prevent = "addWallet" type="button" {{ $addShow }}
                     class="mt-3  rounded-full bg-yellow-400 text-yellow-900 font-bold hover:bg-yellow-300 transition-colors duration-200 shadow-md">
                     Add Wallet 'for tesing'
-                </button>
+                </button> --}}
 
             </div>
 
