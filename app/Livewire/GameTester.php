@@ -232,6 +232,7 @@ class GameTester extends Component
             'is_game'           => 'true',
         ]);
 
+        logger($response);
 
         if (! $response->successful()) {
 

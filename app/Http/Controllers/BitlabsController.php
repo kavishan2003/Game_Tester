@@ -32,12 +32,12 @@ class BitlabsController extends Controller
             '18.193.24.206',
         ];
 
-        // if (!in_array($request->ip(), $allowedIps)) {
-        //     return response('Unauthorized IP', 403);
-        // }
+        if (!in_array($request->ip(), $allowedIps)) {
+            return response('Unauthorized IP', 403);
+        }
 
 
-        $appSecret = env('BITLABS_SECRET'); // .env file එකෙන් ගන්නවා
+        $appSecret = env('BITLABS_SECRET'); // .env file 
         $receivedHash = $request->query('hash');
 
         $fullUrl = $request->fullUrl(); // hash එකත් ඇතුළුව URL එක
@@ -45,9 +45,9 @@ class BitlabsController extends Controller
 
         $expectedHash = hash_hmac('sha1', $baseUrlWithoutHash, $appSecret); // අපේම hash එක ගණනය කරනවා
 
-        // if ($expectedHash !== $receivedHash) {
-        //     return response('Hash mismatch', 403);
-        // }
+        if ($expectedHash !== $receivedHash) {
+            return response('Hash mismatch', 403);
+        }
 
         //if transaction ID already exists
 
@@ -66,36 +66,66 @@ class BitlabsController extends Controller
         $data = $request->all();
 
         $parsed = [
-            'userID'     => $data['uid'] ?? null,
-            'transactionid' => $data['tx'] ?? null,
-            'rate'       => $data['raw'] ?? null,
+            'userID'     => $data['userID'] ?? null,
+            'transactionid' => $data['transactionid'] ?? null,
+            'rate'       => $data['rate'] ?? null,
             'type'       => $data['type'] ?? null,
             'ref'        => $data['ref'] ?? null,
-            'currency'   => $data['val'] ?? null,
+            'currency'   => $data['currency'] ?? null,
             'offer_name' => $data['offer_name'] ?? null,
-            'ip'         => $data['ip'] ?? $request->ip(),
-            'offer_delay' => $data['offer:delay'] ?? null,
+            'ip'         => $data['ip'] ?? null,
+            'offer_delay' => $data['offer_delay'] ?? null,
             'offer_id'   => $data['offer_id'] ?? null,
             'delay'      => $data['delay'] ?? null,
             'offer_state' => $data['offer_state'] ?? null,
-            'offer_vc_title' => $data['offer:vc_title'] ?? null,
+            'offer_vc_title' => $data['offer_vc_title'] ?? null,
             'task_name'  => $data['task_name'] ?? null,
             'task_id'    => $data['task_id'] ?? null,
             'fscore'     => $data['fscore'] ?? null,
             'category'   => $data['category'] ?? null,
             'network'    => 'bitlabs',
-            'secret'     => 'f92nf9nasfn23f8n9sn', // You probably don't need to log this
-            'offertasktype' => $data['offer:task:type'] ?? null,
-            'banreason'  => $data['n_reason'] ?? null,
-            'banstate'   => $data['n_state'] ?? null,
-            'surveyloi'  => $data['loi'] ?? null,
-            'surveycategory' => $data['category'] ?? null,
-            'conversion_country' => $data['country'] ?? null,
-            'unique_surveyid' => $data['v2sid'] ?? null,
-            'survey_fraudlevel' => $data['fscore'] ?? null,
-            'offer_purchase_usd' => $data['offer:task:iap:usd'] ?? null,
-            'inapp_purchase_event_hidden' => $data['offer:task:hidden'] ?? null,
+            'offertasktype' => $data['offertasktype'] ?? null,
+            'banreason'  => $data['banreason'] ?? null,
+            'banstate'   => $data['banstate'] ?? null,
+            'surveyloi'  => $data['surveyloi'] ?? null,
+            'surveycategory' => $data['surveycategory'] ?? null,
+            'conversion_country' => $data['conversion_country'] ?? null,
+            'unique_surveyid' => $data['unique_surveyid'] ?? null,
+            'survey_fraudlevel' => $data['survey_fraudlevel'] ?? null,
+            'offer_purchase_usd' => $data['offer_purchase_usd'] ?? null,
+            'inapp_purchase_event_hidden' => $data['inapp_purchase_event_hidden'] ?? null,
         ];
+
+        // $parsed = [
+        //     'userID'     => $data['uid'] ?? null,
+        //     'transactionid' => $data['tx'] ?? null,
+        //     'rate'       => $data['raw'] ?? null,
+        //     'type'       => $data['type'] ?? null,
+        //     'ref'        => $data['ref'] ?? null,
+        //     'currency'   => $data['val'] ?? null,
+        //     'offer_name' => $data['offer_name'] ?? null,
+        //     'ip'         => $data['ip'] ?? $request->ip(),
+        //     'offer_delay' => $data['offer:delay'] ?? null,
+        //     'offer_id'   => $data['offer_id'] ?? null,
+        //     'delay'      => $data['delay'] ?? null,
+        //     'offer_state' => $data['offer_state'] ?? null,
+        //     'offer_vc_title' => $data['offer:vc_title'] ?? null,
+        //     'task_name'  => $data['task_name'] ?? null,
+        //     'task_id'    => $data['task_id'] ?? null,
+        //     'fscore'     => $data['fscore'] ?? null,
+        //     'category'   => $data['category'] ?? null,
+        //     'network'    => 'bitlabs',
+        //     'offertasktype' => $data['offer:task:type'] ?? null,
+        //     'banreason'  => $data['n_reason'] ?? null,
+        //     'banstate'   => $data['n_state'] ?? null,
+        //     'surveyloi'  => $data['loi'] ?? null,
+        //     'surveycategory' => $data['category'] ?? null,
+        //     'conversion_country' => $data['country'] ?? null,
+        //     'unique_surveyid' => $data['v2sid'] ?? null,
+        //     'survey_fraudlevel' => $data['fscore'] ?? null,
+        //     'offer_purchase_usd' => $data['offer:task:iap:usd'] ?? null,
+        //     'inapp_purchase_event_hidden' => $data['offer:task:hidden'] ?? null,
+        // ];
 
 
 
