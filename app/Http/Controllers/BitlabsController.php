@@ -64,36 +64,7 @@ class BitlabsController extends Controller
 
         $data = $request->all();
 
-        $parsed = [
-            'userID'     => $data['userID'] ?? null,
-            'transactionid' => $data['transactionid'] ?? null,
-            'rate'       => $data['rate'] ?? null,
-            'type'       => $data['type'] ?? null,
-            'ref'        => $data['ref'] ?? null,
-            'currency'   => $data['currency'] ?? null,
-            'offer_name' => $data['offer_name'] ?? null,
-            'ip'         => $data['ip'] ?? null,
-            'offer_delay' => $data['offer_delay'] ?? null,
-            'offer_id'   => $data['offer_id'] ?? null,
-            'delay'      => $data['delay'] ?? null,
-            'offer_state' => $data['offer_state'] ?? null,
-            'offer_vc_title' => $data['offer_vc_title'] ?? null,
-            'task_name'  => $data['task_name'] ?? null,
-            'task_id'    => $data['task_id'] ?? null,
-            'fscore'     => $data['fscore'] ?? null,
-            'category'   => $data['category'] ?? null,
-            'network'    => 'bitlabs',
-            'offertasktype' => $data['offertasktype'] ?? null,
-            'banreason'  => $data['banreason'] ?? null,
-            'banstate'   => $data['banstate'] ?? null,
-            'surveyloi'  => $data['surveyloi'] ?? null,
-            'surveycategory' => $data['surveycategory'] ?? null,
-            'conversion_country' => $data['conversion_country'] ?? null,
-            'unique_surveyid' => $data['unique_surveyid'] ?? null,
-            'survey_fraudlevel' => $data['survey_fraudlevel'] ?? null,
-            'offer_purchase_usd' => $data['offer_purchase_usd'] ?? null,
-            'inapp_purchase_event_hidden' => $data['inapp_purchase_event_hidden'] ?? null,
-        ];
+
 
         // $parsed = [
         //     'userID'     => $data['uid'] ?? null,
@@ -126,7 +97,36 @@ class BitlabsController extends Controller
         //     'inapp_purchase_event_hidden' => $data['offer:task:hidden'] ?? null,
         // ];
 
-
+        $parsed = [
+            'userID'     => $data['userID'] ?? null,
+            'transactionid' => $data['transactionid'] ?? null,
+            'rate'       => $data['rate'] ?? null,
+            'type'       => $data['type'] ?? null,
+            'ref'        => $data['ref'] ?? null,
+            'currency'   => $data['currency'] ?? null,
+            'offer_name' => $data['offer_name'] ?? null,
+            'ip'         => $data['ip'] ?? null,
+            'offer_delay' => $data['offer_delay'] ?? null,
+            'offer_id'   => $data['offer_id'] ?? null,
+            'delay'      => $data['delay'] ?? null,
+            'offer_state' => $data['offer_state'] ?? null,
+            'offer_vc_title' => $data['offer_vc_title'] ?? null,
+            'task_name'  => $data['task_name'] ?? null,
+            'task_id'    => $data['task_id'] ?? null,
+            'fscore'     => $data['fscore'] ?? null,
+            'category'   => $data['category'] ?? null,
+            'network'    => 'bitlabs',
+            'offertasktype' => $data['offertasktype'] ?? null,
+            'banreason'  => $data['banreason'] ?? null,
+            'banstate'   => $data['banstate'] ?? null,
+            'surveyloi'  => $data['surveyloi'] ?? null,
+            'surveycategory' => $data['surveycategory'] ?? null,
+            'conversion_country' => $data['conversion_country'] ?? null,
+            'unique_surveyid' => $data['unique_surveyid'] ?? null,
+            'survey_fraudlevel' => $data['survey_fraudlevel'] ?? null,
+            'offer_purchase_usd' => $data['offer_purchase_usd'] ?? null,
+            'inapp_purchase_event_hidden' => $data['inapp_purchase_event_hidden'] ?? null,
+        ];
 
         Bitlabs_Callback::create([
             'user_id' => $parsed['userID'],
