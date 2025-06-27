@@ -3,9 +3,9 @@
 declare(strict_types=1);
 
 use Bavix\Wallet\Models\Transaction;
-use Illuminate\Database\Migrations\Migration;
-use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
+use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Database\Migrations\Migration;
 
 return new class() extends Migration
 {
@@ -18,6 +18,9 @@ return new class() extends Migration
             $table->enum('type', ['deposit', 'withdraw'])->index();
             $table->decimal('amount', 64, 0);
             $table->boolean('confirmed');
+            $table->string('status')->nullable();
+            $table->string('game_name')->nullable();
+            $table->string('event_name')->nullable();
             $table->json('meta')
                 ->nullable();
             $table->uuid('uuid')

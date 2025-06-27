@@ -20,8 +20,6 @@ return new class extends Migration
             $table->string('offer_name')->nullable();
             $table->string('status')->nullable();
             $table->timestamps();
-            $table->unsignedBigInteger('transaction_id')->nullable();
-            $table->foreign('transaction_id')->references('id')->on('transactions')->onDelete('set null');
         });
     }
 

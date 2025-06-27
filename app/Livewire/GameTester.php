@@ -17,12 +17,12 @@ use Illuminate\Http\Request;
 use Livewire\WithPagination;
 use SweetAlert2\Laravel\Swal;
 // use Bavix\Wallet\Interfaces\Wallet;
+use Illuminate\Support\Facades\DB;
 use Bavix\Wallet\Models\Transaction;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Session;
 use Jantinnerezo\LivewireAlert\Enums\Position;
 use Coderflex\LaravelTurnstile\Facades\LaravelTurnstile;
-
 // use Coderflex\LaravelTurnstile\Facades\LaravelTurnstileMETA\type;
 
 class GameTester extends Component
@@ -35,7 +35,6 @@ class GameTester extends Component
     public array $games = [];
     public array $progress = [];
     public array $transactionHistory = [];
-    public array $status = [];
     public $turnstileToken;
     public $isTurnstile = "block";
     public $email;
@@ -69,49 +68,7 @@ class GameTester extends Component
         // dd($UserId);
         $walletId = Wallet::where('holder_id', $UserId)->value('id');
 
-
-
-
-        
-        // dd($walletId);
-        // $historys = Transactions::where('wallet_id', $walletId)->get(['uuid', 'type', 'amount', 'updated_at'])->paginte();
-
-        // $this->historys = Transaction::where('wallet_id', $walletId)
-        //     ->select('uuid', 'type', 'amount', 'updated_at')
-        //     ->paginate(10);
-
-        // dd($this->historys);
-        // $historyArray = $this->historys->toArray();
-        // dd($historyArray);   
-        // $this->$transactionHistory = collect($items)
-
-
-
-        // $this->transactionHistory = collect($historyArray)->map(
-        //     function ($histroy,  $index) {
-
-        //         $NewEmail = Session::get('email');
-
-        //         return [
-        //             'id'          => $histroy['uuid']    ?? '',
-        //             'type'       => $histroy['type']      ?? '',
-        //             'amount' => $histroy['amount'] ?? '',
-        //             'email' => $NewEmail,
-        //             'updated_at'   => $histroy['updated_at']    ?? '',
-        //         ];
-        //     }
-        // )->all();
-
-
-
-
-        
         $this->hideModel = "";
-        
-
-
-
-
     }
 
     public function withdraw()
@@ -256,26 +213,13 @@ class GameTester extends Component
 
         $hashedId    = $storedEmail ? hash('sha256', $storedEmail) : '';
 
-
-        // $ip = file_get_contents('https://api64.ipify.org');
-
-        // $ip = "111.223.182.102" ;
-
         $ip = $this->UserIp;
-
-        // logger($ip);
 
         $hashedId = hash('sha256', $ip);
 
         $this->Userhash = $hashedId;
 
         $userUa = $request->userAgent();
-
-        // Ipcatch::create([
-        //     'ip_address' => $ip,
-        //     'user_agent' => $userUa,
-
-        // ]);
 
         $response = Http::withHeaders([
             'User-Agent' => $userUa,
@@ -287,6 +231,7 @@ class GameTester extends Component
             'devices' => 'android',
             'is_game'           => 'true',
         ]);
+
 
         if (! $response->successful()) {
 
@@ -304,14 +249,9 @@ class GameTester extends Component
 
         $started_offers = data_get($response->json(), 'data.started_offers', []);
 
-        // dd($started_offers);
-
         $offers = data_get($response->json(), 'data.offers', []);   // safer than $array['data']
 
         $offers = array_slice($offers, 0, 30);
-
-
-        // dd($offers);
 
         $this->progress = collect($started_offers)->map(
             function ($started_offers) {
@@ -343,7 +283,6 @@ class GameTester extends Component
                     ->map(fn($e) => [
                         'name'   => $e['name'],
                         'points' => '$' . number_format((float) $e['points'], 2),
-                        // 'status' => $e['icon_url'] ?? '',
                     ])
 
                     ->sortBy('points')
@@ -397,10 +336,15 @@ class GameTester extends Component
 
         $walletId = Wallet::where('holder_id', $UserId)->value('id');
 
+        // $status = Transactions::pluck('status');
+
+
+        // dd($status);
+
         if ($this->search == "") {
 
             return view('livewire.game-tester', ['historys' => Transaction::where('wallet_id', $walletId)
-                ->select('uuid', 'type', 'amount', 'updated_at')
+                ->select('uuid', 'type', 'amount', 'updated_at', 'status', 'game_name', 'event_name')
                 ->orderByDesc('updated_at')
                 ->paginate(30)]);
         }
@@ -409,7 +353,8 @@ class GameTester extends Component
             ->orWhere('uuid', "like", "%" . $this->search . "%")
             ->orWhere('amount', "like", "%" . $this->search . "%")
             ->orWhere('updated_at', "like", "%" . $this->search . "%")
-            ->select('uuid', 'type', 'amount', 'updated_at')
+            ->orWhere('status', "like", "%" . $this->search . "%")
+            ->select('uuid', 'type', 'amount', 'updated_at', 'status', 'game_name', 'event_name')
             ->orderByDesc('updated_at')
             ->paginate(30)]);
     }

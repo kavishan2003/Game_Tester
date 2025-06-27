@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Gamers;
+use App\Models\Transactions;
 use Illuminate\Http\Request;
 use App\Models\Bitlabs_callback;
 use Illuminate\Support\Facades\DB;
@@ -34,7 +35,7 @@ class BitlabsController extends Controller
         // if (!in_array($request->ip(), $allowedIps)) {
         //     return response('Unauthorized IP', 403);
         // }
-        
+
 
         $appSecret = env('BITLABS_SECRET'); // .env file එකෙන් ගන්නවා
         $receivedHash = $request->query('hash');
@@ -50,7 +51,7 @@ class BitlabsController extends Controller
 
         //if transaction ID already exists
 
-         $tx = $request->query('tx');
+        $tx = $request->query('tx');
         if (Bitlabs_callback::where('transaction_id', $tx)->exists()) {
             return response('Already processed', 200);
         }
@@ -60,7 +61,7 @@ class BitlabsController extends Controller
 
         $postback = $request->all();
 
-        // logger($postback);
+        logger($postback);
 
         $data = $request->all();
 
@@ -108,11 +109,21 @@ class BitlabsController extends Controller
         ]);
 
 
+
+
+
         $user = Gamers::where('hash_id', $parsed['userID'])->first();
 
-        //  dd($user);
-
         $user->depositFloat($parsed['offer_purchase_usd']);
+
+        $latest = Transactions::max('id');
+
+        Transaction::where('id', Transaction::max('id'))->update(['status' => $parsed['offer_state']]);
+        Transaction::where('id', Transaction::max('id'))->update(['game_name' => $parsed['offer_name']]);
+        Transaction::where('id', Transaction::max('id'))->update(['event_name' => $parsed['task_name']]);
+
+
+
 
         $UserBalance = number_format($user->balanceFloat, 2, '.', '');
 

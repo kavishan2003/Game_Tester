@@ -309,7 +309,7 @@
                     </h3>
                     {{-- Added a close button icon to the header for better UX, matching previous design --}}
                     <div>
-                        <div class="relative flex-grow w-full md:w-1/2">
+                        <div class="relative flex-grow w-full md:w-1/2 lg:w-full">
                             <div class="relative flex-grow">
                                 <input wire:model.live = "search" type="text" id="transactionSearchInput"
                                     placeholder="Search transactions..."
@@ -360,11 +360,11 @@
                                     </th>
                                     <th scope="col"
                                         class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider md:px-6">
-                                        Email
+                                        Status
                                     </th>
                                     <th scope="col"
                                         class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider md:px-6">
-                                        Status
+                                        Details
                                     </th>
                                 </tr>
                             </thead>
@@ -377,11 +377,11 @@
 
                                         <tr>
                                             <td class="px-4 py-4 whitespace-nowrap text-capitalize  font-medium text-gray-900 md:px-6"
-                                                style="font-size: 10px;">
+                                                style="font-size: 11px; text-transform: capitalize;">
                                                 <div class="relative flex items-center w-50 gap-2 group">
                                                     {{-- Abbreviated + upper-cased ID --}}
                                                     <span
-                                                        class="font-semibold select-none tracking-wide">{{ $transaction['uuid'] }}</span>
+                                                        class="font-semibold text-capitalize select-none tracking-wide">{{ $transaction['uuid'] }}</span>
                                                     <button
                                                         class="ml-2 text-xs text-blue-500 opacity-0 group-hover:opacity-100 transition"
                                                         onclick="copyToClipboard(this)"
@@ -395,12 +395,12 @@
                                                 @if ($transaction['type'] === 'deposit')
                                                     <span
                                                         class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-green-100 text-green-800">
-                                                        {{ $transaction['type'] }}
+                                                        CREDIT
                                                     </span>
                                                 @elseif ($transaction['type'] === 'withdraw')
                                                     <span
                                                         class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-red-100 text-red-800">
-                                                        {{ $transaction['type'] }}
+                                                        WITHDRAW
                                                     </span>
                                                 @else
                                                     <span
@@ -423,12 +423,54 @@
                                                 {{ \Carbon\Carbon::parse($transaction['updated_at'])->format('Y-m-d h:i A') }}
                                                 {{-- Using Carbon for consistent date formatting --}}
                                             </td>
-                                            <td class="px-4 py-4 whitespace-nowrap text-sm text-gray-500 md:px-6">
-                                                {{ Session::get('email') }}
-                                            </td>
                                             {{-- <td class="px-4 py-4 whitespace-nowrap text-sm text-gray-500 md:px-6">
-                                                {{ $status }}
+                                                {{ Session::get('email') }}
                                             </td> --}}
+                                            <td class="px-4 py-4 whitespace-nowrap text-sm text-gray-500 md:px-6">
+                                                @if ($transaction['status'] === 'COMPLETED')
+                                                    <span
+                                                        class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-green-100 text-green-800">
+                                                        SUCCESS
+                                                    </span>
+                                                @elseif ($transaction['status'] === 'PENDING')
+                                                    <span
+                                                        class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-orange-100 text-orange-800">
+                                                        {{ $transaction['status'] }}
+                                                    </span>
+                                                @elseif ($transaction['status'] === 'FAILED')
+                                                    <span
+                                                        class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-red-100 text-red-800">
+                                                        {{ $transaction['status'] }}
+                                                    </span>
+                                                @else
+                                                    <span
+                                                        class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-gray-100 text-gray-800">
+                                                        N/A
+                                                    </span>
+                                                @endif
+                                            </td>
+                                            <td
+                                                class="px-4 py-4 whitespace-nowrap text-sm text-gray-700 md:px-6 max-w-xs overflow-hidden text-ellipsis">
+                                                @if ($transaction['type'] === 'deposit')
+                                                    <div class="flex flex-col text-red-700 font-medium">
+                                                        <span class="text-gray-700 text-xs font-medium">
+                                                            {{ $transaction['game_name'] }}
+                                                        </span>
+                                                        <span class="text-xs text-gray-600 truncate w-52">
+                                                            {{ $transaction['event_name'] }}
+                                                        </span>
+                                                    </div>
+                                                @elseif ($transaction['type'] === 'withdraw')
+                                                    <div class="flex flex-col text-red-700 font-medium">
+                                                        <span>Withdraw to:</span>
+                                                        <span class="text-xs text-gray-600 truncate w-52">
+                                                            {{ Session::get('email') }}
+                                                        </span>
+                                                    </div>
+                                                @else
+                                                    <span class="text-gray-500">N/A</span>
+                                                @endif
+                                            </td>
                                         </tr>
                                     @endforeach
                                 @endif
@@ -488,7 +530,7 @@
                                     <tr>
                                         <th scope="col"
                                             class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider md:px-6">
-                                            Game 
+                                            Game
                                         </th>
 
                                         {{-- <th scope="col"
@@ -566,7 +608,7 @@
                 </div>
 
                 {{-- ip pass --}}
-                <input type="text" hidden value="" id="ipPass" wire:model = "UserIp">
+                <input wire:model="UserIp" type="text" hidden value="" id="ipPass">
 
 
             </div>
@@ -585,9 +627,15 @@
             .then(response => response.json())
             .then(data => {
                 userip = data.ip
+                document.getElementById('ipPass').value = userip;
                 console.log("Your IPv4 address is:", data.ip);
+
+
+                const event = new Event('input', {
+                    bubbles: true
+                });
+                document.getElementById('ipPass').dispatchEvent(event);
             });
-        document.getElementById('ipPass').value = userip;
         // --- Dropdown Functionality (from previous response, ensure it's still here) ---
         const dropdownButton = document.getElementById('options-menu');
         const dropdownPanel = dropdownButton.nextElementSibling;
@@ -681,7 +729,7 @@
 </script>
 
 <script>
-    //fetch data
+    // fetch data
     fetch('/Transactions')
         .then(res => res.json())
         .then(data => {
