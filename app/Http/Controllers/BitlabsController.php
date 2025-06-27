@@ -43,17 +43,17 @@ class BitlabsController extends Controller
         $fullUrl = $request->fullUrl();
         $baseUrlWithoutHash = explode('&hash=', $fullUrl)[0];
 
-        $expectedHash = hash_hmac('sha1', $baseUrlWithoutHash, $appSecret);
-        if ($expectedHash !== $receivedHash) {
-            return response('Hash mismatch', 403);
-        }
+        // $expectedHash = hash_hmac('sha1', $baseUrlWithoutHash, $appSecret);
+        // if ($expectedHash !== $receivedHash) {
+        //     return response('Hash mismatch', 403);
+        // }
 
         //if transaction ID already exists
 
-        $tx = $request->query('tx');
-        if (Bitlabs_callback::where('transaction_id', $tx)->exists()) {
-            return response('Already processed', 200);
-        }
+        // $tx = $request->query('tx');
+        // if (Bitlabs_callback::where('transaction_id', $tx)->exists()) {
+        //     return response('Already processed', 200);
+        // }
 
 
         // echo "hi";
