@@ -9,6 +9,8 @@
         {{-- favicon --}}
         <link rel="icon" type="image/svg+xml" href="{{ asset('favicon.svg') }}">
 
+        <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" rel="stylesheet">
+
         <!-- Fonts -->
         <link rel="preconnect" href="https://fonts.bunny.net">
         <link href="https://fonts.bunny.net/css?family=instrument-sans:400,500,600" rel="stylesheet" />

@@ -17,7 +17,6 @@
 
         {{-- Header Section --}}
         <header class="flex flex-col items-center justify-content-start mb-12 text-center"> {{-- Added flex-col and text-center for better mobile alignment --}}
-            <i class="fas fa-gamepad text-5xl text-blue-600 mb-4"></i> {{-- Moved icon above title for vertical stacking on small screens --}}
             <h1 class="text-4xl sm:text-5xl font-extrabold text-gray-900 drop-shadow-sm">🎮 Game Tester</h1>
             {{-- Adjusted text size for smaller screens --}}
         </header>
@@ -29,7 +28,7 @@
                 <div
                     class="bg-white p-6 rounded-2xl shadow-xl flex flex-col items-center text-center transition-all duration-300 hover:shadow-2xl hover:-translate-y-1">
                     <div class="bg-blue-100 text-blue-600 p-4 rounded-full mb-4 text-3xl">
-                        <i class="fa-brands fa-paypal"></i>
+                        <i class="fa-brands fa-paypal "></i>
                     </div>
                     <h3 class="text-xl font-bold text-gray-800 mb-2">Step 1: Enter Your PayPal</h3>
                     <p class="text-gray-600 text-sm">Securely link your PayPal for payouts.</p>
@@ -187,11 +186,9 @@
                     {{-- thumbnail --}}
                     <img id="openModalBtn-{{ $index }}" {{-- UNIQUE id --}}
                         data-index="{{ $index }}" {{-- tells JS which modal --}} src="{{ $game['thumbnail'] }}"
-                        class="openModalBtn cursor-pointer w-full max-w-xs h-auto object-cover mb-4 border-4 border-red-500 shadow-lg rounded-lg"
+                        class="openModalBtn cursor-pointer w-full max-w-xs h-[330px] object-cover mb-4 border-2 border-white shadow-lg rounded-lg"
                         alt="Open jackpot {{ $index }}" />
-                    {{-- Made image fully responsive and added rounded-lg --}}
-                    {{-- class="" --}}
-                    {{-- title --}}
+
                     <div class="h-16">
 
                         <h3 class="text-xl sm:text-2xl font-bold text-gray-900 mb-2"> {{-- Adjusted text size for smaller screens --}}
@@ -210,7 +207,7 @@
                     {{-- play button with unique ID --}}
                     <button id="openModalBtn-{{ $index }}" data-index="{{ $index }}" type="button"
                         class="openModalBtn w-full bg-blue-600 text-white py-3 rounded-lg font-bold text-lg
-                            hover:bg-blue-700 transition-colors duration-300 shadow-md">
+                            hover:bg-blue-700 transition-colors duration-300 shadow-md cursor-pointer">
                         Play Now
                     </button>
                 </div>
