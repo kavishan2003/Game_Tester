@@ -269,7 +269,7 @@
                             <p class="text-red-700 text-sm text-base leading-relaxed mb-4"> {{-- Changed text-md-start to text-base and increased mb --}}
                                 Disclaimer :
                             </p>
-                            <p class="text-gray-700 text-sm text-base leading-relaxed mb-4"> {{-- Changed text-md-start to text-base and increased mb --}}
+                            <p class="text-gray-700 text-sm text-base leading-relaxed mb-[60px]"> {{-- Changed text-md-start to text-base and increased mb --}}
                                 {{ $game['disclaimer'] }}
                             </p>
                             <div class="absolute bottom-0 left-0 right-0 p-4 bg-transparent  shadow-lg">
