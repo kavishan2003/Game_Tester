@@ -55,7 +55,6 @@ class GameTester extends Component
 
     public function Inprogress()
     {
-
         $this->inProgressModel = "";
     }
 
@@ -231,6 +230,7 @@ class GameTester extends Component
             'User-Agent' => $userUa,
             'X-User-Id' => $hashedId,
             'X-Api-Token' => 'cacd309f-4f98-47bb-bec0-a631b9c139f8',
+            // 'X-Api-Token' => 'f94fbb03-47a6-48b5-9aa3-bd7f04cc156d',
         ])->get('https://api.bitlabs.ai/v2/client/offers', [
             'client_ip'         => $ip,
             'client_user_agent' => $userUa,
@@ -255,6 +255,7 @@ class GameTester extends Component
         // logger($response_json['data']);
 
         $started_offers = data_get($response->json(), 'data.started_offers', []);
+        // dd($started_offers);
 
         $offers = data_get($response->json(), 'data.offers', []);   // safer than $array['data']
 
@@ -265,12 +266,38 @@ class GameTester extends Component
 
                 $date = $started_offers['latest_date'] ?? null;
 
+                $points = (float) ($started_offers['total_points']);
+
+                $price  = '$' . number_format($points, 2);
+
+                $events = collect($started_offers['events'] ?? [])
+
+                    ->map(fn($e) => [
+                        'name'   => $e['name'],
+                        'points' => '$' . number_format((float) $e['points'], 2),
+                        'status' => $e['status']
+                    ])
+
+                    ->sortBy('points')
+                    ->values()
+                    ->all();
+
                 $relativeTime = $date ? Carbon::parse($date)->diffForHumans() : '';
 
                 return [
                     'name' => $started_offers['anchor'],
-                    'thumbnail'   => $started_offers['icon_url']    ?? '',
+                    // 'thumbnail'   => $started_offers['icon_url']    ?? '',
                     'date'   => $relativeTime   ?? '',
+                    'id'          => Str::uuid()->toString(),
+                    'title'       => $started_offers['anchor']      ?? '',
+                    'description' => $offestarted_offersr['description'] ?? '',
+                    'thumbnail'   => $started_offers['icon_url']    ?? '',
+                    'price'       => $price,
+                    'play_url'    => $started_offers['click_url']   ?? '#',
+                    'disclaimer'  => $started_offers['disclaimer']  ?? '',
+                    'requirements' => $started_offers['requirements'] ?? '',
+                    'events'      => $events,
+                    'event_count' => count($events),
                 ];
             }
         )->all();

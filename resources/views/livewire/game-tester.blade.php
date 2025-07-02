@@ -108,9 +108,6 @@
                         class="w-full bg-green-600 text-white py-3 px-6 rounded-lg font-bold text-lg hover:bg-green-700 transition-colors duration-300 shadow-md disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center">
                         <span>Save Email</span>
                     </button>
-                    {{-- <p class="text-gray-600 text-sm-center mb-4">If you don't have a paypal <a class="text-blue-600"
-                            href="https://www.paypal.com/us/webapps/mpp/account-selection" target="_blank">Click
-                            here</a> </p> --}}
                 </form>
 
             </div>
@@ -148,10 +145,11 @@
 
                 </div>
             </div>
+        </section>
     </div>
 
 
-    </section>
+
 
     {{-- Available Games Section --}}
     <section>
@@ -269,7 +267,8 @@
                             <p class="text-red-700 text-sm text-base leading-relaxed mb-4"> {{-- Changed text-md-start to text-base and increased mb --}}
                                 Disclaimer :
                             </p>
-                            <p class="text-gray-700 text-sm text-base leading-relaxed mb-[60px]"> {{-- Changed text-md-start to text-base and increased mb --}}
+                            <p class="text-gray-700 text-sm text-base leading-relaxed mb-[60px]">
+                                {{-- Changed text-md-start to text-base and increased mb --}}
                                 {{ $game['disclaimer'] }}
                             </p>
                             <div class="absolute bottom-0 left-0 right-0 p-4 bg-transparent  shadow-lg">
@@ -511,8 +510,6 @@
              {{ $inProgressModel }} 
               overflow-hidden bg-black/60 flex items-center justify-center p-4"
             style="backdrop-filter: blur(2px);">
-            {{-- The style for backdrop-filter provides a subtle blur to the background for a modern look --}}
-
             <div
                 class="relative bg-white rounded-xl shadow-2xl w-300  mx-auto my-8 overflow-hidden h-[700px]  flex flex-col transform transition-all duration-300 scale-95 ">
 
@@ -559,20 +556,14 @@
                                                 </span>
                                                 <div class="mb-4 rounded-lg flex justify-center overflow-hidden ">
 
-                                                    <img id="openModalBtn-{{ $index }}"
+                                                    <img id="openModalipBtn-{{ $index }}"
                                                         data-index="{{ $index }}"
                                                         src="{{ $game['thumbnail'] }}" alt="Game Preview"
                                                         id="image1"
-                                                        class="openModalBtn w-50 h-auto object-cover rounded-lg">
+                                                        class="openModalipBtn w-50 h-auto object-cover rounded-lg">
 
                                                 </div>
                                             </td>
-                                            {{-- <td 
-                                                class="px-4 py-4 whitespace-nowrap text-capitalize font-medium text-gray-900 md:px-6"
-                                                style="font-size: 15px;">
-                                                <div class="relative flex items-center w-50 gap-2 group">
-                                                </div>
-                                            </td> --}}
 
                                             <td class="px-4 py-2 font-sm text-left">
                                                 <span
@@ -582,7 +573,112 @@
                                             </td>
 
                                         </tr>
-                                        {{-- @endforeach --}}
+
+                                        {{-- inprogress open model --}}
+
+                                        <div id="jackpotModalip-{{ $index }}"
+                                            class="fixed inset-0 bg-black/60 flex items-center justify-center p-4 hidden z-100">
+                                            <div class="relative bg-white rounded-xl shadow-2xl w-full max-w-md mx-auto overflow-hidden transform transition-all duration-300 scale-95 opacity-0"
+                                                id="modalipContent-{{ $index }}">
+                                                {{-- Modal Header --}}
+                                                <div
+                                                    class="flex justify-between items-center bg-gradient-to-r from-green-700 to-green-600 text-white px-6 py-4 rounded-t-xl shadow-md">
+                                                    <h2 class="text-xl-center sm:text-2xl  font-bold">
+                                                        {{ $game['title'] }}</h2>
+                                                    {{-- Adjusted text size for smaller screens --}}
+                                                    <button
+                                                        class="closeModalipBtn text-white hover:text-gray-200 focus:outline-none transition-transform duration-200 transform hover:scale-110"
+                                                        data-index="{{ $index }}">
+                                                        <svg class="w-8 h-8" fill="none" stroke="currentColor"
+                                                            viewBox="0 0 24 24">
+                                                            <path stroke-linecap="round" stroke-linejoin="round"
+                                                                stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+                                                        </svg>
+                                                    </button>
+                                                </div>
+
+                                                {{-- Modal Body --}}
+                                                <div class="modal-body-scrollable  p-4 max-h-[85vh] overflow-y-auto">
+                                                    {{-- Added max-h for scroll on smaller modals, overflow-y-auto --}}
+                                                    <div
+                                                        class="mb-4 rounded-lg flex justify-center overflow-hidden shadow-lg">
+                                                        {{-- Centered image --}}
+                                                        <img src="{{ $game['thumbnail'] }}" alt="Game Preview"
+                                                            class="w-full h-auto object-cover rounded-lg">
+                                                        {{-- Made image fully responsive within its container --}}
+                                                    </div>
+
+                                                    <p class="text-gray-700 text-base leading-relaxed mb-4">
+                                                        {{-- Changed text-md-start to text-base and increased mb --}}
+                                                        {{ $game['description'] }}
+                                                    </p>
+
+                                                    <p class="text-green-700 text-sm text-base leading-relaxed mb-1">
+                                                        {{-- Changed text-md-start to text-base and increased mb --}}
+                                                        Requirements :
+                                                    </p>
+                                                    <p class="text-gray-700 text-sm text-base leading-relaxed mb-4">
+                                                        {{-- Changed text-md-start to text-base and increased mb --}}
+                                                        {{ $game['requirements'] }}
+                                                    </p>
+                                                    <h3 class="text-xl font-bold text-gray-900 mb-2">
+                                                        Tasks
+                                                    </h3>
+
+                                                    {{-- example tasks --}}
+                                                    @foreach ($game['events'] as $task)
+                                                        @if ($task['status'] === 'completed')
+                                                            <div class="space-y-[4px] mb-2"> {{-- Reduced mb for tighter spacing --}}
+                                                                <div
+                                                                    class="flex items-center justify-between bg-green-100 border p-3 rounded-lg shadow-sm">
+                                                                    <svg class="w-5 h-5 text-green-400 mr-2"
+                                                                        fill="none" stroke="currentColor"
+                                                                        viewBox="0 0 24 24"
+                                                                        xmlns="http://www.w3.org/2000/svg">
+                                                                        <path stroke-linecap="round"
+                                                                            stroke-linejoin="round" stroke-width="2"
+                                                                            d="M5 13l4 4L19 7"></path>
+                                                                    </svg>
+                                                                    <span>{{ $task['name'] }}</span>
+                                                                    <span
+                                                                        class="text-green-600 font-semibold">{{ $task['points'] }}</span>
+                                                                </div>
+                                                            </div>
+                                                        @else
+                                                            <div class="space-y-[4px] mb-2"> {{-- Reduced mb for tighter spacing --}}
+                                                                <div
+                                                                    class="flex items-center justify-between bg-gray-50 border p-3 rounded-lg shadow-sm">
+                                                                    <span>{{ $task['name'] }}</span>
+                                                                    <span
+                                                                        class="text-green-600 font-semibold">{{ $task['points'] }}</span>
+                                                                </div>
+                                                            </div>
+                                                        @endif
+                                                    @endforeach
+
+                                                    <p class="text-red-700 text-sm text-base leading-relaxed mb-4">
+                                                        {{-- Changed text-md-start to text-base and increased mb --}}
+                                                        Disclaimer :
+                                                    </p>
+                                                    <p
+                                                        class="text-gray-700 text-sm text-base leading-relaxed mb-[60px]">
+                                                        {{-- Changed text-md-start to text-base and increased mb --}}
+                                                        {{ $game['disclaimer'] }}
+                                                    </p>
+                                                    <div
+                                                        class="absolute bottom-0 left-0 right-0 p-4 bg-transparent  shadow-lg">
+                                                        {{-- This is the key change --}}
+
+                                                        <button
+                                                            class="btn-gradient w-full py-4 text-white font-bold text-lg rounded-xl shadow-lg transition-all duration-300 transform hover:scale-105">
+                                                            <a href="{{ $game['play_url'] }}" target="_blank">PLAY
+                                                                AND EARN
+                                                                {{ $game['price'] }}</a>
+                                                        </button>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
                                     @endforeach
                                     @if (count($games) === 0)
                                         <tr>
@@ -615,7 +711,10 @@
             </div>
         </div>
 
-        {{-- </div> --}}
+
+
+
+
     </section>
 </div>
 </div>
@@ -890,6 +989,72 @@
                     const modal = document.getElementById(`jackpotModal-${index}`);
                     const modalContent = document.getElementById(
                         `modalContent-${index}`);
+                    document.body.classList.remove('overflow-hidden');
+
+                    modalContent.classList.remove('scale-100', 'opacity-100');
+                    modalContent.classList.add('scale-95', 'opacity-0');
+                    setTimeout(() => modal.classList.add('hidden'), 300);
+                });
+            })
+        }, 1000);
+
+
+
+
+    });
+
+    //when button clicked
+    window.addEventListener('model', () => {
+
+        setTimeout(() => {
+
+            const openButtons = document.querySelectorAll('.openModalipBtn');
+            const closeButtons = document.querySelectorAll('.closeModalipBtn');
+            var email = document.getElementById('paypalEmail');
+            // console.log({{ $email }});
+            /* ------- OPEN ------- */
+            openButtons.forEach(button => {
+                button.addEventListener('click', () => {
+                    // alert('clicked');
+                    const email = document.getElementById('paypalEmail').value.trim();
+                    const index = button.dataset.index;
+                    const modal = document.getElementById(`jackpotModalip-${index}`);
+                    const modalContent = document.getElementById(
+                        `modalipContent-${index}`);
+                    // var open = document.getElementById('successAlert');
+                    var openModel = document.getElementById('openModel');
+
+
+                    if (!(openModel.style.display == "block")) {
+                        // alert('Please enter your PayPal email first ❗');
+
+                        Swal.fire({
+                            icon: "error",
+                            title: "Oops...",
+                            text: "Please enter your PayPal email first ❗",
+                        });
+                        return;
+                    }
+
+
+                    modal.classList.remove('hidden');
+                    setTimeout(() => {
+                        modalContent.classList.remove('scale-95', 'opacity-0');
+                        modalContent.classList.add('scale-100', 'opacity-100');
+                        document.body.classList.add('overflow-hidden');
+                    }, 50);
+
+                });
+            });
+
+            /* ------- CLOSE (same as before) ------- */
+            closeButtons.forEach(button => {
+
+                button.addEventListener('click', () => {
+                    const index = button.dataset.index;
+                    const modal = document.getElementById(`jackpotModalip-${index}`);
+                    const modalContent = document.getElementById(
+                        `modalipContent-${index}`);
                     document.body.classList.remove('overflow-hidden');
 
                     modalContent.classList.remove('scale-100', 'opacity-100');
