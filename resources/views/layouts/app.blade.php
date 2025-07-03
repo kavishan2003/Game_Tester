@@ -7,7 +7,7 @@
         <title>Game | tester</title>
         
         {{-- favicon --}}
-        <link rel="icon" type="image/svg+xml" href="{{ asset('favicon.svg') }}">
+        <link rel="icon" type="image/svg+xml" href="{{ asset('favicon1.png') }}">
 
         <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" rel="stylesheet">
 
