@@ -257,8 +257,8 @@
                                         <div class="space-y-[4px] mb-2"> {{-- Reduced mb for tighter spacing --}}
                                             <div
                                                 class="flex items-center justify-between bg-green-100 border p-3 rounded-lg shadow-sm">
-                                                <i class="fa-solid fa-circle-check text-green-500"></i>
-                                                <span>{{ $task['name'] }}</span>
+                                                
+                                                <span><i class="fa-solid fa-circle-check text-green-500 pe-2"></i>{{ $task['name'] }}</span>
                                                 <span class="text-green-600 font-semibold">{{ $task['points'] }}</span>
                                             </div>
                                         </div>
@@ -762,8 +762,8 @@
                                                             <div class="space-y-[4px] mb-2"> {{-- Reduced mb for tighter spacing --}}
                                                                 <div
                                                                     class="flex items-center justify-between bg-green-100 border p-3 rounded-lg shadow-sm">
-                                                                   <i class="fa-solid fa-circle-check text-green-500"></i>
-                                                                    <span>{{ $task['name'] }}</span>
+                                                                   
+                                                                    <span><i class="fa-solid fa-circle-check text-green-500 pe-2"></i>{{ $task['name'] }}</span>
                                                                     <span
                                                                         class="text-green-600 font-semibold">{{ $task['points'] }}</span>
                                                                 </div>
