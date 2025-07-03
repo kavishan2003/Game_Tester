@@ -286,14 +286,13 @@ class GameTester extends Component
 
                 return [
                     'name' => $started_offers['anchor'],
-                    // 'thumbnail'   => $started_offers['icon_url']    ?? '',
                     'date'   => $relativeTime   ?? '',
                     'id'          => Str::uuid()->toString(),
                     'title'       => $started_offers['anchor']      ?? '',
                     'description' => $offestarted_offersr['description'] ?? '',
                     'thumbnail'   => $started_offers['icon_url']    ?? '',
                     'price'       => $price,
-                    'play_url'    => $started_offers['click_url']   ?? '#',
+                    'play_url'    => $started_offers['continue_url']   ?? '#',
                     'disclaimer'  => $started_offers['disclaimer']  ?? '',
                     'requirements' => $started_offers['requirements'] ?? '',
                     'events'      => $events,
