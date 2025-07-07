@@ -130,7 +130,7 @@ class BitlabsController extends Controller
         ];
         $user = Gamers::where('hash_id', $parsed['userID'])->first();
 
-        $depositID = $user->depositFloat(5);
+        $depositID = $user->depositFloat($parsed["offer_purchase_usd"]);
 
        $transaction_uuid =  $depositID->uuid;
 
@@ -146,9 +146,9 @@ class BitlabsController extends Controller
             'status' => $parsed['offer_state'],
         ]);
 
-        // Transaction::where('id', Transaction::max('id'))->update(['status' => $parsed['offer_state']]);
-        // Transaction::where('id', Transaction::max('id'))->update(['game_name' => $parsed['offer_name']]);
-        // Transaction::where('id', Transaction::max('id'))->update(['event_name' => $parsed['task_name']]);
+        Transaction::where('id', Transaction::max('id'))->update(['status' => $parsed['offer_state']]);
+        Transaction::where('id', Transaction::max('id'))->update(['game_name' => $parsed['offer_name']]);
+        Transaction::where('id', Transaction::max('id'))->update(['event_name' => $parsed['task_name']]);
 
         // $latest = Transactions::max('id');
 
