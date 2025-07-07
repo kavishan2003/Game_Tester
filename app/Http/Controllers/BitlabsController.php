@@ -8,6 +8,7 @@ use Illuminate\Http\Request;
 use App\Models\Bitlabs_callback;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
+use App\Http\Controllers\Controller;
 use Bavix\Wallet\Models\Transaction;
 
 
@@ -127,34 +128,31 @@ class BitlabsController extends Controller
             'offer_purchase_usd' => $data['offer_purchase_usd'] ?? null,
             'inapp_purchase_event_hidden' => $data['inapp_purchase_event_hidden'] ?? null,
         ];
+        $user = Gamers::where('hash_id', $parsed['userID'])->first();
 
+        $depositID = $user->depositFloat(5);
+
+       $transaction_uuid =  $depositID->uuid;
+
+    //    dd($transaction_uuid);
         Bitlabs_Callback::create([
+            'uuid' => $transaction_uuid,
             'user_id' => $parsed['userID'],
             'transaction_id' => $parsed['transactionid'],
             'offer_name' => $parsed['offer_name'],
             'ip_address' => $parsed['ip'],
             'offer_value' => $parsed['offer_purchase_usd'],
+            'offertasktype' => $parsed['offertasktype'],
             'status' => $parsed['offer_state'],
         ]);
 
+        // Transaction::where('id', Transaction::max('id'))->update(['status' => $parsed['offer_state']]);
+        // Transaction::where('id', Transaction::max('id'))->update(['game_name' => $parsed['offer_name']]);
+        // Transaction::where('id', Transaction::max('id'))->update(['event_name' => $parsed['task_name']]);
 
+        // $latest = Transactions::max('id');
 
-
-
-        $user = Gamers::where('hash_id', $parsed['userID'])->first();
-
-        $user->depositFloat($parsed['offer_purchase_usd']);
-
-        $latest = Transactions::max('id');
-
-        Transaction::where('id', Transaction::max('id'))->update(['status' => $parsed['offer_state']]);
-        Transaction::where('id', Transaction::max('id'))->update(['game_name' => $parsed['offer_name']]);
-        Transaction::where('id', Transaction::max('id'))->update(['event_name' => $parsed['task_name']]);
-
-
-
-
-        $UserBalance = number_format($user->balanceFloat, 2, '.', '');
+        // $UserBalance = number_format($user->balanceFloat, 2, '.', '');
 
         echo 'done';
     }

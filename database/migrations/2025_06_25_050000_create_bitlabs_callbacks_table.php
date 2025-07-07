@@ -13,11 +13,13 @@ return new class extends Migration
     {
         Schema::create('bitlabs_callbacks', function (Blueprint $table) {
             $table->id();
+            $table->string('uuid')->nullable();
             $table->string('user_id');
             $table->string( 'transaction_id');
             $table->string('ip')->nullable();
             $table->string('offer_value')->nullable();
             $table->string('offer_name')->nullable();
+            $table->string('offertasktype')->nullable();
             $table->string('status')->nullable();
             $table->timestamps();
         });
