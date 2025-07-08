@@ -17,6 +17,7 @@
 
         {{-- Header Section --}}
         <header class="flex flex-col items-center justify-content-start mb-12 text-center"> {{-- Added flex-col and text-center for better mobile alignment --}}
+            <div class="mb-4 p-3 rounded  text-black  transition-opacity duration-500"> {{ $UserAgent }}</div>
             <h1 class="text-4xl sm:text-5xl font-extrabold text-gray-900 drop-shadow-sm">🎮 Game Tester</h1>
             {{-- Adjusted text size for smaller screens --}}
         </header>
@@ -257,8 +258,9 @@
                                         <div class="space-y-[4px] mb-2"> {{-- Reduced mb for tighter spacing --}}
                                             <div
                                                 class="flex items-center justify-between bg-green-100 border p-3 rounded-lg shadow-sm">
-                                                
-                                                <span><i class="fa-solid fa-circle-check text-green-500 pe-2"></i>{{ $task['name'] }}</span>
+
+                                                <span><i
+                                                        class="fa-solid fa-circle-check text-green-500 pe-2"></i>{{ $task['name'] }}</span>
                                                 <span class="text-green-600 font-semibold">{{ $task['points'] }}</span>
                                             </div>
                                         </div>
@@ -560,7 +562,7 @@
                                                 @else
                                                     <span
                                                         class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-gray-100 text-gray-800">
-                                                        N/A
+                                                        PENDING
                                                     </span>
                                                 @endif
                                             </td>
@@ -762,8 +764,9 @@
                                                             <div class="space-y-[4px] mb-2"> {{-- Reduced mb for tighter spacing --}}
                                                                 <div
                                                                     class="flex items-center justify-between bg-green-100 border p-3 rounded-lg shadow-sm">
-                                                                   
-                                                                    <span><i class="fa-solid fa-circle-check text-green-500 pe-2"></i>{{ $task['name'] }}</span>
+
+                                                                    <span><i
+                                                                            class="fa-solid fa-circle-check text-green-500 pe-2"></i>{{ $task['name'] }}</span>
                                                                     <span
                                                                         class="text-green-600 font-semibold">{{ $task['points'] }}</span>
                                                                 </div>

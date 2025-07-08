@@ -30,6 +30,7 @@ class GameTester extends Component
     use WithPagination;
 
     public $UserIp;
+    public $UserAgent;
     public $Userhash;
     public $search = "";
     public array $games = [];
@@ -224,7 +225,13 @@ class GameTester extends Component
 
         $this->Userhash = $hashedId;
 
+        // dd($request);
+
         $userUa = $request->userAgent();
+
+        $this->UserAgent = $userUa;
+
+        // dd($userUa);
 
         $response = Http::withHeaders([
             'User-Agent' => $userUa,
@@ -234,7 +241,7 @@ class GameTester extends Component
         ])->get('https://api.bitlabs.ai/v2/client/offers', [
             'client_ip'         => $ip,
             'client_user_agent' => $userUa,
-            'devices' => 'android',
+            'devices' => ['android','iphone','ipad'],
             'is_game'           => 'true',
         ]);
 
