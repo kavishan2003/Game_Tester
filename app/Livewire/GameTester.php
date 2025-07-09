@@ -50,6 +50,7 @@ class GameTester extends Component
     public $updatedBtn = "";
     public $hideModel = "hidden";
     public $inProgressModel = "hidden";
+    public $empty = "hidden";
     public $addShow = "disabled";
     public $withdrawShow = "disabled";
 
@@ -241,7 +242,7 @@ class GameTester extends Component
         } elseif (stripos($this->UserAgent, 'iPad') !== false) {
             $deviceType = ['ipad'];
         } else {
-            $deviceType = ['Win64'];
+            $deviceType = ['desktop'];
         }
 
         $response = Http::withHeaders([
@@ -270,7 +271,18 @@ class GameTester extends Component
         }
         $response_json = $response->json();
 
-        dd($response_json);
+        if ($deviceType == ['desktop']) {
+            //i want to filter out is web_to_mobile is true and dont return those offers
+            $offers = collect($response_json['data']['offers'] ?? [])
+                ->filter(fn($offer) => !isset($offer['web_to_mobile']) || !$offer['web_to_mobile'])
+                ->values()
+                ->all();
+            $this->isTurnstile = "none";
+            $this->empty = "";
+            return;
+        }
+
+        // dd($response_json);
         // logger($response_json['data']);
 
         $started_offers = data_get($response->json(), 'data.started_offers', []);

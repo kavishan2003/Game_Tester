@@ -151,7 +151,7 @@
 
     {{-- Available Games Section --}}
     <section>
-        <h2 class="text-3xl flex items-center justify-center font-bold text-gray-900 mb-8 text-center">Available
+        <h2 class="text-3xl flex items-center justify-center font-bold text-gray-900 mb-4 text-center">Available
             Games
             to Test</h2>
         <div style="display: {{ $isTurnstile }};">
@@ -173,6 +173,10 @@
 
         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 " id="GameList">
             {{-- Stays as 1 column on mobile, adapts to 2 or 3 --}}
+            <div class="col-span-1 md:col-span-2 lg:col-span-3 text-center p-6" {{ $empty }}>
+                <p class="text-gray-600 text-2xl">There are currently no games available.</p>
+
+            </div>
             @isset($progress)
                 @foreach ($progress as $index => $game)
                     <div
