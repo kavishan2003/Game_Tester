@@ -370,9 +370,185 @@ class GameTester extends Component
         $this->isTurnstile = "none";
         $this->dispatch('model');
     }
+    public function local(Request $request)
+    {
+
+        // // logger($request->headers->all());
+        // logger($this->UserIp);
+        // logger("hi");
+
+        // $response = LaravelTurnstile::validate(
+        //     $this->turnstileToken // this will be created from the cloudflare widget.
+        // );
+
+
+
+        // if (!$response['success']) {
+
+        //     $this->dispatch('turnstile-fail');
+        //     session()->flash('error', 'Captcha verification failed. Please try again.');
+        //     return;
+        // }
+
+        $storedEmail = session('paypal_email');
+
+        $hashedId    = $storedEmail ? hash('sha256', $storedEmail) : '';
+
+        $ip = $this->UserIp;
+
+        $hashedId = hash('sha256', $ip);
+
+        $this->Userhash = $hashedId;
+
+        // dd($request);
+
+        $userUa = $request->userAgent();
+
+        $this->UserAgent = $userUa;
+
+        // dd($userUa);
+
+        // Detect device type
+        if (stripos($this->UserAgent, 'Android') !== false) {
+            $deviceType = ['android'];
+        } elseif (stripos($this->UserAgent, 'iPhone') !== false) {
+            $deviceType = ['iphone'];
+        } elseif (stripos($this->UserAgent, 'iPad') !== false) {
+            $deviceType = ['ipad'];
+        } else {
+            $deviceType = ['desktop'];
+        }
+
+        $response = Http::withHeaders([
+            'User-Agent' => $userUa,
+            'X-User-Id' => $hashedId,
+            'X-Api-Token' => 'cacd309f-4f98-47bb-bec0-a631b9c139f8',
+            // 'X-Api-Token' => 'f94fbb03-47a6-48b5-9aa3-bd7f04cc156d',
+        ])->get('https://api.bitlabs.ai/v2/client/offers', [
+            'client_ip'         => $ip,
+            'client_user_agent' => $userUa,
+            'devices' => $deviceType,
+            'is_game'           => 'true',
+        ]);
+
+        logger($response);
+
+        if (! $response->successful()) {
+
+            logger()->error('BitLabs API failed', [
+
+                'status' => $response->status(),
+
+                'body'   => $response->body(),
+            ]);
+            return;
+        }
+        $response_json = $response->json();
+
+        if ($deviceType == ['desktop']) {
+            //i want to filter out is web_to_mobile is true and dont return those offers
+            $offers = collect($response_json['data']['offers'] ?? [])
+                ->filter(fn($offer) => !isset($offer['web_to_mobile']) || !$offer['web_to_mobile'])
+                ->values()
+                ->all();
+            $this->isTurnstile = "none";
+            $this->empty = "";
+            return;
+        }
+
+        // dd($response_json);
+        // logger($response_json['data']);
+
+        $started_offers = data_get($response->json(), 'data.started_offers', []);
+        // dd($started_offers);
+
+        $offers = data_get($response->json(), 'data.offers', []);   // safer than $array['data']
+
+        $offers = array_slice($offers, 0, 30);
+
+        $this->progress = collect($started_offers)->map(
+            function ($started_offers) {
+
+                $date = $started_offers['latest_date'] ?? null;
+
+                $points = (float) ($started_offers['total_points']);
+
+                $price  = '$' . number_format($points, 2);
+
+                $events = collect($started_offers['events'] ?? [])
+
+                    ->map(fn($e) => [
+                        'name'   => $e['name'],
+                        'points' => '$' . number_format((float) $e['points'], 2),
+                        'status' => $e['status']
+                    ])
+
+                    ->sortBy('points')
+                    ->values()
+                    ->all();
+
+                $relativeTime = $date ? Carbon::parse($date)->diffForHumans() : '';
+
+                return [
+                    'name' => $started_offers['anchor'],
+                    'date'   => $relativeTime   ?? '',
+                    'id'          => Str::uuid()->toString(),
+                    'title'       => $started_offers['anchor']      ?? '',
+                    'description' => $offestarted_offersr['description'] ?? '',
+                    'thumbnail'   => $started_offers['icon_url']    ?? '',
+                    'price'       => $price,
+                    'play_url'    => $started_offers['continue_url']   ?? '#',
+                    'disclaimer'  => $started_offers['disclaimer']  ?? '',
+                    'requirements' => $started_offers['requirements'] ?? '',
+                    'events'      => $events,
+                    'event_count' => count($events),
+                ];
+            }
+        )->all();
+        $this->games = collect($offers)->map(
+            function ($offer) {
+
+                $eventPoints = collect($offer['events'] ?? [])
+
+                    ->sum(fn($e) => floatval($e['points']));
+
+                $points = (float) ($offer['total_points'] ?? $eventPoints);
+
+                $price  = '$' . number_format($points, 2);
+
+                $events = collect($offer['events'] ?? [])
+
+                    ->map(fn($e) => [
+                        'name'   => $e['name'],
+                        'points' => '$' . number_format((float) $e['points'], 2),
+                    ])
+
+                    ->sortBy('points')
+                    ->values()
+                    ->all();
+
+                return [
+                    'id'          => Str::uuid()->toString(),
+                    'title'       => $offer['anchor']      ?? '',
+                    'description' => $offer['description'] ?? '',
+                    'thumbnail'   => $offer['icon_url']    ?? '',
+                    'price'       => $price,
+                    'play_url'    => $offer['click_url']   ?? '#',
+                    'disclaimer'  => $offer['disclaimer']  ?? '',
+                    'requirements' => $offer['requirements'] ?? '',
+                    'events'      => $events,
+                    'event_count' => count($events),
+                ];
+            }
+        )->all();
+        $this->isTurnstile = "none";
+        $this->dispatch('model');
+    }
 
     public function mount(): void
     {
+        //i want to call the local function when the page loads
+        $this->local(request());
         if (Session::get('email')) {
             // $this->saveButtonDisabled = "disabled";
             $this->email = Session::get('email');

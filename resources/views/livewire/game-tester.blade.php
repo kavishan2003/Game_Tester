@@ -161,11 +161,7 @@
                     <div class=" text-gray-500 text-center  rounded-xl p-5 cf-turnstile flex items-center justify-center"
                         data-sitekey="{{ config('services.turnstile.key') }}" data-theme="{{ $theme ?? 'light' }}"
                         data-callback="onTurnstileSuccess" data-size="normal">
-                        {{-- <p class="text-sm">Please complete the captcha</p> --}}
                     </div>
-                    {{-- <button
-                            class="bg-blue-600 text-white py-3 rounded-lg hover:bg-blue-700 transition-colors duration-300 shadow-md"
-                            wire:click="capture">Get games</button> --}}
                 </div>
             </div>
         </div>
