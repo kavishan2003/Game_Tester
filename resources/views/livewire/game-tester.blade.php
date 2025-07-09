@@ -307,12 +307,9 @@
                         class="openModalBtn cursor-pointer w-full max-w-xs h-[330px] object-cover mb-4 border-2 border-white shadow-lg rounded-lg"
                         alt="Open jackpot {{ $index }}" />
 
-                    <div class="h-16">
-
-                        <h3 class="text-xl sm:text-2xl font-bold text-gray-900 mb-2"> {{-- Adjusted text size for smaller screens --}}
-                            {{ $game['title'] }}
-                        </h3>
-                    </div>
+                    <h3 class="text-xl sm:text-2xl font-bold text-gray-900 mb-2"> {{-- Adjusted text size for smaller screens --}}
+                        {{ $game['title'] }}
+                    </h3>
 
                     <p class="text-lg text-gray-600 mb-4">
                         Earn:

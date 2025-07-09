@@ -33,9 +33,9 @@ class BitlabsController extends Controller
             '18.193.24.206',
         ];
 
-        // if (!in_array($request->ip(), $allowedIps)) {
-        //     return response('Unauthorized IP', 403);
-        // }
+        if (!in_array($request->ip(), $allowedIps)) {
+            return response('Unauthorized IP', 403);
+        }
 
 
         $appSecret = env('BITLABS_SECRET'); // .env file 
@@ -44,17 +44,17 @@ class BitlabsController extends Controller
         $fullUrl = $request->fullUrl();
         $baseUrlWithoutHash = explode('&hash=', $fullUrl)[0];
 
-        // $expectedHash = hash_hmac('sha1', $baseUrlWithoutHash, $appSecret);
-        // if ($expectedHash !== $receivedHash) {
-        //     return response('Hash mismatch', 403);
-        // }
+        $expectedHash = hash_hmac('sha1', $baseUrlWithoutHash, $appSecret);
+        if ($expectedHash !== $receivedHash) {
+            return response('Hash mismatch', 403);
+        }
 
-        //if transaction ID already exists
+        // if transaction ID already exists
 
-        // $tx = $request->query('tx');
-        // if (Bitlabs_callback::where('transaction_id', $tx)->exists()) {
-        //     return response('Already processed', 200);
-        // }
+        $tx = $request->query('tx');
+        if (Bitlabs_callback::where('transaction_id', $tx)->exists()) {
+            return response('Already processed', 200);
+        }
 
 
         // echo "hi";
@@ -132,9 +132,9 @@ class BitlabsController extends Controller
 
         $depositID = $user->depositFloat($parsed["offer_purchase_usd"]);
 
-       $transaction_uuid =  $depositID->uuid;
+        $transaction_uuid =  $depositID->uuid;
 
-    //    dd($transaction_uuid);
+        //    dd($transaction_uuid);
         Bitlabs_Callback::create([
             'uuid' => $transaction_uuid,
             'user_id' => $parsed['userID'],

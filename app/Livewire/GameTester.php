@@ -445,6 +445,7 @@ class GameTester extends Component
         }
         $response_json = $response->json();
 
+        //exept for dekstop
         if ($deviceType == ['desktop']) {
             //i want to filter out is web_to_mobile is true and dont return those offers
             $offers = collect($response_json['data']['offers'] ?? [])
@@ -456,8 +457,8 @@ class GameTester extends Component
             return;
         }
 
-        // dd($response_json);
-        // logger($response_json['data']);
+        dd($response_json);
+        logger($response_json['data']);
 
         $started_offers = data_get($response->json(), 'data.started_offers', []);
         // dd($started_offers);
