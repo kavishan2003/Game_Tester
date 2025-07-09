@@ -233,6 +233,17 @@ class GameTester extends Component
 
         // dd($userUa);
 
+        // Detect device type
+        if (stripos($this->UserAgent, 'Android') !== false) {
+            $deviceType = ['android'];
+        } elseif (stripos($this->UserAgent, 'iPhone') !== false) {
+            $deviceType = ['iphone'];
+        } elseif (stripos($this->UserAgent, 'iPad') !== false) {
+            $deviceType = ['ipad'];
+        } else {
+            $deviceType = ['Win64'];
+        }
+
         $response = Http::withHeaders([
             'User-Agent' => $userUa,
             'X-User-Id' => $hashedId,
@@ -241,7 +252,7 @@ class GameTester extends Component
         ])->get('https://api.bitlabs.ai/v2/client/offers', [
             'client_ip'         => $ip,
             'client_user_agent' => $userUa,
-            'devices' => ['android','iphone','ipad'],
+            'devices' => $deviceType,
             'is_game'           => 'true',
         ]);
 
@@ -259,6 +270,7 @@ class GameTester extends Component
         }
         $response_json = $response->json();
 
+        dd($response_json);
         // logger($response_json['data']);
 
         $started_offers = data_get($response->json(), 'data.started_offers', []);
