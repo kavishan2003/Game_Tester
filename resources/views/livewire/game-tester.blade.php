@@ -1020,6 +1020,13 @@
         });
 
     })
+    window.addEventListener('already', () => {
+        Swal.fire({
+            icon: "error",
+            text: "This PayPal email is already registered",
+        });
+
+    })
     window.addEventListener('limit', () => {
 
         Swal.fire({

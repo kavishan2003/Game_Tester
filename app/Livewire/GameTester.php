@@ -108,6 +108,14 @@ class GameTester extends Component
             'Uemail' => 'required|email',
         ]);
 
+        $new_email = $this->Uemail;
+
+        $similarEmail = Gamers::where('email', 'LIKE', '%' . $new_email . '%')->first();
+
+        if ($similarEmail) {
+            $this->dispatch('already');
+            return;
+        }
 
 
         $user_name = Session::get('Uname');
@@ -154,6 +162,13 @@ class GameTester extends Component
         ]);
 
         $email = $this->email;
+
+        $similarEmail = Gamers::where('email', 'LIKE', '%' . $email . '%')->first();
+
+        if ($similarEmail) {
+            $this->dispatch('already');
+            return;
+        }
 
         $ip = $this->UserIp;
 
