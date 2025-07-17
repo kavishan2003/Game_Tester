@@ -272,7 +272,7 @@ class GameTester extends Component
             'is_game'           => 'true',
         ]);
 
-        logger($response);
+        // logger($response);
 
         if (! $response->successful()) {
 
@@ -446,7 +446,7 @@ class GameTester extends Component
             'is_game'           => 'true',
         ]);
 
-        logger($response);
+        // logger($response);
 
         if (! $response->successful()) {
 
@@ -473,7 +473,7 @@ class GameTester extends Component
         }
 
         // dd($response_json);
-        logger($response_json['data']);
+        // logger($response_json['data']);
 
         $started_offers = data_get($response->json(), 'data.started_offers', []);
         // dd($started_offers);
