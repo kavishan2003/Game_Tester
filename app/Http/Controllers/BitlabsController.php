@@ -42,6 +42,8 @@ class BitlabsController extends Controller
 
         if (!in_array($request->ip(), $allowedIps)) {
             logger('Unauthorized IP: ');
+            logger($request->ip());
+            // Log the unauthorized IP
             return response('Unauthorized IP', 403);
         }
 
