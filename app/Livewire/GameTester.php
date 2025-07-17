@@ -268,7 +268,7 @@ class GameTester extends Component
         ])->get('https://api.bitlabs.ai/v2/client/offers', [
             'client_ip'         => $ip,
             'client_user_agent' => $userUa,
-            'devices' => 'andriod',
+            'devices' => [],
             'is_game'           => 'true',
         ]);
 
