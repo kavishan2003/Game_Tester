@@ -40,10 +40,12 @@ class BitlabsController extends Controller
             '18.193.24.206',
         ];
 
-        // if (!in_array($request->ip(), $allowedIps)) {
-        //     return response('Unauthorized IP', 403);
-        // }
+        if (!in_array($request->ip(), $allowedIps)) {
+            logger('Unauthorized IP: ');
+            return response('Unauthorized IP', 403);
+        }
 
+        logger('IP check passed: ');
 
         $appSecret = env('BITLABS_SECRET'); // .env file 
         $receivedHash = $request->query('hash');
@@ -53,13 +55,16 @@ class BitlabsController extends Controller
 
         $expectedHash = hash_hmac('sha1', $baseUrlWithoutHash, $appSecret);
         if ($expectedHash !== $receivedHash) {
+            logger('Hash mismatch: ');
             return response('Hash mismatch', 403);
         }
 
+        logger('Hash check passed: ');
         // if transaction ID already exists
 
         $tx = $request->query('tx');
         if (Bitlabs_callback::where('transaction_id', $tx)->exists()) {
+            logger('Already processed: ');
             return response('Already processed', 200);
         }
 

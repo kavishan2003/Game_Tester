@@ -250,15 +250,15 @@ class GameTester extends Component
         // dd($userUa);
 
         // Detect device type
-        if (stripos($this->UserAgent, 'Android') !== false) {
-            $deviceType = ['android'];
-        } elseif (stripos($this->UserAgent, 'iPhone') !== false) {
-            $deviceType = ['iphone'];
-        } elseif (stripos($this->UserAgent, 'iPad') !== false) {
-            $deviceType = ['ipad'];
-        } else {
-            $deviceType = ['desktop'];
-        }
+        // if (stripos($this->UserAgent, 'Android') !== false) {
+        //     $deviceType = ['android'];
+        // } elseif (stripos($this->UserAgent, 'iPhone') !== false) {
+        //     $deviceType = ['iphone'];
+        // } elseif (stripos($this->UserAgent, 'iPad') !== false) {
+        //     $deviceType = ['ipad'];
+        // } else {
+        //     $deviceType = ['desktop'];
+        // }
 
         $response = Http::withHeaders([
             'User-Agent' => $userUa,
@@ -268,7 +268,7 @@ class GameTester extends Component
         ])->get('https://api.bitlabs.ai/v2/client/offers', [
             'client_ip'         => $ip,
             'client_user_agent' => $userUa,
-            'devices' => $deviceType,
+            'devices' => 'andriod',
             'is_game'           => 'true',
         ]);
 
@@ -286,16 +286,16 @@ class GameTester extends Component
         }
         $response_json = $response->json();
 
-        if ($deviceType == ['desktop']) {
-            //i want to filter out is web_to_mobile is true and dont return those offers
-            $offers = collect($response_json['data']['offers'] ?? [])
-                ->filter(fn($offer) => !isset($offer['web_to_mobile']) || !$offer['web_to_mobile'])
-                ->values()
-                ->all();
-            $this->isTurnstile = "none";
-            $this->empty = "";
-            return;
-        }
+        // if ($deviceType == ['desktop']) {
+        //     //i want to filter out is web_to_mobile is true and dont return those offers
+        //     $offers = collect($response_json['data']['offers'] ?? [])
+        //         ->filter(fn($offer) => !isset($offer['web_to_mobile']) || !$offer['web_to_mobile'])
+        //         ->values()
+        //         ->all();
+        //     $this->isTurnstile = "none";
+        //     $this->empty = "";
+        //     return;
+        // }
 
         // dd($response_json);
         // logger($response_json['data']);
