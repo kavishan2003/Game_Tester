@@ -18,6 +18,9 @@ class BitlabsController extends Controller
     public function handleCallback(Request $request)
     {
 
+        // Log the incoming request
+        logger('Bitlabs Callback Received', ['request' => $request->all()]);
+
         //check the ip
         $allowedIps = [
             '20.76.54.40',
