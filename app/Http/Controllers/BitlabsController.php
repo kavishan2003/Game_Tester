@@ -61,7 +61,7 @@ class BitlabsController extends Controller
 
         $postback = $request->all();
 
-        logger($postback);
+        logger("\n" . $postback . "\n");
 
         $data = $request->all();
 
