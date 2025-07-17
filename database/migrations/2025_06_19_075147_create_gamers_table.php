@@ -17,7 +17,7 @@ return new class extends Migration
             $table->string('email');
             $table->string('Uname');
             $table->string('ip')->nullable();
-            $table->string('hash_id');
+            $table->string('hash_id')->nullable();
         });
     }
 

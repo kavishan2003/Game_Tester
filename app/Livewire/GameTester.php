@@ -215,8 +215,8 @@ class GameTester extends Component
     {
 
         // logger($request->headers->all());
-        logger($this->UserIp);
-        logger("hi");
+        // logger($this->UserIp);
+        // logger("hi");
 
         $response = LaravelTurnstile::validate(
             $this->turnstileToken // this will be created from the cloudflare widget.
