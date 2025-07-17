@@ -33,9 +33,9 @@ class BitlabsController extends Controller
             '18.193.24.206',
         ];
 
-        if (!in_array($request->ip(), $allowedIps)) {
-            return response('Unauthorized IP', 403);
-        }
+        // if (!in_array($request->ip(), $allowedIps)) {
+        //     return response('Unauthorized IP', 403);
+        // }
 
 
         $appSecret = env('BITLABS_SECRET'); // .env file 
