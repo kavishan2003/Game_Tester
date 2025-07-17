@@ -20,6 +20,7 @@ class BitlabsController extends Controller
 
         // Log the incoming request
         logger('Bitlabs Callback Received');
+
         logger("\n" . $request->all() . "\n");
 
         //check the ip
