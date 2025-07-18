@@ -40,16 +40,21 @@ class BitlabsController extends Controller
             '18.193.24.206',
         ];
 
+        logger('Request Headers: ');
+        logger($request->headers->all());
+
+        logger('Unauthorized IP: ');
+        logger($request->ip());
+
+        
         if (!in_array($request->ip(), $allowedIps)) {
-            logger('Unauthorized IP: ');
-            logger($request->ip());
+
             // Log the unauthorized IP
 
             // Log all headers
-            
-            logger('Request Headers: ');
-            logger($request->headers->all());
-           
+
+
+
             // return response('Unauthorized IP', 403);
         }
 
