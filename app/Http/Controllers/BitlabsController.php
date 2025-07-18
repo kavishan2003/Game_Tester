@@ -16,6 +16,7 @@ use Bavix\Wallet\Models\Transaction;
 class BitlabsController extends Controller
 {
 
+
     public function  getRealClientIp(Request $request)
     {
 
@@ -33,8 +34,11 @@ class BitlabsController extends Controller
 
         // Fallback to REMOTE_ADDR
         return $_SERVER['REMOTE_ADDR'];
+
     }
 
+
+    
     public function handleCallback(Request $request)
     {
 
