@@ -48,7 +48,8 @@ class BitlabsController extends Controller
         logger($request->headers->all());
 
         $realIp = $this->getRealClientIp($request);
-        echo "given function captured IP: " . htmlspecialchars($realIp);
+        logger("given function captured IP: ");
+        logger($realIp); 
         
         logger('my function IP: ');
         logger($request->ip());

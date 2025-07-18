@@ -182,12 +182,12 @@
                             src="{{ $game['thumbnail'] }}" alt="Game Preview" id="image1"
                             class="openModalipBtn cursor-pointer w-full max-w-xs h-[330px] object-cover mb-4 border-2 border-white shadow-lg rounded-lg">
 
-                        <div class="h-16">
+                       
 
-                            <h3 class="text-xl sm:text-2xl font-bold text-gray-900 mb-2"> {{-- Adjusted text size for smaller screens --}}
+                            <h3 class="text-xl sm:text-2xl font-bold text-gray-900 "> {{-- Adjusted text size for smaller screens --}}
                                 {{ $game['title'] }}
                             </h3>
-                        </div>
+                       
 
                         <p class="text-lg text-gray-600 mb-4">
                             Earn:
