@@ -50,7 +50,7 @@ class BitlabsController extends Controller
             logger('Request Headers: ');
             logger($request->headers->all());
            
-            return response('Unauthorized IP', 403);
+            // return response('Unauthorized IP', 403);
         }
 
         logger('IP check passed: ');
