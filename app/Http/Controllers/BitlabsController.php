@@ -15,8 +15,39 @@ use Bavix\Wallet\Models\Transaction;
 
 class BitlabsController extends Controller
 {
+
+    public function  getRealClientIp(Request $request)
+    {
+
+        // Cloudflare-provided real IP
+        if (!empty($_SERVER['HTTP_CF_CONNECTING_IP'])) {
+            return $_SERVER['HTTP_CF_CONNECTING_IP'];
+        }
+
+        // Fallback if not using Cloudflare (or Cloudflare header missing)
+        if (!empty($_SERVER['HTTP_X_FORWARDED_FOR'])) {
+            // May contain multiple IPs, take the first one
+            $ips = explode(',', $_SERVER['HTTP_X_FORWARDED_FOR']);
+            return trim($ips[0]);
+        }
+
+        // Fallback to REMOTE_ADDR
+        return $_SERVER['REMOTE_ADDR'];
+    }
+
     public function handleCallback(Request $request)
     {
+
+
+
+        logger('Request Headers: ');
+        logger($request->headers->all());
+
+        $realIp = $this->getRealClientIp($request);
+        echo "given function captured IP: " . htmlspecialchars($realIp);
+        
+        logger('my function IP: ');
+        logger($request->ip());
 
         // Log the incoming request
         logger('Bitlabs Callback Received');
@@ -40,13 +71,8 @@ class BitlabsController extends Controller
             '18.193.24.206',
         ];
 
-        logger('Request Headers: ');
-        logger($request->headers->all());
 
-        logger('Unauthorized IP: ');
-        logger($request->ip());
 
-        
         if (!in_array($request->ip(), $allowedIps)) {
 
             // Log the unauthorized IP
