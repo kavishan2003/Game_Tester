@@ -319,9 +319,9 @@
                     </p>
 
                     <button id="openModalBtn-{{ $index }}" data-index="{{ $index }}" type="button"
-                        class="openModalBtn w-full bg-blue-600 text-white py-3 rounded-lg font-bold text-lg
-                            hover:bg-blue-700 transition-colors duration-300 shadow-md cursor-pointer">
-                        Play Now
+                        class="openModalBtn w-full bg-green-600 hover:bg-green-700 text-white py-3 rounded-lg font-bold text-lg
+                            hover:bg-green-700 transition-colors duration-300 shadow-md cursor-pointer">
+                        Play & Earn
                     </button>
                 </div>
 

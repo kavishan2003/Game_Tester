@@ -241,24 +241,20 @@ class GameTester extends Component
 
         $this->Userhash = $hashedId;
 
-        // dd($request);
-
         $userUa = $request->userAgent();
 
         $this->UserAgent = $userUa;
 
-        // dd($userUa);
-
         // Detect device type
-        // if (stripos($this->UserAgent, 'Android') !== false) {
-        //     $deviceType = ['android'];
-        // } elseif (stripos($this->UserAgent, 'iPhone') !== false) {
-        //     $deviceType = ['iphone'];
-        // } elseif (stripos($this->UserAgent, 'iPad') !== false) {
-        //     $deviceType = ['ipad'];
-        // } else {
-        //     $deviceType = ['desktop'];
-        // }
+        if (stripos($this->UserAgent, 'Android') !== false) {
+            $deviceType = ['android'];
+        } elseif (stripos($this->UserAgent, 'iPhone') !== false) {
+            $deviceType = ['iphone'];
+        } elseif (stripos($this->UserAgent, 'iPad') !== false) {
+            $deviceType = ['ipad'];
+        } else {
+            $deviceType = ['android'];
+        }
 
         $response = Http::withHeaders([
             'User-Agent' => $userUa,
@@ -268,7 +264,7 @@ class GameTester extends Component
         ])->get('https://api.bitlabs.ai/v2/client/offers', [
             'client_ip'         => $ip,
             'client_user_agent' => $userUa,
-            'devices' => ['android','iphone','ipad'],
+            'devices' => ['android', 'iphone', 'ipad'],
             'is_game'           => 'true',
         ]);
 
@@ -286,27 +282,30 @@ class GameTester extends Component
         }
         $response_json = $response->json();
 
-        // if ($deviceType == ['desktop']) {
-        //     //i want to filter out is web_to_mobile is true and dont return those offers
-        //     $offers = collect($response_json['data']['offers'] ?? [])
-        //         ->filter(fn($offer) => !isset($offer['web_to_mobile']) || !$offer['web_to_mobile'])
-        //         ->values()
-        //         ->all();
-        //     $this->isTurnstile = "none";
-        //     $this->empty = "";
-        //     return;
-        // }
-
-        // dd($response_json);
-        // logger($response_json['data']);
+        logger($response_json['data']);
 
         $started_offers = data_get($response->json(), 'data.started_offers', []);
-        // dd($started_offers);
 
         $offers = data_get($response->json(), 'data.offers', []);   // safer than $array['data']
 
+        $iphoneOffers = collect($offers)->filter(function ($offer) {
+            return in_array('iphone', $offer['categories'] ?? []);
+        })->values();
+
+        $androidOffers = collect($offers)->filter(function ($offer) {
+            return in_array('Android', $offer['categories'] ?? []);
+        })->values();
+
+        if ($deviceType == ['iphone', 'ipad']) {
+            $offers = $iphoneOffers->all();
+        }
+        if ($deviceType == ['android']) {
+            $offers = $androidOffers->all();
+        }
+
         $offers = array_slice($offers, 0, 30);
 
+        // Gethring started offers
         $this->progress = collect($started_offers)->map(
             function ($started_offers) {
 
@@ -336,6 +335,7 @@ class GameTester extends Component
                     'id'          => Str::uuid()->toString(),
                     'title'       => $started_offers['anchor']      ?? '',
                     'description' => $offestarted_offersr['description'] ?? '',
+                    'categories'  => $offer['categories']  ?? [],
                     'thumbnail'   => $started_offers['icon_url']    ?? '',
                     'price'       => $price,
                     'play_url'    => $started_offers['continue_url']   ?? '#',
@@ -346,6 +346,8 @@ class GameTester extends Component
                 ];
             }
         )->all();
+
+        // Gethering Fresh offers
         $this->games = collect($offers)->map(
             function ($offer) {
 
@@ -372,6 +374,7 @@ class GameTester extends Component
                     'id'          => Str::uuid()->toString(),
                     'title'       => $offer['anchor']      ?? '',
                     'description' => $offer['description'] ?? '',
+                    'categories'  => $offer['categories']  ?? [],
                     'thumbnail'   => $offer['icon_url']    ?? '',
                     'price'       => $price,
                     'play_url'    => $offer['click_url']   ?? '#',
