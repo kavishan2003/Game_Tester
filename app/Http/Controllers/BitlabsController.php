@@ -99,8 +99,12 @@ class BitlabsController extends Controller
         logger('Full URL: ');
         logger($fullUrl);
 
-        unset($request['hash']);
-        $baseUrlWithoutHash = $request->fullUrl();
+        // unset($request['hash']);
+        // Regex to remove &hash=hash_value from the URL
+        // $baseUrlWithoutHash = preg_replace('/&?hash=[^&]*/, '', $fullUrl);
+        $baseUrlWithoutHash = preg_replace('/([&?])hash=[a-zA-Z0-9]+(&)?/', '$1', $fullUrl);
+
+        // $baseUrlWithoutHash = $request->fullUrl();
         logger('Base URL without hash: ');
         logger($baseUrlWithoutHash);
 
