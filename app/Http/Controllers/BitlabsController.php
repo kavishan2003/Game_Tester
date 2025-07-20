@@ -224,7 +224,7 @@ class BitlabsController extends Controller
         ];
         $user = Gamers::where('hash_id', $parsed['userID'])->first();
 
-        $depositID = $user->depositFloat($parsed["offer_purchase_usd"]);
+        $depositID = $user->depositFloat($parsed["offer_purchase_usd"] == null ? 0 : $parsed["offer_purchase_usd"]);
 
         $transaction_uuid =  $depositID->uuid;
 
