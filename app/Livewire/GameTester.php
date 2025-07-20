@@ -172,11 +172,11 @@ class GameTester extends Component
 
         $ip = $this->UserIp;
 
-        $hashedId = hash('sha256', $ip);
+        $localPart = strstr($this->email, '@', true);
+
+        $hashedId = hash('sha256', $email);
 
         $this->Userhash = $hashedId;
-
-        $localPart = strstr($this->email, '@', true);
 
         Gamers::create([
             'email' => $email,
@@ -188,6 +188,7 @@ class GameTester extends Component
         Session::put([
             'email' => $email,
             'Uname' => $localPart,
+            'Userhash' => $this->Userhash,
         ]);
 
         $user = Gamers::where('email', $email)->first();
@@ -231,11 +232,11 @@ class GameTester extends Component
     //     logger('Stored Email:');
     //     logger($storedEmail);
 
-    //     $hashedId    = $storedEmail ? hash('sha256', $storedEmail) : '';
+    //   
 
     //     $ip = $this->UserIp;
 
-    //     $hashedId = hash('sha256', $ip);
+    //   
 
     //     $this->Userhash = $hashedId;
 
@@ -414,19 +415,21 @@ class GameTester extends Component
 
 
 
-        $hashedId    = $storedEmail ? hash('sha256', $storedEmail) : '';
+        // $hashedId    = $storedEmail ? hash('sha256', $storedEmail) : '';
 
         $ip = $this->UserIp;
 
         logger($ip);
 
-        $hashedId = hash('sha256', $ip);
+        // $hashedId = hash('sha256', $ip);
 
-        $this->Userhash = $hashedId;
 
-        $user = Gamers::where('email', $storedEmail)->first();
+
+        // $user = Gamers::where('email', $storedEmail)->first();
 
         $userUa = $request->userAgent();
+
+        Session::get('Userhash') ? $this->Userhash = Session::get('Userhash') : $this->Userhash = hash('sha256', $storedEmail);
 
         $this->UserAgent = $userUa;
 
@@ -445,7 +448,7 @@ class GameTester extends Component
 
         $response = Http::withHeaders([
             'User-Agent' => $userUa,
-            'X-User-Id' => 123,
+            'X-User-Id' => $this->Userhash,
             'X-Api-Token' => 'cacd309f-4f98-47bb-bec0-a631b9c139f8',
             // 'X-Api-Token' => 'f94fbb03-47a6-48b5-9aa3-bd7f04cc156d',
         ])->get('https://api.bitlabs.ai/v2/client/offers', [
