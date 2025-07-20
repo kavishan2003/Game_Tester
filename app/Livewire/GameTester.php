@@ -424,6 +424,8 @@ class GameTester extends Component
 
         $this->Userhash = $hashedId;
 
+        $user = Gamers::where('email', $storedEmail)->first();
+
         $userUa = $request->userAgent();
 
         $this->UserAgent = $userUa;
@@ -443,7 +445,7 @@ class GameTester extends Component
 
         $response = Http::withHeaders([
             'User-Agent' => $userUa,
-            'X-User-Id' => $hashedId,
+            'X-User-Id' => 123,
             'X-Api-Token' => 'cacd309f-4f98-47bb-bec0-a631b9c139f8',
             // 'X-Api-Token' => 'f94fbb03-47a6-48b5-9aa3-bd7f04cc156d',
         ])->get('https://api.bitlabs.ai/v2/client/offers', [
