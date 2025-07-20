@@ -94,6 +94,8 @@ class BitlabsController extends Controller
         logger('App Secret: ');
         logger($appSecret);
         $receivedHash = $request->query('hash');
+        $receivedSecret = $request->query('secret');
+
 
         $fullUrl = $request->fullUrl();
         logger('Full URL: ');
@@ -109,7 +111,7 @@ class BitlabsController extends Controller
         logger('Base URL without hash: ');
         logger($baseUrlWithoutHash);
 
-        $expectedHash = hash_hmac('sha1', $baseUrlWithoutHash, $appSecret);
+        $expectedHash = hash_hmac('sha1', $baseUrlWithoutHash, $receivedSecret);
         logger('Expected Hash: ' . $expectedHash);
         logger('Received Hash: ' . $receivedHash);
         if ($expectedHash !== $receivedHash) {
