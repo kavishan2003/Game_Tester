@@ -101,19 +101,39 @@ class BitlabsController extends Controller
         logger('Full URL: ');
         logger($fullUrl);
 
-        // unset($request['hash']);
-        // Regex to remove &hash=hash_value from the URL
-        // $baseUrlWithoutHash = preg_replace('/&?hash=[^&]*/, '', $fullUrl);
+       
         $baseUrlWithoutHash = preg_replace('/([&?])hash=[a-zA-Z0-9]+/', '', $fullUrl);
         logger('new method done');
 
         //URL decode
-        $baseUrlWithoutHash = urldecode($baseUrlWithoutHash);
+        // $baseUrlWithoutHash = urldecode($baseUrlWithoutHash);
         // $baseUrlWithoutHash = $request->fullUrl();
+
+
+        //given logic
+
         logger('Base URL without hash: ');
         logger($baseUrlWithoutHash);
 
-        $expectedHash = hash_hmac('sha1', $baseUrlWithoutHash, $receivedSecret);
+        $protocol = isset($_SERVER["HTTPS"]) && $_SERVER["HTTPS"] === "on" ? "https" : "http";
+
+        $url = "$protocol://$_SERVER[HTTP_HOST]$_SERVER[REQUEST_URI]";
+
+        $url_components = parse_url($url);
+
+        parse_str($url_components["query"], $params);
+
+        $url_val = substr($url, 0, -strlen("&hash=$params[hash]"));
+
+        $hash = hash_hmac("sha1", $url_val, $appSecret);
+
+        logger('Hash: ');
+        logger($hash);
+
+        //end
+
+
+        $expectedHash = hash_hmac('sha1', $baseUrlWithoutHash, $appSecret);
         logger('Expected Hash: ' . $expectedHash);
         logger('Received Hash: ' . $receivedHash);
         if ($expectedHash !== $receivedHash) {
