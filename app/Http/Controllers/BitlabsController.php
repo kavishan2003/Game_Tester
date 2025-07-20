@@ -136,7 +136,7 @@ class BitlabsController extends Controller
         $expectedHash = hash_hmac('sha1', $baseUrlWithoutHash, $appSecret);
         logger('Expected Hash: ' . $expectedHash);
         logger('Received Hash: ' . $receivedHash);
-        if ($expectedHash !== $receivedHash) {
+        if ($hash !== $receivedHash) {
             logger('Hash mismatch: ');
             return response('Hash mismatch', 403);
         }
