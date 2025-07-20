@@ -92,13 +92,17 @@ class BitlabsController extends Controller
 
         $appSecret = env('BITLABS_SECRET'); // .env file 
         logger('App Secret: ');
-        logger( $appSecret);
+        logger($appSecret);
         $receivedHash = $request->query('hash');
 
         $fullUrl = $request->fullUrl();
         logger('Full URL: ');
-        logger( $fullUrl);
-        $baseUrlWithoutHash = explode('&hash=', $fullUrl)[0];
+        logger($fullUrl);
+
+        unset($request['hash']);
+        $baseUrlWithoutHash = $request->fullUrl();
+        logger('Base URL without hash: ');
+        logger($baseUrlWithoutHash);
 
         $expectedHash = hash_hmac('sha1', $baseUrlWithoutHash, $appSecret);
         logger('Expected Hash: ' . $expectedHash);
