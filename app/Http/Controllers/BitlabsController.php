@@ -91,9 +91,13 @@ class BitlabsController extends Controller
         logger('IP check passed: ');
 
         $appSecret = env('BITLABS_SECRET'); // .env file 
+        logger('App Secret: ');
+        logger( $appSecret);
         $receivedHash = $request->query('hash');
 
         $fullUrl = $request->fullUrl();
+        logger('Full URL: ');
+        logger( $fullUrl);
         $baseUrlWithoutHash = explode('&hash=', $fullUrl)[0];
 
         $expectedHash = hash_hmac('sha1', $baseUrlWithoutHash, $appSecret);
