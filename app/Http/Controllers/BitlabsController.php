@@ -34,11 +34,10 @@ class BitlabsController extends Controller
 
         // Fallback to REMOTE_ADDR
         return $_SERVER['REMOTE_ADDR'];
-
     }
 
 
-    
+
     public function handleCallback(Request $request)
     {
 
@@ -49,8 +48,8 @@ class BitlabsController extends Controller
 
         $realIp = $this->getRealClientIp($request);
         logger("given function captured IP: ");
-        logger($realIp); 
-        
+        logger($realIp);
+
         logger('my function IP: ');
         logger($request->ip());
 
@@ -98,6 +97,8 @@ class BitlabsController extends Controller
         $baseUrlWithoutHash = explode('&hash=', $fullUrl)[0];
 
         $expectedHash = hash_hmac('sha1', $baseUrlWithoutHash, $appSecret);
+        logger('Expected Hash: ' . $expectedHash);
+        logger('Received Hash: ' . $receivedHash);
         if ($expectedHash !== $receivedHash) {
             logger('Hash mismatch: ');
             return response('Hash mismatch', 403);
