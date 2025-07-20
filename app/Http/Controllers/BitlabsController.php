@@ -101,7 +101,7 @@ class BitlabsController extends Controller
         logger('Full URL: ');
         logger($fullUrl);
 
-       
+
         $baseUrlWithoutHash = preg_replace('/([&?])hash=[a-zA-Z0-9]+/', '', $fullUrl);
         logger('new method done');
 
