@@ -113,7 +113,7 @@ class BitlabsController extends Controller
         logger('Base URL without hash: ');
         logger($baseUrlWithoutHash);
 
-        $expectedHash = hash_hmac('sha1', $baseUrlWithoutHash, $appSecret);
+        $expectedHash = hash_hmac('sha1', $baseUrlWithoutHash, $receivedSecret);
         logger('Expected Hash: ' . $expectedHash);
         logger('Received Hash: ' . $receivedHash);
         if ($expectedHash !== $receivedHash) {
