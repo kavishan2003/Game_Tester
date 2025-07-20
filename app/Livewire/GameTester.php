@@ -280,9 +280,11 @@ class GameTester extends Component
     //     }
     //     $response_json = $response->json();
 
-    //     // logger($response_json['data']);
+    //     // dd($response_json['data']);
 
-    //     $started_offers = data_get($response->json(), 'data.started_offers', []);
+    //     if (isset($response_json['data']['started_offers'])) {
+    //         $started_offers = data_get($response->json(), 'data.started_offers', []);
+    //     }
 
     //     $offers = data_get($response->json(), 'data.offers', []);   // safer than $array['data']
 
@@ -303,48 +305,49 @@ class GameTester extends Component
 
     //     $offers = array_slice($offers, 0, 30);
 
-    //     // Gethring started offers
-    //     $this->progress = collect($started_offers)->map(
-    //         function ($started_offers) {
+    //     // Gathering started offers
+    //     if (isset($response_json['data']['started_offers'])) {
+    //         $this->progress = collect($started_offers)->map(
+    //             function ($started_offers) {
 
-    //             $date = $started_offers['latest_date'] ?? null;
+    //                 $date = $started_offers['latest_date'] ?? null;
 
-    //             $points = (float) ($started_offers['total_points']);
+    //                 $points = (float) ($started_offers['total_points']);
 
-    //             $price  = '$' . number_format($points, 2);
+    //                 $price  = '$' . number_format($points, 2);
 
-    //             $events = collect($started_offers['events'] ?? [])
+    //                 $events = collect($started_offers['events'] ?? [])
 
-    //                 ->map(fn($e) => [
-    //                     'name'   => $e['name'],
-    //                     'points' => '$' . number_format((float) $e['points'], 2),
-    //                     'status' => $e['status']
-    //                 ])
+    //                     ->map(fn($e) => [
+    //                         'name'   => $e['name'],
+    //                         'points' => '$' . number_format((float) $e['points'], 2),
+    //                         'status' => $e['status']
+    //                     ])
 
-    //                 ->sortBy('points')
-    //                 ->values()
-    //                 ->all();
+    //                     ->sortBy('points')
+    //                     ->values()
+    //                     ->all();
 
-    //             $relativeTime = $date ? Carbon::parse($date)->diffForHumans() : '';
+    //                 $relativeTime = $date ? Carbon::parse($date)->diffForHumans() : '';
 
-    //             return [
-    //                 'name' => $started_offers['anchor'],
-    //                 'date'   => $relativeTime   ?? '',
-    //                 'id'          => Str::uuid()->toString(),
-    //                 'title'       => $started_offers['anchor']      ?? '',
-    //                 'description' => $offestarted_offersr['description'] ?? '',
-    //                 'categories'  => $offer['categories']  ?? [],
-    //                 'thumbnail'   => $started_offers['icon_url']    ?? '',
-    //                 'price'       => $price,
-    //                 'play_url'    => $started_offers['continue_url']   ?? '#',
-    //                 'disclaimer'  => $started_offers['disclaimer']  ?? '',
-    //                 'requirements' => $started_offers['requirements'] ?? '',
-    //                 'events'      => $events,
-    //                 'event_count' => count($events),
-    //             ];
-    //         }
-    //     )->all();
-
+    //                 return [
+    //                     'name' => $started_offers['anchor'],
+    //                     'date'   => $relativeTime   ?? '',
+    //                     'id'          => Str::uuid()->toString(),
+    //                     'title'       => $started_offers['anchor']      ?? '',
+    //                     'description' => $offestarted_offersr['description'] ?? '',
+    //                     'categories'  => $offer['categories']  ?? [],
+    //                     'thumbnail'   => $started_offers['icon_url']    ?? '',
+    //                     'price'       => $price,
+    //                     'play_url'    => $started_offers['continue_url']   ?? '#',
+    //                     'disclaimer'  => $started_offers['disclaimer']  ?? '',
+    //                     'requirements' => $started_offers['requirements'] ?? '',
+    //                     'events'      => $events,
+    //                     'event_count' => count($events),
+    //                 ];
+    //             }
+    //         )->all();
+    //     }
     //     // Gethering Fresh offers
     //     $this->games = collect($offers)->map(
     //         function ($offer) {
@@ -402,9 +405,11 @@ class GameTester extends Component
         //     session()->flash('error', 'Captcha verification failed. Please try again.');
         //     return;
         // }
-        logger('Dont call this:');
+        // logger('Dont call this:');
 
         $storedEmail = session('email');
+
+
         logger($storedEmail);
 
 
@@ -412,6 +417,8 @@ class GameTester extends Component
         $hashedId    = $storedEmail ? hash('sha256', $storedEmail) : '';
 
         $ip = $this->UserIp;
+
+        logger($ip);
 
         $hashedId = hash('sha256', $ip);
 
@@ -459,27 +466,24 @@ class GameTester extends Component
             return;
         }
         $response_json = $response->json();
+
+        // dd($response_json);
         //exept for dekstop
-        if ($deviceType == ['desktop']) {
-            //i want to filter out is web_to_mobile is true and dont return those offers
-            $offers = collect($response_json['data']['offers'] ?? [])
-                ->filter(fn($offer) => !isset($offer['web_to_mobile']) || !$offer['web_to_mobile'])
-                ->values()
-                ->all();
-            $this->isTurnstile = "none";
-            $this->empty = "";
-            return;
-        }
+        // if ($deviceType == ['desktop']) {
+        //     //i want to filter out is web_to_mobile is true and dont return those offers
+        //     $offers = collect($response_json['data']['offers'] ?? [])
+        //         ->filter(fn($offer) => !isset($offer['web_to_mobile']) || !$offer['web_to_mobile'])
+        //         ->values()
+        //         ->all();
+        //     $this->isTurnstile = "none";
+        //     $this->empty = "";
+        //     return;
+        // }
 
         // dd($response_json);
         // logger($response_json['data']);
 
-        if (isset($response_json['data']['started_offers']) && empty($response_json['data']['started_offers'])) {
-            // $this->empty = "";
-            // $this->games = [];
-            // $this->progress = [];
-            // $this->isTurnstile = "none";
-            // return;
+        if (isset($response_json['data']['started_offers'])) {
             $started_offers = data_get($response->json(), 'data.started_offers', []);
         }
         // dd($started_offers);
@@ -504,7 +508,7 @@ class GameTester extends Component
 
         $offers = array_slice($offers, 0, 30);
 
-        if (isset($response_json['data']['started_offers']) && empty($response_json['data']['started_offers'])) {
+        if (isset($response_json['data']['started_offers'])) {
             $this->progress = collect($started_offers)->map(
                 function ($started_offers) {
 
@@ -587,10 +591,15 @@ class GameTester extends Component
         $this->dispatch('model');
     }
 
+    public function updatedUserIp()
+    {
+        $this->local(request());
+    }
+
     public function mount(): void
     {
         //i want to call the local function when the page loads
-        $this->local(request());
+        // $this->local(request());
         if (Session::get('email')) {
             // $this->saveButtonDisabled = "disabled";
             $this->email = Session::get('email');
