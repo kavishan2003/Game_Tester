@@ -107,11 +107,13 @@ class BitlabsController extends Controller
         $baseUrlWithoutHash = preg_replace('/([&?])hash=[a-zA-Z0-9]+/', '', $fullUrl);
         logger('new method done');
 
+        //URL decode
+        $baseUrlWithoutHash = urldecode($baseUrlWithoutHash);
         // $baseUrlWithoutHash = $request->fullUrl();
         logger('Base URL without hash: ');
         logger($baseUrlWithoutHash);
 
-        $expectedHash = hash_hmac('sha1', $baseUrlWithoutHash, $receivedSecret);
+        $expectedHash = hash_hmac('sha1', $baseUrlWithoutHash, $appSecret);
         logger('Expected Hash: ' . $expectedHash);
         logger('Received Hash: ' . $receivedHash);
         if ($expectedHash !== $receivedHash) {
