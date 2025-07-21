@@ -156,7 +156,7 @@ class GameTester extends Component
 
     public function SaveTodb()
     {
-
+        // dd(1);
         $this->validate([
             'email' => 'required|email',
         ]);
@@ -413,25 +413,17 @@ class GameTester extends Component
 
         logger($storedEmail);
 
-
-
-        // $hashedId    = $storedEmail ? hash('sha256', $storedEmail) : '';
-
-        $ip = $this->UserIp;
+        $ip = "223.224.31.206" ;
 
         logger($ip);
 
-        // $hashedId = hash('sha256', $ip);
-
-
-
-        // $user = Gamers::where('email', $storedEmail)->first();
-
         $userUa = $request->userAgent();
 
-        Session::get('Userhash') ? $this->Userhash = Session::get('Userhash') : $this->Userhash = hash('sha256', $storedEmail);
+        Session::get('Userhash') ? $this->Userhash = Session::get('Userhash') : $this->Userhash = hash('sha256', "harendra@gmail.com");
 
-        $this->UserAgent = $userUa;
+       
+
+        // $this->UserAgent = $userUa;
 
         // dd($userUa);
 
@@ -443,9 +435,10 @@ class GameTester extends Component
         } elseif (stripos($this->UserAgent, 'iPad') !== false) {
             $deviceType = ['ipad'];
         } else {
-            $deviceType = ['android'];
+            $deviceType = ['desktop'];
         }
 
+        logger($this->Userhash);
         $response = Http::withHeaders([
             'User-Agent' => $userUa,
             'X-User-Id' => $this->Userhash,
@@ -508,6 +501,15 @@ class GameTester extends Component
         }
         if ($deviceType == ['android']) {
             $offers = $androidOffers->all();
+        }
+        if ($deviceType == ['desktop']) {
+            $offers = collect($response_json['data']['offers'] ?? [])
+                ->filter(fn($offer) => !isset($offer['web_to_mobile']) || !$offer['web_to_mobile'])
+                ->values()
+                ->all();
+            $this->isTurnstile = "none";
+            $this->empty = "";
+            return;
         }
         // dd('called');
 
@@ -596,15 +598,26 @@ class GameTester extends Component
         $this->dispatch('model');
     }
 
-    public function updatedUserIp()
+
+    public function submitIP()
     {
+        // dd($value);
         $this->local(request());
+        // dd('User IP updated');
     }
+    // public function updatedUserIp()
+    // {
+    //     // dd($this->UserIp);
+    //     $this->local(request());
+    //     // dd('User IP updated');
+    // }
 
     public function mount(): void
     {
         //i want to call the local function when the page loads
         // $this->local(request());
+        $this->UserAgent = request()->userAgent();
+        
         if (Session::get('email')) {
             // $this->saveButtonDisabled = "disabled";
             $this->email = Session::get('email');

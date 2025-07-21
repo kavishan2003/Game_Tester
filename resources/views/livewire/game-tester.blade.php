@@ -18,6 +18,14 @@
         {{-- Header Section --}}
         <header class="flex flex-col items-center justify-content-start mb-12 text-center"> {{-- Added flex-col and text-center for better mobile alignment --}}
             <div class="mb-4 p-3 rounded  text-black  transition-opacity duration-500"> {{ $UserAgent }}</div>
+            <div class="mb-4 p-3 rounded  text-black  transition-opacity duration-500 hidden"> {{ $UserIp }}</div>
+
+            <form action="" hidden>
+
+                <input type="text" wire:model="UserIp" value="" id="ipPass">
+                <button type="submit" hidden id="submitIp" wire:click.prevent="submitIP">Submit</button>
+            </form>
+
             <h1 class="text-4xl sm:text-5xl font-extrabold text-gray-900 drop-shadow-sm">🎮 Game Tester</h1>
             {{-- Adjusted text size for smaller screens --}}
         </header>
@@ -105,7 +113,8 @@
                             <span class="text-red-600">{{ $message }}</span>
                         @enderror
                     </div>
-                    <button {{ $saveButtonDisabled }} id="btn" wire:click.prevent ="SaveTodb" {{ $updatedBtn }}
+                    <button {{ $saveButtonDisabled }} id="btn" wire:click.prevent ="SaveTodb"
+                        {{ $updatedBtn }}
                         class="w-full bg-green-600 text-white py-3 px-6 rounded-lg font-bold text-lg hover:bg-green-700 transition-colors duration-300 shadow-md disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center">
                         <span>Save Email</span>
                     </button>
@@ -154,7 +163,7 @@
         <h2 class="text-3xl flex items-center justify-center font-bold text-gray-900 mb-4 text-center">Available
             Games
             to Test</h2>
-        <div style="display: {{ $isTurnstile }};">
+        {{-- <div style="display: {{ $isTurnstile }};">
             <input type="hidden" id="cf-turnstile-response" wire:model.defer="turnstileToken">
             <div class="text-gray-500 text-center rounded-xl p-5 " id="capture">
                 <div wire:ignore x-data x-init="window.onTurnstileSuccess = (token) => $wire.set('turnstileToken', token)">
@@ -164,7 +173,7 @@
                     </div>
                 </div>
             </div>
-        </div>
+        </div> --}}
 
 
         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 " id="GameList">
@@ -182,12 +191,12 @@
                             src="{{ $game['thumbnail'] }}" alt="Game Preview" id="image1"
                             class="openModalipBtn cursor-pointer w-full max-w-xs h-[330px] object-cover mb-4 border-2 border-white shadow-lg rounded-lg">
 
-                       
 
-                            <h3 class="text-xl sm:text-2xl font-bold text-gray-900 "> {{-- Adjusted text size for smaller screens --}}
-                                {{ $game['title'] }}
-                            </h3>
-                       
+
+                        <h3 class="text-xl sm:text-2xl font-bold text-gray-900 "> {{-- Adjusted text size for smaller screens --}}
+                            {{ $game['title'] }}
+                        </h3>
+
 
                         <p class="text-lg text-gray-600 mb-4">
                             Earn:
@@ -829,7 +838,6 @@
                 </div>
 
                 {{-- ip pass --}}
-                <input wire:model="UserIp" type="text" hidden value="" id="ipPass">
 
 
             </div>
@@ -855,40 +863,49 @@
                     bubbles: true
                 });
                 document.getElementById('ipPass').dispatchEvent(event);
+                document.getElementById('submitIp').click();
             });
+
+
+
+
+
+
+
+
         // --- Dropdown Functionality (from previous response, ensure it's still here) ---
-        const dropdownButton = document.getElementById('options-menu');
-        const dropdownPanel = dropdownButton.nextElementSibling;
+        // const dropdownButton = document.getElementById('options-menu');
+        // const dropdownPanel = dropdownButton.nextElementSibling;
 
-        if (dropdownButton && dropdownPanel) {
-            dropdownButton.addEventListener('click', () => {
-                dropdownPanel.classList.toggle('hidden');
-                dropdownPanel.classList.toggle('block');
-                const expanded = dropdownButton.getAttribute('aria-expanded') === 'true' || false;
-                dropdownButton.setAttribute('aria-expanded', !expanded);
-            });
+        // if (dropdownButton && dropdownPanel) {
+        //     dropdownButton.addEventListener('click', () => {
+        //         dropdownPanel.classList.toggle('hidden');
+        //         dropdownPanel.classList.toggle('block');
+        //         const expanded = dropdownButton.getAttribute('aria-expanded') === 'true' || false;
+        //         dropdownButton.setAttribute('aria-expanded', !expanded);
+        //     });
 
-            document.addEventListener('click', (event) => {
-                if (!dropdownButton.contains(event.target) && !dropdownPanel.contains(event.target)) {
-                    dropdownPanel.classList.add('hidden');
-                    dropdownPanel.classList.remove('block');
-                    dropdownButton.setAttribute('aria-expanded', 'false');
-                }
-            });
+        //     document.addEventListener('click', (event) => {
+        //         if (!dropdownButton.contains(event.target) && !dropdownPanel.contains(event.target)) {
+        //             dropdownPanel.classList.add('hidden');
+        //             dropdownPanel.classList.remove('block');
+        //             dropdownButton.setAttribute('aria-expanded', 'false');
+        //         }
+        //     });
 
-            dropdownPanel.querySelectorAll('a').forEach(item => {
-                item.addEventListener('click', (event) => {
-                    event.preventDefault();
-                    const selectedText = item.textContent;
-                    console.log('Selected filter:', selectedText);
-                    dropdownButton.childNodes[0].nodeValue = selectedText;
-                    dropdownPanel.classList.add('hidden');
-                    dropdownPanel.classList.remove('block');
-                    dropdownButton.setAttribute('aria-expanded', 'false');
-                    // In a real application, you would trigger your data filtering here
-                });
-            });
-        }
+        //     dropdownPanel.querySelectorAll('a').forEach(item => {
+        //         item.addEventListener('click', (event) => {
+        //             event.preventDefault();
+        //             const selectedText = item.textContent;
+        //             console.log('Selected filter:', selectedText);
+        //             dropdownButton.childNodes[0].nodeValue = selectedText;
+        //             dropdownPanel.classList.add('hidden');
+        //             dropdownPanel.classList.remove('block');
+        //             dropdownButton.setAttribute('aria-expanded', 'false');
+        //             // In a real application, you would trigger your data filtering here
+        //         });
+        //     });
+        // }
 
         // --- Clear Button Functionality ---
         const searchInput = document.getElementById('transactionSearchInput');
@@ -953,7 +970,7 @@
     fetch('/Transactions')
         .then(res => res.json())
         .then(data => {
-            console.log(data); // display the data
+            console.log(data);
         });
 
 
