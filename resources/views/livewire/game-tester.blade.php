@@ -17,7 +17,7 @@
 
         {{-- Header Section --}}
         <header class="flex flex-col items-center justify-content-start mb-12 text-center"> {{-- Added flex-col and text-center for better mobile alignment --}}
-            <div class="mb-4 p-3 rounded  text-black  transition-opacity duration-500"> {{ $UserAgent }}</div>
+            <div class="mb-4 p-3 rounded  text-black  transition-opacity duration-500 hidden"> {{ $UserAgent }}</div>
             <div class="mb-4 p-3 rounded  text-black  transition-opacity duration-500 hidden"> {{ $UserIp }}</div>
 
             <form action="" hidden>
@@ -845,7 +845,7 @@
 
     </section>
 </div>
-</div>
+
 
 <script>
     //search bar
